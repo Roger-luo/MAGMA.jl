@@ -170,7 +170,8 @@ for (function_name, element_type, singular_value_type) in
     end
 end
 
-print(1+1)
+#print(1+1)
+print("Test begins!\n")
 
 jobu = MagmaAllVec
 jobvt = MagmaAllVec
@@ -184,8 +185,7 @@ ldvt=2
 lwork=134
 success=magmaInit()
 
-print("Magma Initialization success=")
-print(success)
+print("Magma Initialization success=", success)
 print('\n')
 
 U, s, VT, work, info = gesvd!(jobu,jobvt,A,ldu,ldvt,lwork)
@@ -209,3 +209,5 @@ print('\n')
 print("info=")
 print(info)
 print('\n')
+
+print("Test ends.")
