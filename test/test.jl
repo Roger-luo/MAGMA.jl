@@ -1,9 +1,23 @@
+#import MAGMA
+"""magmaInit, magmaFinalize, """
+#using MAGMA:gesvd!
+using MAGMA: MagmaAllVec, magmaInit, magmaFinalize, gesvd!
+
+
+
+### some JuliaGPU packages
+using CUDAdrv
+using CUDAapi
+using CUDAnative
+using CuArrays
+
+
 #print(1+1)
 print("Test begins!\n")
 
 jobu = MagmaAllVec
 jobvt = MagmaAllVec
-A = cu(zeros(2,2))
+A = (zeros(2,2))
 A[1,1]=2.0
 A[1,2]=1.0
 A[2,1]=1.0
