@@ -1,3 +1,4 @@
+
 module MAGMA
 
 export magmaInit, magmaFinalize, gesvd!
@@ -46,13 +47,12 @@ end
 # magma_sgesvd wrapper
 function magmaSgesvd(jobu, jobvt, m, n, A, lda, s, U,
 	 ldu, VT, ldvt, work, lwork, info)
-    ccall((:magma_sgesvd_gpu, libmagma),
+    ccall((:magma_sgesvd, libmagma),
                Cint,
                (Cint, Cint, Cint, Cint, PtrOrCuPtr{Float32},
 			    Cint, PtrOrCuPtr{Float32}, PtrOrCuPtr{Float32},
 				Cint, PtrOrCuPtr{Float32}, Cint, PtrOrCuPtr{Float32},
-				Cint, PtrOrCuPtr{Cint}),# test: Ptr->PtrOrCuPtr
-
+				Cint, Ptr{Cint}),
                 jobu, jobvt, m, n, A, lda, s, U, ldu, VT, ldvt,
 				work, lwork, info)
 end
@@ -142,11 +142,11 @@ for (function_name, element_type, singular_value_type) in
 		# 	magma_int_t  	lwork,
 		# 	magma_int_t *  	info
 		# )
-		#Base.unsafe_convert(::CuPtr{$element_type},x::CuArray{$element_type})=Base.unsafe_convert(CuPtr{$element_type},Base.cconvert(CuPtr{($element_type)}x))
-		#Base.unsafe_convert(::PtrOrCuPtr{$element_type},x::CuArray{$element_type})=Base.unsafe_convert(PtrOrCuPtr{$element_type},Base.cconvert(PtrOrCuPtr{($element_type)}x))
+		Base.unsafe_convert(::CuPtr{$element_type},x::CuArray{$element_type})=Base.unsafe_convert(CuPtr{$element_type},Base.cconvert(CuPtr{($element_type)}x))
+		Base.unsafe_convert(::PtrOrCuPtr{$element_type},x::CuArray{$element_type})=Base.unsafe_convert(PtrOrCuPtr{$element_type},Base.cconvert(PtrOrCuPtr{($element_type)}x))
 		function gesvd!(jobu,
                       jobvt,
-                      A::Array{$element_type, 2},
+                      A::CuMatrix{$element_type},
                       ldu,
                       ldvt,
 					  lwork)
@@ -158,19 +158,16 @@ for (function_name, element_type, singular_value_type) in
            # before we can calculate further input
 		   # and call the lower C function wrappers
            lda = max(1,stride(A,2))
-           s = (zeros(m,n))
+           s = cu(zeros(m,n))
 
 		   # there should be some conditions for the size of U and VT
 		   # but we will deal with them later
-		   U = (zeros($element_type,ldu,m))
-		   VT = (zeros($element_type,ldvt,n))
+		   U = cu(zeros($element_type,ldu,m))
+		   VT = cu(zeros($element_type,ldvt,n))
 
-		   work = (zeros($element_type,max(1,lwork)))
-
+		   work = cu(zeros($element_type,max(1,lwork)))
 		   info = (zeros(Cint,1))
 
-		   testx = 1 + 1
-		   print("Ready to go!")
 		   $function_name(jobu, jobvt, m, n, A, lda, s, U, ldu, VT,
 		    ldvt, work, lwork, info)
            return U, s, VT, work, info
