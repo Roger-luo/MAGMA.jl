@@ -1,4 +1,4 @@
-export magmaInit, magmaFinalize
+#export magmaInit, magmaFinalize
 
 # magma_init
 function magmaInit()

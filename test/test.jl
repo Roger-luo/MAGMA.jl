@@ -1,7 +1,9 @@
 #import MAGMA
-"""magmaInit, magmaFinalize, """
+using MAGMA
+using MAGMA.Utilities
+
 #using MAGMA:gesvd!
-using MAGMA: MagmaAllVec, magmaInit, magmaFinalize, gesvd!
+using MAGMA: MagmaAllVec, gesvd!, libmagma
 
 
 
