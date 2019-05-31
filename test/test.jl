@@ -21,6 +21,7 @@ jobu = MagmaAllVec
 jobvt = MagmaAllVec
 A = (zeros(2,2))
 A[1,1]=2.0
+
 A[1,2]=1.0
 A[2,1]=1.0
 A[2,2]=2.0

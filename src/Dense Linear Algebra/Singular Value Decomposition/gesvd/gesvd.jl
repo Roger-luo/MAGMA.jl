@@ -40,7 +40,7 @@ for (function_name, element_type, singular_value_type) in
            # before we can calculate further input
 		   # and call the lower C function wrappers
            lda = max(1,stride(A,2))
-           s = CuArray{$singular_value_type}(0,min(m,n))
+           s = zeros(min(m,n))
 
 		   # there should be some conditions for the size of U and VT
 		   # but we will deal with them later
@@ -91,7 +91,7 @@ for (function_name, element_type, singular_value_type) in
            # before we can calculate further input
 		   # and call the lower C function wrappers
            lda = max(1,stride(A,2))
-           s = (zeros(m,n))
+           s = (zeros(min(m,n)))
 
 		   # there should be some conditions for the size of U and VT
 		   # but we will deal with them later
@@ -102,8 +102,6 @@ for (function_name, element_type, singular_value_type) in
 
 		   info = (zeros(Cint,1))
 
-		   testx = 1 + 1
-		   print("Ready to go!")
 		   $function_name(jobu, jobvt, m, n, A, lda, s, U, ldu, VT,
 		    ldvt, work, lwork, info)
            return U, s, VT, work, info
