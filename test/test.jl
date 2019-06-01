@@ -7,52 +7,31 @@ using MAGMA: MagmaAllVec, gesvd!, libmagma
 
 
 
-### some JuliaGPU packages
+### some JuliaGPU packages, maybe useful (who knows)
 using CUDAdrv
 using CUDAapi
 using CUDAnative
 using CuArrays
 
+#
+using Test, LinearAlgebra
 
-#print(1+1)
-print("Test begins!\n")
+matrixToTest = rand(Float64, 2, 2)
+
+right_answer = svd(matrixToTest).S
+S = right_answer
 
 jobu = MagmaAllVec
 jobvt = MagmaAllVec
-A = (zeros(2,2))
-A[1,1]=2.0
 
-A[1,2]=1.0
-A[2,1]=1.0
-A[2,2]=2.0
 ldu=2
 ldvt=2
 lwork=134
 success=magmaInit()
 
-print("Magma Initialization success=", success)
-print('\n')
+U, s, VT, work, info = gesvd!(jobu,jobvt,matrixToTest,ldu,ldvt,lwork)
 
-U, s, VT, work, info = gesvd!(jobu,jobvt,A,ldu,ldvt,lwork)
+diff = S .- s
+error_value = norm(diff)
 
-print("U=")
-print(U)
-print('\n')
-
-print("s=")
-print(s)
-print('\n')
-
-print("V**T=")
-print(VT)
-print('\n')
-
-print("work=")
-print(work)
-print('\n')
-
-print("info=")
-print(info)
-print('\n')
-
-print("Test ends.")
+@test error_value < 1e-7
