@@ -10,7 +10,7 @@ using Test, LinearAlgebra
 
 @testset "random singular precision matrices" begin
 
-    matrixToTest = rand(Float64, 2, 2)
+    matrixToTest = rand(Cdouble, 2, 2)
 
     right_answer = svd(matrixToTest).S
     S = right_answer

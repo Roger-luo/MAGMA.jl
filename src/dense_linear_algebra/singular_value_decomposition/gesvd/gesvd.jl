@@ -6,8 +6,8 @@ include("magmaZgesvd.jl")
 
 # wrappers of the low-level MAGMA functions
 for (function_name, element_type, singular_value_type) in
-	((:magmaCgesvd,:ComplexF32,:Float32),
-                      (:magmaZgesvd,:ComplexF32,:Float64))
+	((:magmaCgesvd,:ComplexF32,:Cfloat),
+                      (:magmaZgesvd,:ComplexF32,:Cdouble))
 	@eval begin
 		# magma_int_t magma_cgesvd 	( 	magma_vec_t  	jobu,
 		# 	magma_vec_t  	jobvt,
@@ -56,9 +56,10 @@ for (function_name, element_type, singular_value_type) in
 	   end
     end
 end
+
 for (function_name, element_type, singular_value_type) in
-	 ((:magmaDgesvd,:Float64,:Float64),
-                      (:magmaSgesvd,:Float32,:Float32))
+	 ((:magmaDgesvd,:Cdouble,:Cdouble),
+                      (:magmaSgesvd,:Cfloat,:Cfloat))
 	@eval begin
 		# magma_int_t magma_dgesvd 	( 	magma_vec_t  	jobu,
 		# 	magma_vec_t  	jobvt,
