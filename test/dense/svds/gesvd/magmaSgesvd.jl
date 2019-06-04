@@ -14,8 +14,6 @@ using Test, LinearAlgebra
 
     right_answer = svd(matrixToTest).S
     S = right_answer
-    println("the right answer = ", S)
-    println("the element_type is ", typeof(matrixToTest))
 
     jobu = MagmaAllVec
     jobvt = MagmaAllVec
@@ -27,11 +25,17 @@ using Test, LinearAlgebra
 
     U, s, VT, work, info = gesvd!(jobu,jobvt,matrixToTest,ldu,ldvt,lwork)
 
-    println("MAGMA got the answer = ", s)
 
     diff = S .- s
     error_value = norm(diff)
 
     @test error_value < 1e-7
 
+    if error_value >= 1e-7
+        println("Unfortunately, the test failed.")
+        println("Here is some maybe useful information:")
+        println("the element_type is ", typeof(matrixToTest))
+        println("the right answer = ", S)
+        println("However, MAGMA got the answer = ", s)
+    end
 end

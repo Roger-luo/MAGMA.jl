@@ -1,6 +1,9 @@
 using Test, Random, LinearAlgebra
 
-@testset "gesvd" begin
+@testset "magmaSgesvd" begin
     include("magmaSgesvd.jl")
+end
+
+@testset "magmaDgesvd" begin    
     include("magmaDgesvd.jl")
 end

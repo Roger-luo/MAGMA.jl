@@ -30,4 +30,12 @@ using Test, LinearAlgebra
 
     @test error_value < 1e-7
 
+    if error_value >= 1e-7
+        println("Unfortunately, the test failed.")
+        println("Here is some maybe useful information:")
+        println("the element_type is ", typeof(matrixToTest))
+        println("the right answer = ", S)
+        println("However, MAGMA got the answer = ", s)
+    end
+
 end
