@@ -2,6 +2,6 @@ module Dense
 
 using CUDAdrv, CuArrays, CUDAapi, CUDAnative
 
-include("singular_value_decomposition/SVD.jl")
+include("svds/SVD.jl")
 
 end
