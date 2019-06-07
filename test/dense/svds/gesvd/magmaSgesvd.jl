@@ -1,9 +1,10 @@
 #import MAGMA
 using MAGMA
 using MAGMA.Utilities
+using MAGMA.Dense
 
 #using MAGMA:gesvd!
-using MAGMA: MagmaAllVec, gesvd!, libmagma
+#using MAGMA: MagmaAllVec, libmagma
 
 #
 using Test, LinearAlgebra
@@ -24,7 +25,6 @@ using Test, LinearAlgebra
     success=magmaInit()
 
     U, s, VT, work, info = gesvd!(jobu,jobvt,matrixToTest,ldu,ldvt,lwork)
-
 
     diff = S .- s
     error_value = norm(diff)

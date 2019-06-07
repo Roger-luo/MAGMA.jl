@@ -1,9 +1,10 @@
 #import MAGMA
 using MAGMA
 using MAGMA.Utilities
+using MAGMA.Dense
 
 #using MAGMA:gesvd!
-using MAGMA: MagmaAllVec, gesvd!, libmagma
+#using MAGMA: MagmaAllVec, libmagma
 
 #
 using Test, LinearAlgebra
