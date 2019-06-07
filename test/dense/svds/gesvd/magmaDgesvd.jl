@@ -9,7 +9,7 @@ using MAGMA.Dense
 #
 using Test, LinearAlgebra
 
-@testset "random singular precision matrices" begin
+@testset "random double precision matrices" begin
 
     matrixToTest = rand(Cdouble, 2, 2)
 
@@ -26,6 +26,8 @@ using Test, LinearAlgebra
 
     U, s, VT, work, info = gesvd!(jobu,jobvt,matrixToTest,ldu,ldvt,lwork)
 
+    magmaFinalize()
+    
     diff = S .- s
     error_value = norm(diff)
 

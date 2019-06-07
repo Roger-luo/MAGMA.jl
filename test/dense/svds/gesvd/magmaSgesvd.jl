@@ -26,6 +26,8 @@ using Test, LinearAlgebra
 
     U, s, VT, work, info = gesvd!(jobu,jobvt,matrixToTest,ldu,ldvt,lwork)
 
+    magmaFinalize()
+    
     diff = S .- s
     error_value = norm(diff)
 
