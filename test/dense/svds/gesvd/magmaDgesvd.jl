@@ -1,12 +1,7 @@
-#import MAGMA
 using MAGMA
 using MAGMA.Utilities
 using MAGMA.Dense
 
-#using MAGMA:gesvd!
-#using MAGMA: MagmaAllVec, libmagma
-
-#
 using Test, LinearAlgebra
 
 @testset "random double precision matrices" begin
@@ -21,13 +16,13 @@ using Test, LinearAlgebra
 
     ldu=2
     ldvt=2
-    lwork=134
+    lwork=400
     success=magmaInit()
 
     U, s, VT, work, info = gesvd!(jobu,jobvt,matrixToTest,ldu,ldvt,lwork)
 
     magmaFinalize()
-    
+
     diff = S .- s
     error_value = norm(diff)
 
@@ -39,6 +34,7 @@ using Test, LinearAlgebra
         println("the element_type is ", typeof(matrixToTest))
         println("the right answer = ", S)
         println("However, MAGMA got the answer = ", s)
+        println("The info returned by MAGMA is: ", info[1])
     end
 
 end
