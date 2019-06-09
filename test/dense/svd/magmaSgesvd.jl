@@ -32,6 +32,6 @@ using Test, LinearAlgebra
     diff = S .- s
     error_value = norm(diff)
 
-    @test_broken error_value < 1e-7
+    @test error_value < 1e-7
 
 end
