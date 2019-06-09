@@ -1,6 +1,4 @@
 using MAGMA
-using MAGMA.Utilities
-using MAGMA.Dense
 
 using Test, LinearAlgebra
 
