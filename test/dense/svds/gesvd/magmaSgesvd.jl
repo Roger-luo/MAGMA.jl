@@ -9,15 +9,17 @@ using Test, LinearAlgebra
     right_answer = svd(matrixToTest).S
     S = right_answer
 
-    jobu = MagmaAllVec
-    jobvt = MagmaAllVec
+    jobu = 'A'
+    jobvt = 'A'
 
     ldu=2
     ldvt=2
     lwork=400
     success=magmaInit()
 
-    U, s, VT, work, info = gesvd!(jobu,jobvt,matrixToTest,ldu,ldvt,lwork)
+    result = gesvd!(jobu,jobvt,matrixToTest)
+
+    s = result[2]
 
     magmaFinalize()
 

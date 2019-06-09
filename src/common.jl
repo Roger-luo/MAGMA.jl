@@ -29,3 +29,7 @@ using CUDAnative
 using CuArrays
 # indicate the library position
 const libmagma = "/usr/local/magma/lib/libmagma.so"
+
+macro magmafunc(function_name)
+    return Expr(:quote, Symbol("magma_", function_name))
+end
