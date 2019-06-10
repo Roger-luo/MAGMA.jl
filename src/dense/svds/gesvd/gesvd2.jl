@@ -1,4 +1,3 @@
-import LinearAlgebra: BlasInt
 
 function char_to_magmaInt(option::AbstractChar)
         if option == 'A'
@@ -52,8 +51,8 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                         if cmplx
                                 rwork = Vector{$relty}(undef, 5minmn)
                         end
-                        lwork   = BlasInt(-1)
-                        info    = Ref{BlasInt}()
+                        lwork   = -1
+                        info    = Ref{Cint}()
 
                         jobu_magma      = char_to_magmaInt(jobu)
                         jobvt_magma     = char_to_magmaInt(jobvt)
@@ -87,7 +86,7 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                                                   Ptr{$elty}, Cint,
                                                   Ptr{$elty}, Cint,
                                                   Ptr{$elty}, Cint,
-                                                  Ptr{BlasInt}),
+                                                  Ptr{Cint}),
                                                     jobu_magma, jobvt_magma,
                                                     m, n,
                                                     A, lda,
@@ -98,7 +97,7 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                                                     info)
                                 end
                                 if i == 1
-                                        lwork = BlasInt(real(work[1]))
+                                        lwork = ceil(Int, (work[1]))
                                         resize!(work, lwork)
                                 end
                         end
