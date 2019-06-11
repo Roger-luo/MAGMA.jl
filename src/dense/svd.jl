@@ -101,11 +101,11 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                 end
 
                 if jobu == 'O'
-                        return (A, S, VT)
+                    return (A, S, VT)
                 elseif jobvt == 'O'
-                        return (U, S, A)
+                    return (U, S, A)
                 else
-                        return (U, S, VT)
+                    return (U, S, VT)
                 end
         end
     end
