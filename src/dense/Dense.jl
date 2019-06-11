@@ -1,1 +1,1 @@
-include("svds/SVD.jl")
+include("svd.jl")
