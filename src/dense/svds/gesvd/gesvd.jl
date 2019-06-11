@@ -25,13 +25,13 @@ for (function_name, element_type, singular_value_type) in
 		# 	float *  	rwork,
 		# 	magma_int_t *  	info
 		# )
-		function gesvd!(jobu::Cint,
-                      jobvt::Cint,
+		function gesvd!(jobu,
+                      jobvt,
                       A::CuMatrix{$element_type},
-                      ldu::Cint,
-                      ldvt::Cint,
-					  lwork::Cint,
-					  rwork::PtrOrCuPtr{$singular_value_type})
+                      ldu,
+                      ldvt,
+					  lwork,
+					  rwork)
 			convert(Cint,jobu)
 			convert(Cint,jobvt)
            m, n = size(A)

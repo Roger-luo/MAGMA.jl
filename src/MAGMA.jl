@@ -3,7 +3,9 @@ module MAGMA
 export gesvd!, libmagma#,magmaInit,magmaFinalize
 
 include("common.jl")
-include("utils/Utilities.jl")
-include("dense/svd/gesvd.jl")
+
+include("utilities/Utilities.jl")
+include("dense/Dense.jl")
+
 
 end  # modul MAGMA

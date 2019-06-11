@@ -1,6 +1,5 @@
 #import MAGMA
 using MAGMA
-using MAGMA.Utilities
 
 #using MAGMA:gesvd!
 using MAGMA: MagmaAllVec, gesvd!, libmagma
