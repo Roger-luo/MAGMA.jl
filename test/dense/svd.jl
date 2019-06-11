@@ -1,7 +1,7 @@
 using MAGMA
 using Test, LinearAlgebra
 
-@testset "random singular precision matrices" for T in [Float32, Float64]
+@testset "test svd $T" for T in [Float32, Float64]
 
     matrixToTest = rand(T, 2, 2)
 
