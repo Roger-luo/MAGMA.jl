@@ -48,7 +48,7 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                 work    = Vector{$elty}(undef, 1)
                 cmplx   = eltype(A) <: Complex
                 if cmplx
-                        rwork = Vector{$relty}(undef, 5minmn)
+                    rwork = Vector{$relty}(undef, 5minmn)
                 end
                 lwork   = -1
                 info    = Ref{Cint}()
@@ -57,48 +57,47 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                 jobvt_magma     = char_to_magmaInt(jobvt)
 
                 for i in 1:2
-                        if cmplx
-                                ccall((@magmafunc($fname), libmagma), Cint,
-                                        (Cint, Cint,
-                                        Cint, Cint,
-                                        PtrOrCuPtr{$elty}, Cint,
-                                        PtrOrCuPtr{$relty},
-                                        PtrOrCuPtr{$elty}, Cint,
-                                        PtrOrCuPtr{$elty}, Cint,
-                                        PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$relty},
-                                        PtrOrCuPtr{Cint}),
-                                            jobu_magma, jobvt_magma,
-                                            m, n,
-                                            A, lda,
-                                            S,
-                                            U, ldu,
-                                            VT, ldvt,
-                                            work, lwork, rwork,
-                                            info)
-
-                        else
-                                ccall((@magmafunc($fname), libmagma), Cint,
-                                            (Cint, Cint,
-                                            Cint, Cint,
-                                            Ptr{$elty}, Cint,
-                                            Ptr{$relty},
-                                            Ptr{$elty}, Cint,
-                                            Ptr{$elty}, Cint,
-                                            Ptr{$elty}, Cint,
-                                            Ptr{Cint}),
-                                            jobu_magma, jobvt_magma,
-                                            m, n,
-                                            A, lda,
-                                            S,
-                                            U, ldu,
-                                            VT, ldvt,
-                                            work, lwork,
-                                            info)
-                        end
-                        if i == 1
-                                lwork = ceil(Int, (work[1]))
-                                resize!(work, lwork)
-                        end
+                    if cmplx
+                        ccall((@magmafunc($fname), libmagma), Cint,
+                            (Cint, Cint,
+                            Cint, Cint,
+                            PtrOrCuPtr{$elty}, Cint,
+                            PtrOrCuPtr{$relty},
+                            PtrOrCuPtr{$elty}, Cint,
+                            PtrOrCuPtr{$elty}, Cint,
+                            PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$relty},
+                            PtrOrCuPtr{Cint}),
+                            jobu_magma, jobvt_magma,
+                            m, n,
+                            A, lda,
+                            S,
+                            U, ldu,
+                            VT, ldvt,
+                            work, lwork, rwork,
+                            info)
+                    else
+                        ccall((@magmafunc($fname), libmagma), Cint,
+                            (Cint, Cint,
+                            Cint, Cint,
+                            Ptr{$elty}, Cint,
+                            Ptr{$relty},
+                            Ptr{$elty}, Cint,
+                            Ptr{$elty}, Cint,
+                            Ptr{$elty}, Cint,
+                            Ptr{Cint}),
+                            jobu_magma, jobvt_magma,
+                            m, n,
+                            A, lda,
+                            S,
+                            U, ldu,
+                            VT, ldvt,
+                            work, lwork,
+                            info)
+                    end
+                    if i == 1
+                        lwork = ceil(Int, (work[1]))
+                        resize!(work, lwork)
+                    end
                 end
 
                 if jobu == 'O'
