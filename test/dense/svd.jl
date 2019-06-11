@@ -1,10 +1,9 @@
 using MAGMA
-
 using Test, LinearAlgebra
 
-@testset "random double precision matrices" begin
+@testset "test svd $T" for T in [Float32, Float64]
 
-    matrixToTest = rand(Cdouble, 2, 2)
+    matrixToTest = rand(T, 2, 2)
 
     right_answer = svd(matrixToTest).S
     S = right_answer
@@ -36,5 +35,4 @@ using Test, LinearAlgebra
         println("However, MAGMA got the answer = ", s)
         println("The info returned by MAGMA is: ", info[1])
     end
-
 end
