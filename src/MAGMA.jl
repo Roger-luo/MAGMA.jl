@@ -1,7 +1,7 @@
 module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 
-export gesvd!
+export gesvd!, magmaInit, magmaFinalize
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl
@@ -41,7 +41,7 @@ function magmaFinalize()
 	ccall((:magma_finalize, libmagma),Cint,())
 end
 
-include("dense/dense.jl")
+include("dense/Dense.jl")
 
 
 end  # modul MAGMA
