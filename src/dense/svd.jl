@@ -95,7 +95,7 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                             info)
                     end
                     if i == 1
-                        lwork = ceil(Int, (work[1]))
+                        lwork = ceil(Int, real(work[1]))
                         resize!(work, lwork)
                     end
                 end
