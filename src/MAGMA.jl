@@ -32,6 +32,8 @@ macro magmafunc(function_name)
     return Expr(:quote, Symbol("magma_", function_name))
 end
 
+# >>> The following are some Utility functions' wrappers >>>
+# magma_init
 function magmaInit()
 	ccall((:magma_init, libmagma),Cint,())
 end
@@ -41,7 +43,13 @@ function magmaFinalize()
 	ccall((:magma_finalize, libmagma),Cint,())
 end
 
-include("dense/Dense.jl")
+# magma_malloc_cpu
+#function magmaMalloc_CPU()
+
+#end
+# <<< End of wrappers for Utility
+
+include("dense/dense.jl")
 
 
 end  # modul MAGMA
