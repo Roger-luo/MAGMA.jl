@@ -68,9 +68,9 @@ size(x::MagmaMatrix,i) = x.size[i]
 include("enums.jl")
 
 for T in magmatypeslist
-    setvector = ("magma_$(typechar[T])setvector_internal", libmagma)
-    getvector = ("magma_$(typechar[T])getvector_internal", libmagma)
-    setmatrix = ("magma_$(typechar[T])setmatrix_internal", libmagma)
+    setvector = ("magma_$(typechar[T])setvector", libmagma)
+    getvector = ("magma_$(typechar[T])getvector", libmagma)
+    setmatrix = ("magma_$(typechar[T])setmatrix", libmagma)
     axpy = ("magma_$(typechar[T])axpy",libmagma)
     dot  = T <: Complex ? ("magma_$(typechar[T])dotc",libmagma) :
                          ("magma_$(typechar[T])dot", libmagma)
