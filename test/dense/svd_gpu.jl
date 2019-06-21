@@ -1,11 +1,12 @@
 using MAGMA
-using Test, LinearAlgebra
+using Test, LinearAlgebra, CuArrays
 
 const error_threshold = 1e-6
 
-@testset "test svd $T" for T in [Float32, Float64, ComplexF32, ComplexF64]
+@testset "test svd GPU $T" for T in [Float32, Float64, ComplexF32, ComplexF64]
 
     matrixToTest = rand(T, 2, 2)
+    matrixToTest = cu(matrixToTest)
 
     right_answer = svd(matrixToTest).S
     S = right_answer
@@ -18,7 +19,7 @@ const error_threshold = 1e-6
     lwork=400
     success=magmaInit()
 
-    result = gesvd!(jobu,jobvt,matrixToTest)
+    result = gesvd_gpu!(jobu,jobvt,matrixToTest)
 
     s = result[2]
 

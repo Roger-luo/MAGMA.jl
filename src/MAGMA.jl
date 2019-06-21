@@ -1,7 +1,7 @@
 module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 
-export gesvd!, magmaInit, magmaFinalize
+export gesvd!, gesvd_gpu!, magmaInit, magmaFinalize
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl
@@ -154,7 +154,7 @@ function magmaMalloc_CPU()
 end
 # <<< End of wrappers for Utility
 
+# include the files of subroutines
 include("dense/dense.jl")
-
 
 end  # modul MAGMA

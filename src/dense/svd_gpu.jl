@@ -11,10 +11,10 @@ function char_to_magmaInt(option::AbstractChar)
 end
 
 
-for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
-                            (:dgesvd, :Float64, :Float64),
-                            (:cgesvd, :ComplexF32, :Float32),
-                            (:zgesvd, :ComplexF64, :Float64))
+for (fname, elty, relty) in    ((:sgesvd_gpu, :Float32, :Float32),
+                            (:dgesvd_gpu, :Float64, :Float64),
+                            (:cgesvd_gpu, :ComplexF32, :Float32),
+                            (:zgesvd_gpu, :ComplexF64, :Float64))
     @eval begin
     # magma_int_t magma_cgesvd 	( 	magma_vec_t  	jobu,
     # 	magma_vec_t  	jobvt,
@@ -32,7 +32,7 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
     # 	float *  	rwork,
     # 	magma_int_t *  	info
     # )
-        function gesvd!(jobu::AbstractChar, jobvt::AbstractChar, A::AbstractMatrix{$elty})
+        function gesvd_gpu!(jobu::AbstractChar, jobvt::AbstractChar, A::AbstractMatrix{$elty})
                 m, n    = size(A)
                 minmn   = min(m, n)
                 lda     = max(1, stride(A, 2))
@@ -61,33 +61,30 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                         ccall((@magmafunc($fname), libmagma), Cint,
                             (Cint, Cint,
                             Cint, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{$relty},
-                            Ptr{$elty}, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{$elty}, Cint, Ptr{$relty},
-                            Ptr{Cint}),
+                            CuPtr{$elty}, Cint,
+                            CuPtr{$relty},
+                            CuPtr{$elty}, Cint,
+                            CuPtr{$elty}, Cint,
+                            CuPtr{$elty}, Cint, CuPtr{$relty},
+                            CuPtr{Cint}),
                             jobu_magma, jobvt_magma,
                             m, n,
                             A, lda,
                             S,
                             U, ldu,
                             VT, ldvt,
-                            work, lwork,
-
-                                rwork,
-
+                            work, lwork, rwork,
                             info)
                     else
                         ccall((@magmafunc($fname), libmagma), Cint,
                             (Cint, Cint,
                             Cint, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{$relty},
-                            Ptr{$elty}, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{Cint}),
+                            CuPtr{$elty}, Cint,
+                            CuPtr{$relty},
+                            CuPtr{$elty}, Cint,
+                            CuPtr{$elty}, Cint,
+                            CuPtr{$elty}, Cint,
+                            CuPtr{Cint}),
                             jobu_magma, jobvt_magma,
                             m, n,
                             A, lda,
