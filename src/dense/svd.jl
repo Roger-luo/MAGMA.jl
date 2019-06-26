@@ -181,7 +181,7 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
                             Ptr{$elty}, Cint,
                             Ptr{$elty}, Cint,
                             Ptr{$elty}, Cint, Ptr{$relty},
-                            Ptr{Cint}),
+                            Ptr{Cint}), Ptr{Cint},
                             job_magma,
                             m, n,
                             A, lda,
@@ -195,14 +195,14 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
                             iwork, info)
                     else
                         ccall((@magmafunc($fname), libmagma), Cint,
-                            (Cint, Cint,
+                            (Cint,
                             Cint, Cint,
                             Ptr{$elty}, Cint,
                             Ptr{$relty},
                             Ptr{$elty}, Cint,
                             Ptr{$elty}, Cint,
                             Ptr{$elty}, Cint,
-                            Ptr{Cint}),
+                            Ptr{Cint}), Ptr{Cint},
                             jobu_magma, jobvt_magma,
                             m, n,
                             A, lda,
@@ -210,21 +210,30 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
                             U, ldu,
                             VT, ldvt,
                             work, lwork,
-                            info)
+                            iwork, info)
                     end
                     if i == 1
-                        lwork = ceil(Int, real(work[1]))
+                        lwork = ceil(Cint, nextfloat(real(work[1])))
                         resize!(work, lwork)
                     end
                 end
 
-                if jobu == 'O'
-                    return (A, S, VT)
-                elseif jobvt == 'O'
-                    return (U, S, A)
-                else
-                    return (U, S, VT)
+                if job == 'O'
+                    if m >= n
+                        return (A, S, VT)
+                    else
+                        # ()__
+                        # ||::Z__
+                        # ||::|:::Z____
+                        # ||::|:::|====|
+                        # ||==|===|====|
+                        # ||""|===|====|
+                        # ||  `"""|====|
+                        # ||      `""""`
+                        return (U, S, A)
+                    end
                 end
+            return (U, S, VT)
         end
     end
 end
