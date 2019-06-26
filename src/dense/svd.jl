@@ -166,7 +166,7 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
                     rwork = Vector{$relty}(undef, job == 'N' ? 7*minmn : minmn*max(5*minmn+7, 2*max(m,n)+2*minmn+1))
                 end
 
-                iwork = Vector{CInt}(undef, 8*minmn)
+                iwork = Vector{Cint}(undef, 8*minmn)
                 info    = Ref{Cint}()
 
                 job_magma      = char_to_magmaInt(job)
@@ -182,7 +182,7 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
                             Ptr{$elty}, Cint,
                             Ptr{$elty}, Cint,
                             Ptr{$relty},
-                            Ptr{Cint}, Ptr{Cint}), 
+                            Ptr{Cint}, Ptr{Cint}),
 
                             job_magma,
                             m, n,
