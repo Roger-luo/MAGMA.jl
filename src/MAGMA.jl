@@ -76,6 +76,12 @@ for T in magmatypeslist
                          ("magma_$(typechar[T])dot", libmagma)
     gemv = ("magma_$(typechar[T])gemv",libmagma)
 
+	@eval function MagmaMallocPinned(n::Int)
+		ptr = Ref{Cvoid}
+		ccall((:magma_malloc_pinned, libmagma), Cint, (Ptr{Cvoid}, Cint), ptr, n * sizeof(T))
+		return ptr
+	end
+
     @eval function MagmaVector(x::Vector{$T})
         ptrptr = Array(Ptr{$T},1)
         err = ccall((:magma_malloc, libmagma),Cint,(Ptr{Ptr{$T}},Cint),ptrptr,length(x)*sizeof($T))
