@@ -68,9 +68,13 @@ size(x::MagmaMatrix,i) = x.size[i]
 include("enums.jl")
 
 for T in magmatypeslist
+
+	# communication between CPU and GPU
     setvector = ("magma_$(typechar[T])setvector", libmagma)
     getvector = ("magma_$(typechar[T])getvector", libmagma)
     setmatrix = ("magma_$(typechar[T])setmatrix", libmagma)
+    getmatrix = ("magma_$(typechar[T])getmatrix", libmagma)
+
     axpy = ("magma_$(typechar[T])axpy",libmagma)
     dot  = T <: Complex ? ("magma_$(typechar[T])dotc",libmagma) :
                          ("magma_$(typechar[T])dot", libmagma)
@@ -96,6 +100,14 @@ for T in magmatypeslist
     @eval function get(x::MagmaVector{$T})
         y = Array($T,length(x))
         ccall($getvector,Cvoid,(Cint,Ptr{$T},Cint,Ptr{$T},Cint,
+                               Ptr{UInt8},Ptr{UInt8},Cint),
+                               length(x),x.ptr,1,y,1,"","",0)
+        y
+    end
+
+    @eval function get_matrix(x::MagmaVector{$T})
+        y = Array($T,length(x))
+        ccall($getmatrix,Cvoid,(Cint,Ptr{$T},Cint,Ptr{$T},Cint,
                                Ptr{UInt8},Ptr{UInt8},Cint),
                                length(x),x.ptr,1,y,1,"","",0)
         y
