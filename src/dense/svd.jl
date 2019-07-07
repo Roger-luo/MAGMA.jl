@@ -162,10 +162,14 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
                 # test if A is a CuMatrix, or from GPU
                 if isa(A, CuMatrix)
                     # apply magma_malloc_pinned on A and S
+                    A = Matrix{$elty}(A)
+                    S = Matrix{$relty}(S)
+                    U = Matrix{$elty}(U)
+                    VT = Matrix{$elty}(VT)
 
                     if job != 'N'
                         # apply magma_malloc_pinned on U and VT
-
+                        # do nothing currently
 
                     end
                 end

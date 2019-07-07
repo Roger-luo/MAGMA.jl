@@ -118,6 +118,7 @@ for T in magmaTypesList
         y
     end
 
+
     # Level 1 BLAS
 
     @eval function axpy!(a::$T,x::set_vector_struct{$T},y::set_vector_struct{$T})
