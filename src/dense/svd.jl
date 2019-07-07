@@ -136,6 +136,10 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
     # 	magma_int_t *  	info
     # )
         function gesdd!(job::AbstractChar, A::AbstractMatrix{$elty})
+                if isa(A, CuMatrix)
+                    A = Matrix{$elty}(A)
+                end
+
                 m, n    = size(A)
                 minmn   = min(m, n)
                 lda     = max(1, stride(A, 2))
@@ -159,20 +163,6 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
 
                 S       = similar(A, $relty, minmn)
 
-                # test if A is a CuMatrix, or from GPU
-                if isa(A, CuMatrix)
-                    # apply magma_malloc_pinned on A and S
-                    A = Matrix{$elty}(A)
-                    S = Matrix{$relty}(S)
-                    U = Matrix{$elty}(U)
-                    VT = Matrix{$elty}(VT)
-
-                    if job != 'N'
-                        # apply magma_malloc_pinned on U and VT
-                        # do nothing currently
-
-                    end
-                end
 
                 work    = Vector{$elty}(undef, 1)
                 lwork   = Cint(-1)
