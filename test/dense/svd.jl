@@ -74,9 +74,10 @@ end
 
 
 @testset "test svd $T by gesdd" for T in [Float32, Float64, ComplexF32, ComplexF64]
-    matrixToTest = cu(rand(T, 2, 2))
+    randomGeneratedMatrix = rand(T, 2, 2)
+    matrixToTest = cu(randomGeneratedMatrix)
 
-    right_answer = svd(matrixToTest).S
+    right_answer = svd(randomGeneratedMatrix).S
     S = right_answer
 
     job_magma = 'A'
