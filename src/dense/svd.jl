@@ -159,6 +159,7 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
 
                 S       = similar(A, $relty, minmn)
 
+                # test if A is a CuMatrix, or from GPU
                 if isa(A, CuMatrix)
                     # apply magma_malloc_pinned on A and S
 

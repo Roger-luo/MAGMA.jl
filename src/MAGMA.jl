@@ -26,7 +26,7 @@ const MagmaBacktransVec  = 307
 # https://github.com/mweastwood/MAGMA.jl
 
 export device_reset,
-       MagmaVector, MagmaMatrix, get,
+       set_vector, set_matrix, get,
        axpy!, dot,
        gemv!
 
@@ -50,19 +50,19 @@ const libmagma = "/usr/local/magma/lib/libmagma.so"
 
 
 # https://github.com/mweastwood/MAGMA.jl
-struct MagmaVector{T <: magmaTypes}
+struct set_vector{T <: magmaTypes}
     ptr::Ptr{T}
     length::Int
 end
 
-struct MagmaMatrix{T <: magmaTypes}
+struct set_matrix{T <: magmaTypes}
     ptr::Ptr{T}
     size::Tuple{Int, Int}
 end
 
-length(x::MagmaVector) = x.length
-size(x::MagmaMatrix)   = x.size
-size(x::MagmaMatrix,i) = x.size[i]
+length(x::set_vector) = x.length
+size(x::set_matrix)   = x.size
+size(x::set_matrix,i) = x.size[i]
 
 
 include("enums.jl")
@@ -80,7 +80,7 @@ for T in magmaTypesList
                          ("magma_$(typeChar[T])dot", libmagma)
     gemv = ("magma_$(typeChar[T])gemv",libmagma)
 
-    @eval function MagmaVector(x::Vector{$T})
+    @eval function set_vector(x::Vector{$T})
         ptrptr = Array(Ptr{$T},1)
         err = ccall((:magma_malloc, libmagma),Cint,(Ptr{Ptr{$T}},Cint),ptrptr,length(x)*sizeof($T))
         err != 0 && error("Errorlibmagmadevice memory ($err)")
@@ -88,10 +88,10 @@ for T in magmaTypesList
         ccall($setvector,Cvoid,(Cint,Ptr{$T},Cint,Ptr{$T},Cint,
                                Ptr{UInt8},Ptr{UInt8},Cint),
                                length(x),x,1,ptr,1,"","",0)
-        MagmaVector{$T}(ptr,length(x))
+        set_vector{$T}(ptr,length(x))
     end
 
-    @eval function get(x::MagmaVector{$T})
+    @eval function get_vector(x::set_vector{$T})
         y = Array($T,length(x))
         ccall($getvector,Cvoid,(Cint,Ptr{$T},Cint,Ptr{$T},Cint,
                                Ptr{UInt8},Ptr{UInt8},Cint),
@@ -99,15 +99,7 @@ for T in magmaTypesList
         y
     end
 
-    @eval function get_matrix(x::MagmaVector{$T})
-        y = Array($T,length(x))
-        ccall($getmatrix,Cvoid,(Cint,Ptr{$T},Cint,Ptr{$T},Cint,
-                               Ptr{UInt8},Ptr{UInt8},Cint),
-                               length(x),x.ptr,1,y,1,"","",0)
-        y
-    end
-
-    @eval function MagmaMatrix(x::Matrix{$T})
+    @eval function set_matrix(x::Matrix{$T})
         ptrptr = Array(Ptr{Float64},1)
         err = ccall((:magma_malloc,libmagma),Cint,(Ptr{Ptr{$T}},Cint),ptrptr,length(x)*sizeof($T))
         err != 0 && error("Error allocating device memory ($err)")
@@ -115,19 +107,27 @@ for T in magmaTypesList
         ccall($setmatrix,Cvoid,(Cint,Cint,Ptr{$T},Cint,Ptr{$T},Cint,
                                Ptr{UInt8},Ptr{UInt8},Cint),
                                size(x,1),size(x,2),x,size(x,1),ptr,size(x,1),"","",0)
-        MagmaMatrix{$T}(ptr,size(x))
+        set_matrix{$T}(ptr,size(x))
+    end
+
+    @eval function get_matrix(x::get_matrix{$T})
+        y = Array($T,length(x))
+        ccall($getmatrix,Cvoid,(Cint,Ptr{$T},Cint,Ptr{$T},Cint,
+                               Ptr{UInt8},Ptr{UInt8},Cint),
+                               length(x),x.ptr,1,y,1,"","",0)
+        y
     end
 
     # Level 1 BLAS
 
-    @eval function axpy!(a::$T,x::MagmaVector{$T},y::MagmaVector{$T})
+    @eval function axpy!(a::$T,x::set_vector{$T},y::set_vector{$T})
         length(x) != length(y) && error("Vectors must be the same length")
         ccall($axpy,Cvoid,(Cint,$T,Ptr{$T},Cint,Ptr{$T},Cint),
                           length(x),a,x.ptr,1,y.ptr,1)
         nothing
     end
 
-    @eval function dot(x::MagmaVector{$T},y::MagmaVector{$T})
+    @eval function dot(x::set_vector{$T},y::set_vector{$T})
         length(x) != length(y) && error("Vectors must be the same length")
         ccall($dot,$T,(Cint,Ptr{$T},Cint,Ptr{$T},Cint),
                        length(x),x.ptr,1,y.ptr,1)
@@ -135,7 +135,7 @@ for T in magmaTypesList
 
     # Level 2 BLAS
 
-    @eval function gemv!(a::$T,A::MagmaMatrix{$T},x::MagmaVector{$T},b::$T,y::MagmaVector{$T})
+    @eval function gemv!(a::$T,A::set_matrix{$T},x::set_vector{$T},b::$T,y::set_vector{$T})
         size(A,2) != length(x) && error("Matrix and vectors have inconsistent sizes")
         size(A,1) != length(y) && error("Matrix and vectors have inconsistent sizes")
         ccall($gemv,Cvoid,(Cint,Cint,Cint,$T,Ptr{$T},Cint,Ptr{$T},Cint,$T,Ptr{$T},Cint),
