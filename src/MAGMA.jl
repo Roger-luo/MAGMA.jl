@@ -34,9 +34,9 @@ import Base: length,size,dot
 
 
 # some types' definitions and their accordingly chararcters
-const magmatypes = Union{Float32, Float64, ComplexF32, ComplexF64}
-const magmatypeslist =  (Float32,Float64,ComplexF32,ComplexF64)
-const typechar = Dict(
+const magmaTypes = Union{Float32, Float64, ComplexF32, ComplexF64}
+const magmaTypesList =  (Float32,Float64,ComplexF32,ComplexF64)
+const typeChar = Dict(
     Float32 => 's',
     Float64 => 'd',
     ComplexF32 => 'c',
@@ -67,18 +67,18 @@ size(x::MagmaMatrix,i) = x.size[i]
 
 include("enums.jl")
 
-for T in magmatypeslist
+for T in magmaTypesList
 
 	# communication between CPU and GPU
-    setvector = ("magma_$(typechar[T])setvector", libmagma)
-    getvector = ("magma_$(typechar[T])getvector", libmagma)
-    setmatrix = ("magma_$(typechar[T])setmatrix", libmagma)
-    getmatrix = ("magma_$(typechar[T])getmatrix", libmagma)
+    setvector = ("magma_$(typeChar[T])setvector", libmagma)
+    getvector = ("magma_$(typeChar[T])getvector", libmagma)
+    setmatrix = ("magma_$(typeChar[T])setmatrix", libmagma)
+    getmatrix = ("magma_$(typeChar[T])getmatrix", libmagma)
 
-    axpy = ("magma_$(typechar[T])axpy",libmagma)
-    dot  = T <: Complex ? ("magma_$(typechar[T])dotc",libmagma) :
-                         ("magma_$(typechar[T])dot", libmagma)
-    gemv = ("magma_$(typechar[T])gemv",libmagma)
+    axpy = ("magma_$(typeChar[T])axpy",libmagma)
+    dot  = T <: Complex ? ("magma_$(typeChar[T])dotc",libmagma) :
+                         ("magma_$(typeChar[T])dot", libmagma)
+    gemv = ("magma_$(typeChar[T])gemv",libmagma)
 
 	@eval function MagmaMallocPinned(n::Int)
 		ptr = Ref{Cvoid}
