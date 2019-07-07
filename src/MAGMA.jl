@@ -30,7 +30,7 @@ export device_reset,
        axpy!, dot,
        gemv!
 
-import Base: length,size,dot
+import Base: length,size
 
 
 # some types' definitions and their accordingly chararcters
@@ -50,12 +50,12 @@ const libmagma = "/usr/local/magma/lib/libmagma.so"
 
 
 # https://github.com/mweastwood/MAGMA.jl
-struct MagmaVector{T <: magmatypes}
+struct MagmaVector{T <: magmaTypes}
     ptr::Ptr{T}
     length::Int
 end
 
-struct MagmaMatrix{T <: magmatypes}
+struct MagmaMatrix{T <: magmaTypes}
     ptr::Ptr{T}
     size::Tuple{Int, Int}
 end
@@ -79,12 +79,6 @@ for T in magmaTypesList
     dot  = T <: Complex ? ("magma_$(typeChar[T])dotc",libmagma) :
                          ("magma_$(typeChar[T])dot", libmagma)
     gemv = ("magma_$(typeChar[T])gemv",libmagma)
-
-	@eval function MagmaMallocPinned(n::Int)
-		ptr = Ref{Cvoid}
-		ccall((:magma_malloc_pinned, libmagma), Cint, (Ptr{Cvoid}, Cint), ptr, n * sizeof(T))
-		return ptr
-	end
 
     @eval function MagmaVector(x::Vector{$T})
         ptrptr = Array(Ptr{$T},1)
