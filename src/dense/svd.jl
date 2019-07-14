@@ -33,6 +33,12 @@ for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
     # 	magma_int_t *  	info
     # )
         function gesvd!(jobu::AbstractChar, jobvt::AbstractChar, A::AbstractMatrix{$elty})
+
+                # if A is not stored in the CPU, convert it to the CPU,
+                # using Julia's native converter
+                # instead of MAGMA's
+                A = Matrix{$elty}(A)
+
                 m, n    = size(A)
                 minmn   = min(m, n)
                 lda     = max(1, stride(A, 2))
