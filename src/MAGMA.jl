@@ -153,7 +153,10 @@ end
 # >>> The following are some Utility functions' wrappers >>>
 # magma_init
 function magmaInit()
-	ccall((:magma_init, libmagma),Cint,())
+	success = ccall((:magma_init, libmagma),Cint,())
+	if success != 0
+		println("MAGMA initiation error with success = ", success)
+	end
 end
 
 # magma_finalize
