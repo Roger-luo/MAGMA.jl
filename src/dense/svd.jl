@@ -136,9 +136,12 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
     # 	magma_int_t *  	info
     # )
         function gesdd!(job::AbstractChar, A::AbstractMatrix{$elty})
-                if isa(A, CuMatrix)
-                    A = Matrix{$elty}(A)
-                end
+
+                A = Matrix{$elty}(A)
+
+            #    if isa(A, CuMatrix)
+            #        A = Matrix{$elty}(A)
+            #    end
 
                 m, n    = size(A)
                 minmn   = min(m, n)

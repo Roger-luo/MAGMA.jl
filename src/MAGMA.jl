@@ -30,7 +30,7 @@ export device_reset,
        axpy!, dot,
        gemv!
 
-import Base: length,size
+import Base: length, size
 
 
 # some types' definitions and their accordingly chararcters
@@ -62,7 +62,7 @@ end
 
 length(x::set_vector_struct) = x.length
 size(x::set_matrix_struct)   = x.size
-size(x::set_matrix_struct,i) = x.size[i]
+size(x::set_matrix_struct, i) = x.size[i]
 
 
 include("enums.jl")
