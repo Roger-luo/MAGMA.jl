@@ -12,9 +12,6 @@ const error_threshold = 1e-6
     jobu = 'A'
     jobvt = 'A'
 
-    ldu=2
-    ldvt=2
-    lwork=400
     success=magmaInit()
 
     result = gesvd!(jobu,jobvt,matrixToTest)
