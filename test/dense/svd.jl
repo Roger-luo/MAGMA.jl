@@ -43,9 +43,6 @@ end
 
     job_magma = 'A'
 
-    ldu=2
-    ldvt=2
-    lwork=400
     success=magmaInit()
 
     result = gesdd!(job_magma,matrixToTest)
@@ -78,10 +75,7 @@ end
     S = right_answer
 
     job_magma = 'A'
-
-    ldu=2
-    ldvt=2
-    lwork=400
+    
     success=magmaInit()
 
     result = gesdd!(job_magma,matrixToTest)
