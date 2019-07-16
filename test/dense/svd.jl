@@ -3,11 +3,17 @@ using Test, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 
 const error_threshold = 1e-6
 
-@testset "test svd $T by gesvd" for T in [Float32, Float64, ComplexF32, ComplexF64]
+@testset "test svd $T by gesvd $interface" for T in [Float32, Float64, ComplexF32, ComplexF64], interface in ["CPU", "GPU"]
     matrixToTest = rand(T, 2, 2)
+
 
     right_answer = svd(matrixToTest).S
     S = right_answer
+
+
+    if interface == "GPU"
+        matrixToTest = cu(matrixToTest)
+    end
 
     jobu = 'A'
     jobvt = 'A'
@@ -27,7 +33,7 @@ const error_threshold = 1e-6
 
     if error_value >= error_threshold
         println("Unfortunately, the test failed.")
-        println("Here is some maybe useful information:")
+        println("Here is some possibly useful information:")
         println("the element_type is ", typeof(matrixToTest))
         println("the right answer = ", S)
         println("However, MAGMA got the answer = ", s)
@@ -35,44 +41,16 @@ const error_threshold = 1e-6
     end
 end
 
-@testset "test svd $T by gesvd, GPU interface" for T in [Float32, Float64, ComplexF32, ComplexF64]
-    randomGeneratedMatrix = rand(T, 2, 2)
-    matrixToTest = cu(randomGeneratedMatrix)
 
-    right_answer = svd(randomGeneratedMatrix).S
-    S = right_answer
-
-    jobu = 'A'
-    jobvt = 'A'
-
-    magmaInit()
-
-    result = gesvd!(jobu,jobvt,matrixToTest)
-
-    s = result[2]
-
-    magmaFinalize()
-
-    diff = S .- s
-    error_value = norm(diff)
-
-    @test error_value < error_threshold
-
-    if error_value >= error_threshold
-        println("Unfortunately, the test failed.")
-        println("Here is some maybe useful information:")
-        println("the element_type is ", typeof(matrixToTest))
-        println("the right answer = ", S)
-        println("However, MAGMA got the answer = ", s)
-        println("The info returned by MAGMA is: ", info[1])
-    end
-end
-
-@testset "test svd $T by gesdd" for T in [Float32, Float64, ComplexF32, ComplexF64]
+@testset "test svd $T by gesdd $interface" for T in [Float32, Float64, ComplexF32, ComplexF64], interface in ["CPU", "GPU"]
     matrixToTest = rand(T, 2, 2)
 
     right_answer = svd(matrixToTest).S
     S = right_answer
+
+    if interface == "GPU"
+        matrixToTest = cu(matrixToTest)
+    end
 
     job_magma = 'A'
 
@@ -91,7 +69,7 @@ end
 
     if error_value >= error_threshold
         println("Unfortunately, the test failed.")
-        println("Here is some maybe useful information:")
+        println("Here is some possibly useful information:")
         println("the element_type is ", typeof(matrixToTest))
         println("the right answer = ", S)
         println("However, MAGMA got the answer = ", s)
@@ -124,7 +102,7 @@ end
 
     if error_value >= error_threshold
         println("Unfortunately, the test failed.")
-        println("Here is some maybe useful information:")
+        println("Here is some possibly useful information:")
         println("the element_type is ", typeof(matrixToTest))
         println("the right answer = ", S)
         println("However, MAGMA got the answer = ", s)
