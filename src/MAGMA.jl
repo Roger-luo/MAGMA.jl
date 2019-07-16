@@ -164,10 +164,6 @@ function magmaFinalize()
 	ccall((:magma_finalize, libmagma),Cint,())
 end
 
-# magma_malloc_cpu
-function magmaMalloc_CPU()
-	ccall()
-end
 # <<< End of wrappers for Utility
 
 # include the files of subroutines
