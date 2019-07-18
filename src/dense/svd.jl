@@ -145,10 +145,6 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
 
                 A = Matrix{$elty}(A)
 
-            #    if isa(A, CuMatrix)
-            #        A = Matrix{$elty}(A)
-            #    end
-
                 m, n    = size(A)
                 minmn   = min(m, n)
                 lda     = max(1, stride(A, 2))
@@ -251,6 +247,64 @@ for (fname, elty, relty) in    ((:sgesdd, :Float32, :Float32),
                     end
                 end
             return (U, S, VT)
+        end
+    end
+end
+
+for (fname, elty, relty) in    ((:sgebrd, :Float32, :Float32),
+                            (:dgebrd, :Float64, :Float64),
+                            (:cgebrd, :ComplexF32, :Float32),
+                            (:zgebrd, :ComplexF64, :Float64))
+    @eval begin
+    # magma_int_t magma_cgebrd 	( 	magma_vec_t  	jobu,
+    # 	magma_vec_t  	jobvt,
+    # 	magma_int_t  	m,
+    # 	magma_int_t  	n,
+    # 	magmaFloatComplex *  	A,
+    # 	magma_int_t  	lda,
+    # 	float *  	s,
+    # 	magmaFloatComplex *  	U,
+    # 	magma_int_t  	ldu,
+    # 	magmaFloatComplex *  	VT,
+    # 	magma_int_t  	ldvt,
+    # 	magmaFloatComplex *  	work,
+    # 	magma_int_t  	lwork,
+    # 	float *  	rwork,
+    # 	magma_int_t *  	info
+    # )
+        function gebrd!(A::AbstractMatrix{$elty})
+
+                A = Matrix{$elty}(A)
+
+                m, n    = size(A)
+                minmn   = min(m, n)
+                lda     = max(1, stride(A, 2))
+
+                d = similar(A, $relty, minmn)
+                e = similar(A, $relty, minmn)
+
+                tauq = similar(A, $elty, minmn)
+                taup = similar(A, $elty, minmn)
+
+                work    = Vector{$elty}(undef, 1)
+                lwork   = Cint(-1)
+
+                for i in 1:2 # first call returns lwork as work[1]
+                    ccall((@magmafunc($fname), libmagma), Cint,
+                        (Cint, Cint, Ptr{$elty}, Cint,
+                        Ptr{$relty}, Ptr{$relty}, Ptr{$elty}, Ptr{$elty},
+                        Ptr{$elty}, Cint, Ptr{Cint}),
+
+                        m, n, A, ldA,
+                        d, e, tauq, taup,
+                        work, lwork, info)
+                    if i == 1
+                        lwork = ceil(Cint, nextfloat(real(work[1])))
+                        resize!(work, lwork)
+                    end
+                end
+
+            return (A, d, e, tauq, taup)
         end
     end
 end
