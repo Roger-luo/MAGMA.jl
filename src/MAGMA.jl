@@ -1,7 +1,7 @@
 module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 
-export gesvd!, gesdd!, magmaInit, magmaFinalize
+export gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl

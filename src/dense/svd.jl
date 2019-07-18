@@ -272,7 +272,7 @@ for (fname, elty, relty) in    ((:sgebrd, :Float32, :Float32),
     # 	float *  	rwork,
     # 	magma_int_t *  	info
     # )
-        function gebrd!(A::AbstractMatrix{$elty})
+        function magma_gebrd!(A::AbstractMatrix{$elty})
 
                 A = Matrix{$elty}(A)
 
@@ -288,6 +288,7 @@ for (fname, elty, relty) in    ((:sgebrd, :Float32, :Float32),
 
                 work    = Vector{$elty}(undef, 1)
                 lwork   = Cint(-1)
+                info = Ref{Cint}()
 
                 for i in 1:2 # first call returns lwork as work[1]
                     ccall((@magmafunc($fname), libmagma), Cint,
@@ -295,7 +296,7 @@ for (fname, elty, relty) in    ((:sgebrd, :Float32, :Float32),
                         Ptr{$relty}, Ptr{$relty}, Ptr{$elty}, Ptr{$elty},
                         Ptr{$elty}, Cint, Ptr{Cint}),
 
-                        m, n, A, ldA,
+                        m, n, A, lda,
                         d, e, tauq, taup,
                         work, lwork, info)
                     if i == 1
