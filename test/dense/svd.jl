@@ -1,8 +1,6 @@
 using MAGMA
 using Test, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 
-const error_threshold = 1e-6
-
 @testset "test svd $T by gesvd $interface" for T in [Float32, Float64, ComplexF32, ComplexF64], interface in ["CPU", "GPU"]
 
     # randomly generate a 2 by 2 matrix for testing
@@ -34,21 +32,16 @@ const error_threshold = 1e-6
     # finalize the MAGMA lib, serving as a necessary part after working
     magmaFinalize()
 
-    # calculate the difference between the standard answer and the calculated answer
-    diff = S .- s
-    error_value = norm(diff)
-
-    # if the error value is less than the threshold we defined then it's alright
-    @test error_value < error_threshold
+    # if S is approximately equal to s, we defined then it's alright
+    @test S ≈ s
 
     # else we print the detailed error info
-    if error_value >= error_threshold
+    if !(S ≈ s)
         println("Unfortunately, the test failed.")
         println("Here is some possibly useful information:")
         println("the element_type is ", typeof(matrixToTest))
         println("the right answer = ", S)
         println("However, MAGMA got the answer = ", s)
-        println("The info returned by MAGMA is: ", info[1])
     end
 end
 
@@ -83,20 +76,15 @@ end
     # finalize the MAGMA lib, serving as a necessary part after working
     magmaFinalize()
 
-    # calculate the difference between the standard answer and the calculated answer
-    diff = S .- s
-    error_value = norm(diff)
-
-    # if the error value is less than the threshold we defined then it's alright
-    @test error_value < error_threshold
+    # if S is approximately equal to s, we defined then it's alright
+    @test S ≈ s
 
     # else we print the detailed error info
-    if error_value >= error_threshold
+    if !(S ≈ s)
         println("Unfortunately, the test failed.")
         println("Here is some possibly useful information:")
         println("the element_type is ", typeof(matrixToTest))
         println("the right answer = ", S)
         println("However, MAGMA got the answer = ", s)
-        println("The info returned by MAGMA is: ", info[1])
     end
 end
