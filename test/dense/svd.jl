@@ -119,12 +119,4 @@ end
         @test result[index] ≈ right_answer[index]
     end
 
-    # else we print the detailed error info
-    if !(1==1)
-        println("Unfortunately, the test failed.")
-        println("Here is some possibly useful information:")
-        println("the element_type is ", typeof(matrixToTest))
-        println("the right answer = ", S)
-        println("However, MAGMA got the answer = ", s)
-    end
 end
