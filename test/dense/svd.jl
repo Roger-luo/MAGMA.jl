@@ -35,15 +35,7 @@ import LinearAlgebra.LAPACK: gebrd!
 
     # if S is approximately equal to s, we defined then it's alright
     @test S ≈ s
-
-    # else we print the detailed error info
-    if !(S ≈ s)
-        println("Unfortunately, the test failed.")
-        println("Here is some possibly useful information:")
-        println("the element_type is ", typeof(matrixToTest))
-        println("the right answer = ", S)
-        println("However, MAGMA got the answer = ", s)
-    end
+    
 end
 
 
@@ -80,20 +72,12 @@ end
     # if S is approximately equal to s, we defined then it's alright
     @test S ≈ s
 
-    # else we print the detailed error info
-    if !(S ≈ s)
-        println("Unfortunately, the test failed.")
-        println("Here is some possibly useful information:")
-        println("the element_type is ", typeof(matrixToTest))
-        println("the right answer = ", S)
-        println("However, MAGMA got the answer = ", s)
-    end
 end
 
 @testset "test svd $T by gebrd $interface" for T in [Float32, Float64, ComplexF32, ComplexF64], interface in ["CPU", "GPU"]
 
     # randomly generate a 2 by 2 matrix for testing
-    size = 2
+    size = 3
     matrixToTest = rand(T, size, size)
     matrixToTest_copy = copy(matrixToTest)
 
@@ -116,7 +100,11 @@ end
 
     # if S is approximately equal to s, we defined then it's alright
     for index in 1:length(result)
-        @test result[index] ≈ right_answer[index]
+        result_piece = result[index]
+        right_piece = right_answer[index]
+        if index == 3
+            right_piece = right_piece[1:length(right_piece) - 1]
+        end
+        @test result_piece ≈ right_piece
     end
-
 end

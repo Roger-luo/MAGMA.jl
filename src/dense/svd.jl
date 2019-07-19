@@ -281,7 +281,7 @@ for (fname, elty, relty) in    ((:sgebrd, :Float32, :Float32),
                 lda     = max(1, stride(A, 2))
 
                 d = similar(A, $relty, minmn)
-                e = similar(A, $relty, minmn)
+                e = similar(A, $relty, minmn-1)
 
                 tauq = similar(A, $elty, minmn)
                 taup = similar(A, $elty, minmn)
