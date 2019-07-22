@@ -1,7 +1,7 @@
 module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 
-export gesvd!, magmaInit, magmaFinalize
+export gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl
@@ -23,6 +23,7 @@ const MagmaSomeVec       = 305
 const MagmaOverwriteVec  = 306
 const MagmaBacktransVec  = 307
 
+
 """
 the path to magma binary
 """
@@ -32,8 +33,13 @@ macro magmafunc(function_name)
     return Expr(:quote, Symbol("magma_", function_name))
 end
 
+# >>> The following are some Utility functions' wrappers >>>
+# magma_init
 function magmaInit()
-	ccall((:magma_init, libmagma),Cint,())
+	success = ccall((:magma_init, libmagma),Cint,())
+	if success != 0
+		println("MAGMA initiation error with success = ", success)
+	end
 end
 
 # magma_finalize
@@ -41,7 +47,9 @@ function magmaFinalize()
 	ccall((:magma_finalize, libmagma),Cint,())
 end
 
-include("dense/Dense.jl")
+# <<< End of wrappers for Utility
 
+# include the files of subroutines
+include("dense/dense.jl")
 
 end  # modul MAGMA
