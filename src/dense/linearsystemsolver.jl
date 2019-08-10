@@ -33,7 +33,7 @@ for (gels, gesv, getrs, getri, elty) in
                       B, max(1,stride(B,2)), work, lwork, info)
                 # chkmagmaerror(info[])
                 if i == 1
-                    lwork = Cint(real(work[1]))
+                    lwork = ceil(Int, real(work[1]))
                     resize!(work, lwork)
                 end
             end

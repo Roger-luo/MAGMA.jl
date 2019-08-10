@@ -30,6 +30,8 @@ import LinearAlgebra.LAPACK: gels!
     magmaFinalize()
 
     # if S is approximately equal to s, we defined then it's alright
-    @test right_answer ≈ result
+    for i in 1:length(result)
+        @test result[i] ≈ right_answer[i]
+    end
 
 end
