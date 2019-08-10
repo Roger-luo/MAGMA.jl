@@ -1,34 +1,37 @@
 ## (GE) general matrices, solvers with factorization, solver and inverse
 for (gels, gesv, getrs, getri, elty) in
-    ((:dgels_,:dgesv_,:dgetrs_,:dgetri_,:Float64),
-     (:sgels_,:sgesv_,:sgetrs_,:sgetri_,:Float32),
-     (:zgels_,:zgesv_,:zgetrs_,:zgetri_,:ComplexF64),
-     (:cgels_,:cgesv_,:cgetrs_,:cgetri_,:ComplexF32))
+    ((:dgels,:dgesv,:dgetrs,:dgetri,:Float64),
+     (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
+     (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
+     (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
     @eval begin
         #      SUBROUTINE DGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,INFO)
         # *     .. Scalar Arguments ..
         #       CHARACTER          TRANS
         #       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
-        function gels!(trans::AbstractChar, A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
-            require_one_based_indexing(A, B)
-            chktrans(trans)
-            chkstride1(A, B)
-            btrn  = trans == 'T'
+        function magma_gels!(trans::Int, A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
+            # require_one_based_indexing(A, B)
+            #chktrans(trans)
+            # chkstride1(A, B)
+            btrn  = trans == 'T' # however currently the MAGMA only handles 'N'
+            if btrn
+                println("Now the MAGMA does not handle 'T' actually~")
+            end
             m, n  = size(A)
             if size(B,1) != (btrn ? n : m)
-                throw(DimensionMismatch("matrix A has dimensions ($m,$n), transposed: $btrn, but leading dimension of B is $(size(B,1))"))
+                throw(DimensionMismatch("matrix A has dimensions ($m,$n), transposed: $btrn, but leading dimension of B is $(size(B,1))"))s
             end
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
             for i = 1:2  # first call returns lwork as work[1]
-                ccall((@magmafunc($gels), libmagma), Cvoid,
-                      (Ref{UInt8}, Ref{Cint}, Ref{Cint}, Ref{Cint},
-                       Ptr{$elty}, Ref{Cint}, Ptr{$elty}, Ref{Cint},
-                       Ptr{$elty}, Ref{Cint}, Ptr{Cint}),
-                      (btrn ? 'T' : 'N'), m, n, size(B,2), A, max(1,stride(A,2)),
+                ccall((@magmafunc($gels), libmagma), Cint,
+                      (Cint, Cint, Cint, Cint,
+                       Ptr{$elty}, Cint, Ptr{$elty}, Cint,
+                       Ptr{$elty}, Cint, Ptr{Cint}),
+                      MagmaNoTrans, m, n, size(B,2), A, max(1,stride(A,2)),
                       B, max(1,stride(B,2)), work, lwork, info)
-                chkmagmaerror(info[])
+                # chkmagmaerror(info[])
                 if i == 1
                     lwork = Cint(real(work[1]))
                     resize!(work, lwork)
@@ -54,7 +57,7 @@ for (gels, gesv, getrs, getri, elty) in
         # *     .. Array Arguments ..
         #       INTEGER            IPIV( * )
         #       DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
-        function gesv!(A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
+        function magma_gesv!(A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
             require_one_based_indexing(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -78,7 +81,7 @@ for (gels, gesv, getrs, getri, elty) in
         #     .. Array Arguments ..
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
-        function getrs!(trans::AbstractChar, A::AbstractMatrix{$elty}, ipiv::AbstractVector{Cint}, B::AbstractVecOrMat{$elty})
+        function magma_getrs!(trans::AbstractChar, A::AbstractMatrix{$elty}, ipiv::AbstractVector{Cint}, B::AbstractVecOrMat{$elty})
             require_one_based_indexing(A, ipiv, B)
             chktrans(trans)
             chkstride1(A, B, ipiv)
@@ -102,7 +105,7 @@ for (gels, gesv, getrs, getri, elty) in
         #*     .. Array Arguments ..
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), WORK( * )
-        function getri!(A::AbstractMatrix{$elty}, ipiv::AbstractVector{Cint})
+        function magma_getri!(A::AbstractMatrix{$elty}, ipiv::AbstractVector{Cint})
             require_one_based_indexing(A, ipiv)
             chkstride1(A, ipiv)
             n = checksquare(A)

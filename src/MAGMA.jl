@@ -1,7 +1,7 @@
 module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 
-export gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
+export magma_gels!, gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl
@@ -15,13 +15,7 @@ export gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 # strategies that will be applied to the SVD
 # U matrix and VT matrix in A = U Σ V**T
 # (for MagmaOverwriteVec it is going to overwrite A)
-const MagmaNoVec         = 301
-const MagmaVec           = 302
-const MagmaIVec          = 303
-const MagmaAllVec        = 304
-const MagmaSomeVec       = 305
-const MagmaOverwriteVec  = 306
-const MagmaBacktransVec  = 307
+include("enums.jl")
 
 
 """

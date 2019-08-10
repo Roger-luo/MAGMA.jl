@@ -3,4 +3,5 @@ using Test, Random, LinearAlgebra
 
 @testset "dense linear algebra" begin
     include("dense/svd.jl")
+    include("dense/linearsystemsolver.jl")
 end
