@@ -19,6 +19,7 @@ export magma_gels!, gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 include("enums.jl")
 
 
+
 """
 the path to magma binary
 """
