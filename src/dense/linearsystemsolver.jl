@@ -51,12 +51,12 @@ for (gels, gesv, getrs, getri, elty) in
                     #        A, max(1, stride(A, 2)),
                     #        dA, max(1, stride(dA, 2)),
                     #        0)
-                    dA = CuPtr{$elty}
-                    dB = CuPtr{$elty}
-                    println(dA, dB)   
+                    dA = CuPtr{$elty}()
+                    dB = CuPtr{$elty}()
+                    println("\n","dA = ", dA, "\n")
                     ccall((@magmafunc($gels, isGPU), libmagma), Cint,
                           (Cint, Cint, Cint, Cint,
-                           CuPtr, Cint, CuPtr, Cint,
+                           CuPtr{$elty}, Cint, CuPtr{$elty}, Cint,
                            Ptr{$elty}, Cint, Ptr{Cint}),
                           MagmaNoTrans, m, n, size(B,2),
                           dA, max(1,stride(A,2)), dB, max(1,stride(B,2)),
