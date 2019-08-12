@@ -2,7 +2,7 @@ module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 using LinearAlgebra: triu, tril, dot
 
-export magma_gels!, gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
+export magma_gels!, gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!, libmagma
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl
