@@ -13,7 +13,12 @@ for (gels, gesv, getrs, getri, elty) in
             # require_one_based_indexing(A, B)
             #chktrans(trans)
             # chkstride1(A, B)
-            btrn  = trans == 'T' # however currently the MAGMA only handles 'N'
+            isGPU = (A isa (CuMatrix{$elty}) && B isa (CuMatrix{$elty}))
+            if isGPU == true
+                # A = convert(CuPtr{$elty}, CUDAdrv.Mem.DeviceBuffer(A))
+                # B = convert(CuPtr{$elty}, CUDAdrv.Mem.DeviceBuffer(B))
+            end
+            btrn = trans == 'T' # however currently the MAGMA only handles 'N'
             if btrn
                 println("Now the MAGMA does not handle 'T' actually~")
             end
@@ -24,19 +29,48 @@ for (gels, gesv, getrs, getri, elty) in
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
+
+            magmaInit()
             for i = 1:2  # first call returns lwork as work[1]
-                ccall((@magmafunc($gels), libmagma), Cint,
-                      (Cint, Cint, Cint, Cint,
-                       Ptr{$elty}, Cint, Ptr{$elty}, Cint,
-                       Ptr{$elty}, Cint, Ptr{Cint}),
-                      MagmaNoTrans, m, n, size(B,2), A, max(1,stride(A,2)),
-                      B, max(1,stride(B,2)), work, lwork, info)
+                if isGPU != true
+                    ccall((@magmafunc($gels, isGPU), libmagma), Cint,
+                          (Cint, Cint, Cint, Cint,
+                           Ptr{$elty}, Cint, Ptr{$elty}, Cint,
+                           Ptr{$elty}, Cint, Ptr{Cint}),
+                          MagmaNoTrans, m, n, size(B,2),
+                          A, max(1,stride(A,2)), B, max(1,stride(B,2)),
+                          work, lwork, info)
+                else
+                    # dA = similar(A)
+                    # ccall((@magmafunc("copymatrix"), libmagma), Cvoid,
+                    #       (Cint, Cint, Cint,
+                    #        CuPtr, Cint,
+                    #        CUDAdrv.Mem.DeviceBuffer, Cint,
+                    #        Cint),
+                    #        m, n, sizeof($elty),
+                    #        A, max(1, stride(A, 2)),
+                    #        dA, max(1, stride(dA, 2)),
+                    #        0)
+                    dA = CuPtr{$elty}
+                    dB = CuPtr{$elty}
+                    println(dA, dB)   
+                    ccall((@magmafunc($gels, isGPU), libmagma), Cint,
+                          (Cint, Cint, Cint, Cint,
+                           CuPtr, Cint, CuPtr, Cint,
+                           Ptr{$elty}, Cint, Ptr{Cint}),
+                          MagmaNoTrans, m, n, size(B,2),
+                          dA, max(1,stride(A,2)), dB, max(1,stride(B,2)),
+                          work, lwork, info)
+                    println(dA, dB)
+                end
+
                 # chkmagmaerror(info[])
                 if i == 1
                     lwork = ceil(Int, real(work[1]))
                     resize!(work, lwork)
                 end
             end
+            magmaFinalize()
             k   = min(m, n)
             F   = m < n ? tril(A[1:k, 1:k]) : triu(A[1:k, 1:k])
             ssr = Vector{$elty}(undef, size(B, 2))
@@ -58,9 +92,9 @@ for (gels, gesv, getrs, getri, elty) in
         #       INTEGER            IPIV( * )
         #       DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
         function magma_gesv!(A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
-            require_one_based_indexing(A, B)
-            chkstride1(A, B)
-            n = checksquare(A)
+            # require_one_based_indexing(A, B)
+            # chkstride1(A, B)
+            # n = checksquare(A)
             if size(B,1) != n
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
@@ -82,10 +116,10 @@ for (gels, gesv, getrs, getri, elty) in
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
         function magma_getrs!(trans::AbstractChar, A::AbstractMatrix{$elty}, ipiv::AbstractVector{Cint}, B::AbstractVecOrMat{$elty})
-            require_one_based_indexing(A, ipiv, B)
-            chktrans(trans)
-            chkstride1(A, B, ipiv)
-            n = checksquare(A)
+            # require_one_based_indexing(A, ipiv, B)
+            # chktrans(trans)
+            # chkstride1(A, B, ipiv)
+            # n = checksquare(A)
             if n != size(B, 1)
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
@@ -106,9 +140,9 @@ for (gels, gesv, getrs, getri, elty) in
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), WORK( * )
         function magma_getri!(A::AbstractMatrix{$elty}, ipiv::AbstractVector{Cint})
-            require_one_based_indexing(A, ipiv)
-            chkstride1(A, ipiv)
-            n = checksquare(A)
+            # require_one_based_indexing(A, ipiv)
+            # chkstride1(A, ipiv)
+            # n = checksquare(A)
             if n != length(ipiv)
                 throw(DimensionMismatch("ipiv has length $(length(ipiv)), but needs $n"))
             end

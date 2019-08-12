@@ -24,8 +24,11 @@ the path to magma binary
 """
 const libmagma = "/usr/local/magma/lib/libmagma.so"
 
-macro magmafunc(function_name)
-    return Expr(:quote, Symbol("magma_", function_name))
+macro magmafunc(function_name, isGPU=false)
+	if isGPU == true
+		return Expr(:quote, Symbol("magma_", function_name, "3_gpu"))
+	end
+	return Expr(:quote, Symbol("magma_", function_name))
 end
 
 # >>> The following are some Utility functions' wrappers >>>

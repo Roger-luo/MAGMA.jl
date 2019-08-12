@@ -24,7 +24,14 @@ import LinearAlgebra.LAPACK: gels!
     magmaInit()
 
     # call the basic (overloaded) wrapper gesvd! for gesvd subroutines
-    result = magma_gels!(MAGMA.MagmaNoTrans, matrixToTest_A_copy, matrixToTest_B_copy)
+    if interface == "GPU"
+        matrixToTest_A_copy_gpu = cu(matrixToTest_A_copy)
+        matrixToTest_B_copy_gpu = cu(matrixToTest_B_copy)
+        result = magma_gels!(MAGMA.MagmaNoTrans, matrixToTest_A_copy_gpu, matrixToTest_B_copy_gpu)
+    else
+
+        result = magma_gels!(MAGMA.MagmaNoTrans, matrixToTest_A_copy, matrixToTest_B_copy)
+    end
 
     # finalize the MAGMA lib, serving as a necessary part after working
     magmaFinalize()
