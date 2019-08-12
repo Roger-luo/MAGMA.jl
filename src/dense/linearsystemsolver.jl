@@ -1,9 +1,9 @@
 ## (GE) general matrices, solvers with factorization, solver and inverse
-for (gels, gesv, getrs, getri, elty) in
-    ((:dgels,:dgesv,:dgetrs,:dgetri,:Float64),
-     (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
-     (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
-     (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
+for (gels, gels_gpu, gesv, getrs, getri, elty) in
+    ((:dgels,:dgels_gpu,:dgesv,:dgetrs,:dgetri,:Float64),
+     (:sgels,:sgels_gpu,:sgesv,:sgetrs,:sgetri,:Float32),
+     (:zgels,:zgels_gpu,:zgesv,:zgetrs,:zgetri,:ComplexF64),
+     (:cgels,:cgels_gpu,:cgesv,:cgetrs,:cgetri,:ComplexF32))
     @eval begin
         #      SUBROUTINE DGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,INFO)
         # *     .. Scalar Arguments ..
@@ -14,26 +14,28 @@ for (gels, gesv, getrs, getri, elty) in
             #chktrans(trans)
             # chkstride1(A, B)
             isGPU = (A isa (CuMatrix{$elty}) && B isa (CuMatrix{$elty}))
-            if isGPU == true
-                # A = convert(CuPtr{$elty}, CUDAdrv.Mem.DeviceBuffer(A))
-                # B = convert(CuPtr{$elty}, CUDAdrv.Mem.DeviceBuffer(B))
-            end
-            btrn = trans == 'T' # however currently the MAGMA only handles 'N'
-            if btrn
-                println("Now the MAGMA does not handle 'T' actually~")
-            end
+            # btrn = trans == 'T' # however currently the MAGMA only handles 'N'
+            # if btrn
+            #     println("Now the MAGMA does not handle 'T' actually~")
+            # end
             m, n  = size(A)
-            if size(B,1) != (btrn ? n : m)
-                throw(DimensionMismatch("matrix A has dimensions ($m,$n), transposed: $btrn, but leading dimension of B is $(size(B,1))"))s
-            end
+            # if size(B,1) != (btrn ? n : m)
+            #     throw(DimensionMismatch("matrix A has dimensions ($m,$n), transposed: $btrn, but leading dimension of B is $(size(B,1))"))s
+            # end
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
 
-            magmaInit()
+            if isGPU
+                AA = Matrix(A)
+                BB = Matrix(B)
+                A = cu(AA)
+                B = cu(BB)
+            end
+
             for i = 1:2  # first call returns lwork as work[1]
                 if isGPU != true
-                    ccall((@magmafunc($gels, isGPU), libmagma), Cint,
+                    ccall((@magmafunc($gels), libmagma), Cint,
                           (Cint, Cint, Cint, Cint,
                            Ptr{$elty}, Cint, Ptr{$elty}, Cint,
                            Ptr{$elty}, Cint, Ptr{Cint}),
@@ -41,27 +43,13 @@ for (gels, gesv, getrs, getri, elty) in
                           A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                           work, lwork, info)
                 else
-                    # dA = similar(A)
-                    # ccall((@magmafunc("copymatrix"), libmagma), Cvoid,
-                    #       (Cint, Cint, Cint,
-                    #        CuPtr, Cint,
-                    #        CUDAdrv.Mem.DeviceBuffer, Cint,
-                    #        Cint),
-                    #        m, n, sizeof($elty),
-                    #        A, max(1, stride(A, 2)),
-                    #        dA, max(1, stride(dA, 2)),
-                    #        0)
-                    dA = CuPtr{$elty}()
-                    dB = CuPtr{$elty}()
-                    println("\n","dA = ", dA, "\n")
-                    ccall((@magmafunc($gels, isGPU), libmagma), Cint,
+                    ccall((@magmafunc($gels_gpu), libmagma), Cint,
                           (Cint, Cint, Cint, Cint,
                            CuPtr{$elty}, Cint, CuPtr{$elty}, Cint,
                            Ptr{$elty}, Cint, Ptr{Cint}),
                           MagmaNoTrans, m, n, size(B,2),
-                          dA, max(1,stride(A,2)), dB, max(1,stride(B,2)),
+                          A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                           work, lwork, info)
-                    println(dA, dB)
                 end
 
                 # chkmagmaerror(info[])
@@ -70,7 +58,7 @@ for (gels, gesv, getrs, getri, elty) in
                     resize!(work, lwork)
                 end
             end
-            magmaFinalize()
+
             k   = min(m, n)
             F   = m < n ? tril(A[1:k, 1:k]) : triu(A[1:k, 1:k])
             ssr = Vector{$elty}(undef, size(B, 2))

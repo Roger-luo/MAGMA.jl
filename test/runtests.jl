@@ -5,7 +5,7 @@ using Test, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 
 @testset "dense linear algebra" begin
     include("dense/svd.jl")
-    # include("dense/linearsystemsolver.jl")
+    include("dense/linearsystemsolver.jl")
 end
 
 @testset "Debug gels" begin
@@ -36,14 +36,8 @@ end
     lwork = Cint(-1)
 
     for i = 1:2  # first call returns lwork as work[1]
-        # Only for debugging
-        # dA = CuPtr{$elty}()
-        # dB = CuPtr{$elty}()
-        # println("\n","dA = ", dA, "\n")
 
-        # print(libmagma)
-
-        ccall((:magma_sgels3_gpu, libmagma), Cint,
+        ccall(("magma_sgels3_gpu", libmagma), Cint,
               (Cint, Cint, Cint, Cint,
                CuPtr{Float32}, Cint, CuPtr{Float32}, Cint,
                Ptr{Float32}, Cint, Ptr{Cint}),

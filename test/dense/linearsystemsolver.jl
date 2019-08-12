@@ -6,35 +6,50 @@ import LinearAlgebra.LAPACK: gels!
 
     # randomly generate a 2 by 2 matrix for testing
     size = 2
-    matrixToTest_A = rand(T, size, size)
-    matrixToTest_B = rand(T, size, size)
+    A = rand(T, size, size)
+    B = rand(T, size, size)
 
-    matrixToTest_A_copy = copy(matrixToTest_A)
-    matrixToTest_B_copy = copy(matrixToTest_B)
+    dA = cu(A)
+    dB = cu(B)
+
+    A_copy = copy(A)
+    B_copy = copy(B)
+    #
+    # println("Before gels")
+    # println("A = ", A)
+    # println("B = ", B)
 
     # use the default Linear Algebra lib to calculate the right answer for testing
-    right_answer = gels!('N', matrixToTest_A, matrixToTest_B)
+    right_answer = gels!('N', A, B)
+    #
+    # println("After gels")
+    # println("A = ", A)
+    # println("B = ", B)
 
     # to test the GPU interface, one should convert the matrix data to cuda
     # if interface == "GPU"
     #     matrixToTest = cu(matrixToTest)
     # end
 
-    # initialize the MAGMA lib, serving as a necessary part before working
-    magmaInit()
 
     # call the basic (overloaded) wrapper gesvd! for gesvd subroutines
     if interface == "GPU"
-        matrixToTest_A_copy_gpu = cu(matrixToTest_A_copy)
-        matrixToTest_B_copy_gpu = cu(matrixToTest_B_copy)
-        result = magma_gels!(MAGMA.MagmaNoTrans, matrixToTest_A_copy_gpu, matrixToTest_B_copy_gpu)
-    else
+        # initialize the MAGMA lib, serving as a necessary part before working
+        magmaInit()
+        result = magma_gels!(MAGMA.MagmaNoTrans, dA, dB)
 
-        result = magma_gels!(MAGMA.MagmaNoTrans, matrixToTest_A_copy, matrixToTest_B_copy)
+        # finalize the MAGMA lib, serving as a necessary part after working
+        magmaFinalize()
+    else
+        # initialize the MAGMA lib, serving as a necessary part before working
+        magmaInit()
+
+        result = magma_gels!(MAGMA.MagmaNoTrans, A_copy, B_copy)
+
+        # finalize the MAGMA lib, serving as a necessary part after working
+        magmaFinalize()
     end
 
-    # finalize the MAGMA lib, serving as a necessary part after working
-    magmaFinalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
