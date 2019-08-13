@@ -29,6 +29,10 @@ macro magmafunc(function_name)
 	return Expr(:quote, Symbol("magma_", function_name))
 end
 
+macro magmafunc_gpu(function_name)
+	return Expr(:quote, Symbol("magma_", function_name, '_', "gpu"))
+end
+
 macro magmatype(elty)
 	if elty == Float32
 		return 's'

@@ -43,7 +43,7 @@ for (gels, gels_gpu, gesv, getrs, getri, elty) in
                           A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                           work, lwork, info)
                 else
-                    ccall((@magmafunc($gels_gpu), libmagma), Cint,
+                    ccall((@magmafunc_gpu($gels), libmagma), Cint,
                           (Cint, Cint, Cint, Cint,
                            CuPtr{$elty}, Cint, CuPtr{$elty}, Cint,
                            Ptr{$elty}, Cint, Ptr{Cint}),
