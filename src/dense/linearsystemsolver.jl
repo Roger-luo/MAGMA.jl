@@ -1,58 +1,40 @@
 ## (GE) general matrices, solvers with factorization, solver and inverse
-for (gels, gels_gpu, gesv, getrs, getri, elty) in
-    ((:dgels,:dgels_gpu,:dgesv,:dgetrs,:dgetri,:Float64),
-     (:sgels,:sgels_gpu,:sgesv,:sgetrs,:sgetri,:Float32),
-     (:zgels,:zgels_gpu,:zgesv,:zgetrs,:zgetri,:ComplexF64),
-     (:cgels,:cgels_gpu,:cgesv,:cgetrs,:cgetri,:ComplexF32))
+for (gels, gesv, getrs, getri, elty) in
+    ((:"dgels",:dgesv,:dgetrs,:dgetri,:Float64),
+     (:"sgels",:sgesv,:sgetrs,:sgetri,:Float32),
+     (:"zgels",:zgesv,:zgetrs,:zgetri,:ComplexF64),
+     (:"cgels",:cgesv,:cgetrs,:cgetri,:ComplexF32))
     @eval begin
         #      SUBROUTINE DGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,INFO)
         # *     .. Scalar Arguments ..
         #       CHARACTER          TRANS
         #       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
         function magma_gels!(trans::Int, A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
-            # require_one_based_indexing(A, B)
-            #chktrans(trans)
-            # chkstride1(A, B)
-            isGPU = (A isa (CuMatrix{$elty}) && B isa (CuMatrix{$elty}))
-            # btrn = trans == 'T' # however currently the MAGMA only handles 'N'
-            # if btrn
-            #     println("Now the MAGMA does not handle 'T' actually~")
-            # end
+            isGPU = (A isa (CuMatrix{$elty}) && B isa (CuArray))
             m, n  = size(A)
-            # if size(B,1) != (btrn ? n : m)
-            #     throw(DimensionMismatch("matrix A has dimensions ($m,$n), transposed: $btrn, but leading dimension of B is $(size(B,1))"))s
-            # end
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
 
-            if isGPU
-                AA = Matrix(A)
-                BB = Matrix(B)
-                A = cu(AA)
-                B = cu(BB)
-            end
-
             for i = 1:2  # first call returns lwork as work[1]
-                if isGPU != true
-                    ccall((@magmafunc($gels), libmagma), Cint,
+                if isGPU
+                    ccall((@magmafunc_gpu($gels), libmagma), Cint,
                           (Cint, Cint, Cint, Cint,
-                           Ptr{$elty}, Cint, Ptr{$elty}, Cint,
+                           PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
                            Ptr{$elty}, Cint, Ptr{Cint}),
                           MagmaNoTrans, m, n, size(B,2),
                           A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                           work, lwork, info)
                 else
-                    ccall((@magmafunc_gpu($gels), libmagma), Cint,
+                    ccall((@magmafunc($gels), libmagma), Cint,
                           (Cint, Cint, Cint, Cint,
-                           CuPtr{$elty}, Cint, CuPtr{$elty}, Cint,
+                           PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
                            Ptr{$elty}, Cint, Ptr{Cint}),
                           MagmaNoTrans, m, n, size(B,2),
                           A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                           work, lwork, info)
                 end
 
-                # chkmagmaerror(info[])
                 if i == 1
                     lwork = ceil(Int, real(work[1]))
                     resize!(work, lwork)
