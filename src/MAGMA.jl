@@ -25,29 +25,13 @@ the path to magma binary
 """
 const libmagma = "/usr/local/magma/lib/libmagma.so"
 
-# macro magmafunc_gpu(function_name)
-# 	return Expr(:quote, Symbol("magma_", function_name, "_gpu"))
-# end
-
 macro magmafunc(function_name)
 	return Expr(:quote, Symbol("magma_", function_name))
 end
 
-# function magmafunc_gpu(function_name, isGPU)
-# 	if isGPU==false
-# 		return Expr(:quote, Symbol("magma_", function_name))
-# 	else
-# 		return Expr(:quote, Symbol("magma_", function_name, "_gpu"))
-# 	end
-# end
-
 macro magmafunc_gpu(function_name)
 	return Expr(:quote, Symbol("magma_", function_name, "_gpu"))
 end
-
-# Here used to be a weird bug:
-# if you choose to create the symbol directly by "_gpu", it will just recall
-# 	ReadOnlyMemoryError()
 
 macro magmatype(elty)
 	if elty == Float32

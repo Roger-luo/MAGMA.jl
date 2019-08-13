@@ -1,9 +1,9 @@
 ## (GE) general matrices, solvers with factorization, solver and inverse
 for (gels, gesv, getrs, getri, elty) in
-    ((:"dgels",:dgesv,:dgetrs,:dgetri,:Float64),
-     (:"sgels",:sgesv,:sgetrs,:sgetri,:Float32),
-     (:"zgels",:zgesv,:zgetrs,:zgetri,:ComplexF64),
-     (:"cgels",:cgesv,:cgetrs,:cgetri,:ComplexF32))
+    ((:dgels,:dgesv,:dgetrs,:dgetri,:Float64),
+     (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
+     (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
+     (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
     @eval begin
         #      SUBROUTINE DGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,INFO)
         # *     .. Scalar Arguments ..
