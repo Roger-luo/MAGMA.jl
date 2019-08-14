@@ -66,7 +66,6 @@ for (gels, gesv, getrs, getri, elty) in
     #
     #               = 0: successful exit
     #               < 0: if INFO = -i, the i-th argument had an illegal value
-
         function magma_gesv!(A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
             # require_one_based_indexing(A, B)
             # chkstride1(A, B)
@@ -82,7 +81,7 @@ for (gels, gesv, getrs, getri, elty) in
 
             if isGPU
             ccall((@magmafunc_gpu($gesv), libmagma), Cint,
-                  (Ref{Cint}, Ref{Cint},
+                  (Cint, Cint,
                    PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
                    PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
                    n, size(B,2),
@@ -90,7 +89,7 @@ for (gels, gesv, getrs, getri, elty) in
                    B, ldb, info)
             else
             ccall((@magmafunc($gesv), libmagma), Cint,
-                  (Ref{Cint}, Ref{Cint},
+                  (Cint, Cint,
                    PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
                    PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
                    n, size(B,2),

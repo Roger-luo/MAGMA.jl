@@ -38,9 +38,6 @@ end
     A = rand(T, size_test, size_test)
     B = rand(T, size_test, size_test)
 
-    A = one(A)
-    B = one(B)
-
     dA = cu(A)
     dB = cu(B)
 
@@ -50,30 +47,10 @@ end
     (A_test, B_test) = interface == "GPU" ? (dA, dB) : (A_copy, B_copy)
 
     right_answer = gesv!(A, B)
-    println("Right answer is: \n", right_answer)
 
     magmaInit()
-    # result = magma_gesv!(A_test, B_test)
-    n = LinearAlgebra.checksquare(A)
-    isGPU = (A isa CuArray && B isa CuArray)
-    # if size(B,1) != n
-    #     throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
-    # end
-    lda  = max(1,stride(A,2))
-    ldb  = max(1,stride(B,2))
-    ipiv = similar(Matrix(A), Int32, n)
-    info = Ref{Cint}()
-    ccall((:magma_sgesv, libmagma), Cint,
-          (Ref{Cint}, Ref{Cint},
-           PtrOrCuPtr{Float32}, Cint, Ptr{Cint},
-           PtrOrCuPtr{Float32}, Cint, Ptr{Cint}),
-           n, size(B,2),
-           A, lda, ipiv,
-           B, ldb, info)
+    result = magma_gesv!(A_test, B_test)
     magmaFinalize()
-    result = (B,A,ipiv)
-
-
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
