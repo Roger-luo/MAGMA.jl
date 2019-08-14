@@ -54,27 +54,51 @@ for (gels, gesv, getrs, getri, elty) in
             F, subsetrows(B, B, k), ssr
         end
 
-        # SUBROUTINE DGESV( N, NRHS, A, LDA, IPIV, B, LDB, INFO )
-        # *     .. Scalar Arguments ..
-        #       INTEGER            INFO, LDA, LDB, N, NRHS
-        # *     ..
-        # *     .. Array Arguments ..
-        #       INTEGER            IPIV( * )
-        #       DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
+    #     Parameters
+    # [in]	     n	    INTEGER The order of the matrix A. N >= 0.
+    # [in]	     nrhs	INTEGER The number of right hand sides, i.e., the number of columns of the matrix B. NRHS >= 0.
+    # [in,out]	 A	    COMPLEX_16 array, dimension (LDA,N). On entry, the M-by-N matrix to be factored. On exit, the factors L and U from the factorization A = P*L*U; the unit diagonal elements of L are not stored.
+    # [in]	     lda	INTEGER The leading dimension of the array A. LDA >= max(1,N).
+    # [out]	     ipiv	INTEGER array, dimension (min(M,N)) The pivot indices; for 1 <= i <= min(M,N), row i of the matrix was interchanged with row IPIV(i).
+    # [in,out]	 B	    COMPLEX_16 array, dimension (LDB,NRHS) On entry, the right hand side matrix B. On exit, the solution matrix X.
+    # [in]	     ldb	INTEGER The leading dimension of the array B. LDB >= max(1,N).
+    # [out]	     info	INTEGER
+    #
+    #               = 0: successful exit
+    #               < 0: if INFO = -i, the i-th argument had an illegal value
+
         function magma_gesv!(A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
             # require_one_based_indexing(A, B)
             # chkstride1(A, B)
-            # n = checksquare(A)
-            if size(B,1) != n
-                throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
-            end
-            ipiv = similar(A, Cint, n)
+            n = checksquare(A)
+            isGPU = (A isa CuArray && B isa CuArray)
+            # if size(B,1) != n
+            #     throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            # end
+            lda  = max(1,stride(A,2))
+            ldb  = max(1,stride(B,2))
+            ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Cint}()
-            ccall((@magmafunc($gesv), libmagma), Cvoid,
-                  (Ref{Cint}, Ref{Cint}, Ptr{$elty}, Ref{Cint}, Ptr{Cint},
-                   Ptr{$elty}, Ref{Cint}, Ptr{Cint}),
-                  n, size(B,2), A, max(1,stride(A,2)), ipiv, B, max(1,stride(B,2)), info)
-            chkmagmaerror(info[])
+
+            if isGPU
+            ccall((@magmafunc_gpu($gesv), libmagma), Cint,
+                  (Ref{Cint}, Ref{Cint},
+                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
+                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
+                   n, size(B,2),
+                   A, lda, ipiv,
+                   B, ldb, info)
+            else
+            ccall((@magmafunc($gesv), libmagma), Cint,
+                  (Ref{Cint}, Ref{Cint},
+                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
+                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
+                   n, size(B,2),
+                   A, lda, ipiv,
+                   B, ldb, info)
+            end
+
+            # chkmagmaerror(info[])
             B, A, ipiv
         end
 
