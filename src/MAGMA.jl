@@ -1,7 +1,8 @@
 module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
+using LinearAlgebra: triu, tril, dot
 
-export gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
+export magma_gels!, gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!, libmagma, magmafunc_gpu
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl
@@ -15,13 +16,8 @@ export gesvd!, gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 # strategies that will be applied to the SVD
 # U matrix and VT matrix in A = U Σ V**T
 # (for MagmaOverwriteVec it is going to overwrite A)
-const MagmaNoVec         = 301
-const MagmaVec           = 302
-const MagmaIVec          = 303
-const MagmaAllVec        = 304
-const MagmaSomeVec       = 305
-const MagmaOverwriteVec  = 306
-const MagmaBacktransVec  = 307
+include("enums.jl")
+
 
 
 """
@@ -30,7 +26,26 @@ the path to magma binary
 const libmagma = "/usr/local/magma/lib/libmagma.so"
 
 macro magmafunc(function_name)
-    return Expr(:quote, Symbol("magma_", function_name))
+	return Expr(:quote, Symbol("magma_", function_name))
+end
+
+macro magmafunc_gpu(function_name)
+	return Expr(:quote, Symbol("magma_", function_name, "_gpu"))
+end
+
+macro magmatype(elty)
+	if elty == Float32
+		return 's'
+	end
+	if elty == Float64
+		return 'd'
+	end
+	if elty == ComplexF32
+		return 'c'
+	end
+	if elty == ComplexF64
+		return 'z'
+	end
 end
 
 # >>> The following are some Utility functions' wrappers >>>

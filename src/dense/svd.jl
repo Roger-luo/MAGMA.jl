@@ -1,16 +1,3 @@
-function char_to_magmaInt(option::AbstractChar)
-    if option == 'A'
-            return MagmaAllVec
-    elseif option == 'S'
-            return MagmaSomeVec
-    elseif option == 'O'
-            return MagmaOverwriteVec
-    elseif option == 'N'
-            return MagmaNoVec
-    end
-end
-
-
 for (fname, elty, relty) in    ((:sgesvd, :Float32, :Float32),
                             (:dgesvd, :Float64, :Float64),
                             (:cgesvd, :ComplexF32, :Float32),
