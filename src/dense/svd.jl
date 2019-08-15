@@ -362,7 +362,8 @@ end
 for (gebrd, elty, relty) in    ((:sgebrd, :Float32, :Float32),
                             (:dgebrd, :Float64, :Float64),
                             (:cgebrd, :ComplexF32, :Float32),
-                            (:zgebrd, :ComplexF64, :Float64))
+                            (:zgebrd, :ComplexF64, :Float64)),
+                            interface in (:Matrix, :CuMatrix)
     @eval begin
     # magma_int_t magma_cgebrd 	( 	magma_vec_t  	jobu,
     # 	magma_vec_t  	jobvt,
@@ -380,7 +381,7 @@ for (gebrd, elty, relty) in    ((:sgebrd, :Float32, :Float32),
     # 	float *  	rwork,
     # 	magma_int_t *  	info
     # )
-        function magma_gebrd!(A::AbstractMatrix{$elty})
+        function magma_gebrd!(A::$interface{$elty})
 
                 A = Matrix{$elty}(A)
 

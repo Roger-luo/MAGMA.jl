@@ -9,31 +9,53 @@ for (gels, gesv, getrs, getri, elty) in
         # *     .. Scalar Arguments ..
         #       CHARACTER          TRANS
         #       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
-        function magma_gels!(trans::Int, A::AbstractMatrix{$elty}, B::AbstractVecOrMat{$elty})
-            isGPU = (A isa (CuMatrix{$elty}) && B isa (CuArray))
+        function magma_gels!(trans::Int, A::CuArray{$elty}, B::CuArray{$elty})
             m, n  = size(A)
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
 
             for i = 1:2  # first call returns lwork as work[1]
-                if isGPU
-                    ccall((@magmafunc_gpu($gels), libmagma), Cint,
-                          (Cint, Cint, Cint, Cint,
-                           PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                           Ptr{$elty}, Cint, Ptr{Cint}),
-                          MagmaNoTrans, m, n, size(B,2),
-                          A, max(1,stride(A,2)), B, max(1,stride(B,2)),
-                          work, lwork, info)
-                else
-                    ccall((@magmafunc($gels), libmagma), Cint,
-                          (Cint, Cint, Cint, Cint,
-                           PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                           Ptr{$elty}, Cint, Ptr{Cint}),
-                          MagmaNoTrans, m, n, size(B,2),
-                          A, max(1,stride(A,2)), B, max(1,stride(B,2)),
-                          work, lwork, info)
+                ccall((@magmafunc_gpu($gels), libmagma), Cint,
+                      (Cint, Cint, Cint, Cint,
+                       PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
+                       Ptr{$elty}, Cint, Ptr{Cint}),
+                      MagmaNoTrans, m, n, size(B,2),
+                      A, max(1,stride(A,2)), B, max(1,stride(B,2)),
+                      work, lwork, info)
+
+                if i == 1
+                    lwork = ceil(Int, real(work[1]))
+                    resize!(work, lwork)
                 end
+            end
+
+            k   = min(m, n)
+            F   = m < n ? tril(A[1:k, 1:k]) : triu(A[1:k, 1:k])
+            ssr = Vector{$elty}(undef, size(B, 2))
+            for i = 1:size(B,2)
+                x = zero($elty)
+                for j = k+1:size(B,1)
+                    x += abs2(B[j,i])
+                end
+                ssr[i] = x
+            end
+            F, subsetrows(B, B, k), ssr
+        end
+        function magma_gels!(trans::Int, A::Array{$elty}, B::Array{$elty})
+            m, n  = size(A)
+            info  = Ref{Cint}()
+            work  = Vector{$elty}(undef, 1)
+            lwork = Cint(-1)
+
+            for i = 1:2  # first call returns lwork as work[1]
+                ccall((@magmafunc($gels), libmagma), Cint,
+                      (Cint, Cint, Cint, Cint,
+                       PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
+                       Ptr{$elty}, Cint, Ptr{Cint}),
+                      MagmaNoTrans, m, n, size(B,2),
+                      A, max(1,stride(A,2)), B, max(1,stride(B,2)),
+                      work, lwork, info)
 
                 if i == 1
                     lwork = ceil(Int, real(work[1]))
