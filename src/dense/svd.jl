@@ -1,5 +1,6 @@
 for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
-                            (:dgesvd, :dgesdd, :Float64, :Float64))
+                            (:dgesvd, :dgesdd, :Float64, :Float64)),
+                            interface in (:Matrix, :CuMatrix)
     @eval begin
     # magma_int_t magma_cgesvd 	( 	magma_vec_t  	jobu,
     # 	magma_vec_t  	jobvt,
@@ -17,7 +18,7 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
     # 	float *  	rwork,
     # 	magma_int_t *  	info
     # )
-        function magma_gesvd!(jobu::AbstractChar, jobvt::AbstractChar, A::AbstractMatrix{$elty})
+        function magma_gesvd!(jobu::AbstractChar, jobvt::AbstractChar, A::$interface{$elty})
 
                 # if A is not stored in the CPU, convert it to the CPU,
                 # using Julia's native converter
@@ -93,7 +94,7 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
         # 	float *  	rwork,
         # 	magma_int_t *  	info
         # )
-        function magma_gesdd!(job::AbstractChar, A::AbstractMatrix{$elty})
+        function magma_gesdd!(job::AbstractChar, A::$interface{$elty})
 
                 A = Matrix{$elty}(A)
 
@@ -174,7 +175,8 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
 end
 
 for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32),
-                            (:zgesvd, :zgesdd, :ComplexF64, :Float64))
+                            (:zgesvd, :zgesdd, :ComplexF64, :Float64)),
+                            interface in (:Matrix, :CuMatrix)
     @eval begin
     # magma_int_t magma_cgesvd 	( 	magma_vec_t  	jobu,
     # 	magma_vec_t  	jobvt,
@@ -192,7 +194,7 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
     # 	float *  	rwork,
     # 	magma_int_t *  	info
     # )
-        function magma_gesvd!(jobu::AbstractChar, jobvt::AbstractChar, A::AbstractMatrix{$elty})
+        function magma_gesvd!(jobu::AbstractChar, jobvt::AbstractChar, A::$interface{$elty})
 
                 # if A is not stored in the CPU, convert it to the CPU,
                 # using Julia's native converter
@@ -272,7 +274,7 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
         # 	float *  	rwork,
         # 	magma_int_t *  	info
         # )
-        function magma_gesdd!(job::AbstractChar, A::AbstractMatrix{$elty})
+        function magma_gesdd!(job::AbstractChar, A::$interface{$elty})
 
             A = Matrix{$elty}(A)
 
