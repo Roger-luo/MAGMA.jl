@@ -111,6 +111,7 @@ for (gels, gesv, getrs, getri, elty) in
             # chkmagmaerror(info[])
             B, A, ipiv
         end
+    
         function magma_gesv!(A::Array{$elty}, B::Array{$elty})
             # require_one_based_indexing(A, B)
             # chkstride1(A, B)
