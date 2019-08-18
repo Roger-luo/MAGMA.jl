@@ -25,7 +25,7 @@ import LinearAlgebra.LAPACK: gebrd!
     magmaInit()
 
     # call the basic (overloaded) wrapper gesvd! for gesvd subroutines
-    result = gesvd!(jobu,jobvt,matrixToTest)
+    result = magma_gesvd!(jobu,jobvt,matrixToTest)
 
     # in the result, the wanted answer lies in the second position
     s = result[2]
@@ -35,7 +35,7 @@ import LinearAlgebra.LAPACK: gebrd!
 
     # if S is approximately equal to s, we defined then it's alright
     @test S ≈ s
-    
+
 end
 
 
@@ -61,7 +61,7 @@ end
     magmaInit()
 
     # call the basic (overloaded) wrapper gesdd! for gesvd subroutines
-    result = gesdd!(job_magma,matrixToTest)
+    result = magma_gesdd!(job_magma,matrixToTest)
 
     # in the result, the wanted answer lies in the second position
     s = result[2]
