@@ -9,7 +9,7 @@ for (gels, gesv, getrs, getri, elty) in
         # *     .. Scalar Arguments ..
         #       CHARACTER          TRANS
         #       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
-        function magma_gels!(trans::Int, A::CuArray{$elty}, B::CuArray{$elty})
+        function magma_gels!(trans::magma_trans_t, A::CuArray{$elty}, B::CuArray{$elty})
             m, n  = size(A)
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
@@ -42,7 +42,7 @@ for (gels, gesv, getrs, getri, elty) in
             end
             F, subsetrows(B, B, k), ssr
         end
-        function magma_gels!(trans::Int, A::Array{$elty}, B::Array{$elty})
+        function magma_gels!(trans::magma_trans_t, A::Array{$elty}, B::Array{$elty})
             m, n  = size(A)
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
@@ -111,7 +111,7 @@ for (gels, gesv, getrs, getri, elty) in
             # chkmagmaerror(info[])
             B, A, ipiv
         end
-    
+
         function magma_gesv!(A::Array{$elty}, B::Array{$elty})
             # require_one_based_indexing(A, B)
             # chkstride1(A, B)

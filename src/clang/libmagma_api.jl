@@ -193,9 +193,9 @@ function magma_queue_create_internal(device, queue_ptr, func, file, line)
     ccall((:magma_queue_create_internal, libmagma), Cvoid, (magma_device_t, Ptr{magma_queue_t}, Cstring, Cstring, Cint), device, queue_ptr, func, file, line)
 end
 
-function magma_queue_create_from_cuda_internal(device, stream, cublas, cusparse, queue_ptr, func, file, line)
-    ccall((:magma_queue_create_from_cuda_internal, libmagma), Cvoid, (magma_device_t, Cint, cublasHandle_t, Cint, Ptr{magma_queue_t}, Cstring, Cstring, Cint), device, stream, cublas, cusparse, queue_ptr, func, file, line)
-end
+# function magma_queue_create_from_cuda_internal(device, stream, cublas, cusparse, queue_ptr, func, file, line)
+#     ccall((:magma_queue_create_from_cuda_internal, libmagma), Cvoid, (magma_device_t, Cint, cublasHandle_t, Cint, Ptr{magma_queue_t}, Cstring, Cstring, Cint), device, stream, cublas, cusparse, queue_ptr, func, file, line)
+# end
 
 function magma_queue_destroy_internal(queue, func, file, line)
     ccall((:magma_queue_destroy_internal, libmagma), Cvoid, (magma_queue_t, Cstring, Cstring, Cint), queue, func, file, line)
@@ -1104,14 +1104,14 @@ end
 function magma_cdisplace_pointers(output_array, input_array, lda, row, column, batchCount, queue)
     ccall((:magma_cdisplace_pointers, libmagma), Cvoid, (Ptr{Ptr{magmaFloatComplex}}, Ptr{Ptr{magmaFloatComplex}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), output_array, input_array, lda, row, column, batchCount, queue)
 end
-
-function magma_crecommend_cublas_gemm_batched(transa, transb, m, n, k)
-    ccall((:magma_crecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
-
-function magma_crecommend_cublas_gemm_stream(transa, transb, m, n, k)
-    ccall((:magma_crecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
+#
+# function magma_crecommend_cublas_gemm_batched(transa, transb, m, n, k)
+#     ccall((:magma_crecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
+#
+# function magma_crecommend_cublas_gemm_stream(transa, transb, m, n, k)
+#     ccall((:magma_crecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
 
 function magma_get_cpotrf_batched_nbparam(n, nb, recnb)
     ccall((:magma_get_cpotrf_batched_nbparam, libmagma), Cvoid, (magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), n, nb, recnb)
@@ -1469,10 +1469,6 @@ function magma_cpotf2_cdotc_batched(n, x_array, incx, offset, info_array, gbstep
     ccall((:magma_cpotf2_cdotc_batched, libmagma), Cvoid, (magma_int_t, Ptr{Ptr{magmaFloatComplex}}, magma_int_t, magma_int_t, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), n, x_array, incx, offset, info_array, gbstep, batchCount, queue)
 end
 
-function setup_pivinfo(pivinfo, ipiv, m, nb, queue)
-    ccall((:setup_pivinfo, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), pivinfo, ipiv, m, nb, queue)
-end
-
 function magmablas_cgeadd_batched(m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
     ccall((:magmablas_cgeadd_batched, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex, Ptr{magmaFloatComplex_const_ptr}, magma_int_t, Ptr{magmaFloatComplex_ptr}, magma_int_t, magma_int_t, magma_queue_t), m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
 end
@@ -1717,11 +1713,6 @@ function magma_cungqr_2stage_gpu(m, n, k, dA, ldda, tau, dT, nb, info)
 end
 # Julia wrapper for header: magma_cbulgeinc.h
 # Automatically generated using Clang.jl
-
-
-function findVTpos(N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-    ccall((:findVTpos, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-end
 
 function findVTsiz(N, NB, Vblksiz, blkcnt, LDV)
     ccall((:findVTsiz, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, blkcnt, LDV)
@@ -3563,14 +3554,14 @@ end
 function magma_ddisplace_pointers(output_array, input_array, lda, row, column, batchCount, queue)
     ccall((:magma_ddisplace_pointers, libmagma), Cvoid, (Ptr{Ptr{Cdouble}}, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), output_array, input_array, lda, row, column, batchCount, queue)
 end
-
-function magma_drecommend_cublas_gemm_batched(transa, transb, m, n, k)
-    ccall((:magma_drecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
-
-function magma_drecommend_cublas_gemm_stream(transa, transb, m, n, k)
-    ccall((:magma_drecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
+#
+# function magma_drecommend_cublas_gemm_batched(transa, transb, m, n, k)
+#     ccall((:magma_drecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
+#
+# function magma_drecommend_cublas_gemm_stream(transa, transb, m, n, k)
+#     ccall((:magma_drecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
 
 function magma_get_dpotrf_batched_nbparam(n, nb, recnb)
     ccall((:magma_get_dpotrf_batched_nbparam, libmagma), Cvoid, (magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), n, nb, recnb)
@@ -3644,24 +3635,12 @@ function magmablas_dsyrk_batched_core(uplo, trans, n, k, alpha, dA_array, ai, aj
     ccall((:magmablas_dsyrk_batched_core, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_int_t, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ai, aj, ldda, dB_array, bi, bj, lddb, beta, dC_array, ci, cj, lddc, batchCount, queue)
 end
 
-function magmablas_dsyrk_batched_core(uplo, trans, n, k, alpha, dA_array, ai, aj, ldda, dB_array, bi, bj, lddb, beta, dC_array, ci, cj, lddc, batchCount, queue)
-    ccall((:magmablas_dsyrk_batched_core, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_int_t, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ai, aj, ldda, dB_array, bi, bj, lddb, beta, dC_array, ci, cj, lddc, batchCount, queue)
-end
-
 function magmablas_dsyrk_batched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
     ccall((:magmablas_dsyrk_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
 end
 
 function magma_dsyrk_batched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
     ccall((:magma_dsyrk_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_dsyrk_batched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_dsyrk_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_dsyr2k_batched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_dsyr2k_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, Ptr{Ptr{Cdouble}}, magma_int_t, Cdouble, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
 end
 
 function magmablas_dsyr2k_batched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
@@ -3928,10 +3907,6 @@ function magma_dpotf2_ddot_batched(n, x_array, incx, offset, info_array, gbstep,
     ccall((:magma_dpotf2_ddot_batched, libmagma), Cvoid, (magma_int_t, Ptr{Ptr{Cdouble}}, magma_int_t, magma_int_t, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), n, x_array, incx, offset, info_array, gbstep, batchCount, queue)
 end
 
-function setup_pivinfo(pivinfo, ipiv, m, nb, queue)
-    ccall((:setup_pivinfo, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), pivinfo, ipiv, m, nb, queue)
-end
-
 function magmablas_dgeadd_batched(m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
     ccall((:magmablas_dgeadd_batched, libmagma), Cvoid, (magma_int_t, magma_int_t, Cdouble, Ptr{magmaDouble_const_ptr}, magma_int_t, Ptr{magmaDouble_ptr}, magma_int_t, magma_int_t, magma_queue_t), m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
 end
@@ -4159,10 +4134,6 @@ function magma_dbulge_getlwstg2(n, threads, wantz, Vblksiz, ldv, ldt, blkcnt, si
     ccall((:magma_dbulge_getlwstg2, libmagma), magma_int_t, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n, threads, wantz, Vblksiz, ldv, ldt, blkcnt, sizTAU2, sizT2, sizV2)
 end
 
-function magma_bulge_get_VTsiz(n, nb, threads, Vblksiz, ldv, ldt)
-    ccall((:magma_bulge_get_VTsiz, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n, nb, threads, Vblksiz, ldv, ldt)
-end
-
 function magma_dsyevdx_getworksize(n, threads, wantz, lwmin, liwmin)
     ccall((:magma_dsyevdx_getworksize, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), n, threads, wantz, lwmin, liwmin)
 end
@@ -4177,14 +4148,6 @@ end
 # Julia wrapper for header: magma_dbulgeinc.h
 # Automatically generated using Clang.jl
 
-
-function findVTpos(N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-    ccall((:findVTpos, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-end
-
-function findVTsiz(N, NB, Vblksiz, blkcnt, LDV)
-    ccall((:findVTsiz, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, blkcnt, LDV)
-end
 # Julia wrapper for header: magma_dgehrd_m.h
 # Automatically generated using Clang.jl
 
@@ -4210,10 +4173,6 @@ end
 
 function dgemv_error(transa, m, n, alpha, A, lda, x, incx, beta, y, incy)
     ccall((:dgemv_error, libmagma), Cvoid, (Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), transa, m, n, alpha, A, lda, x, incx, beta, y, incy)
-end
-
-function dger_error(m, n, alpha, x, incx, y, incy, A, lda)
-    ccall((:dger_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}), m, n, alpha, x, incx, y, incy, A, lda)
 end
 
 function dger_error(m, n, alpha, x, incx, y, incy, A, lda)
@@ -4248,32 +4207,12 @@ function dscal_error(n, alpha, x, incx)
     ccall((:dscal_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), n, alpha, x, incx)
 end
 
-function dscal_error(n, alpha, x, incx)
-    ccall((:dscal_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), n, alpha, x, incx)
-end
-
 function dswap_error(n, x, incx, y, incy)
     ccall((:dswap_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}), n, x, incx, y, incy)
 end
 
-function dsymm_error(side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc)
-    ccall((:dsymm_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc)
-end
-
-function dsyr2k_error(uplo, trans, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
-    ccall((:dsyr2k_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), uplo, trans, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
-end
-
-function dsyrk_error(uplo, trans, n, k, alpha, A, lda, beta, C, ldc)
-    ccall((:dsyrk_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), uplo, trans, n, k, alpha, A, lda, beta, C, ldc)
-end
-
 function drotg_error(ca, cb, c, s)
     ccall((:drotg_error, libmagma), Cvoid, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}), ca, cb, c, s)
-end
-
-function drot_error(n, x, incx, y, incy, c, s)
-    ccall((:drot_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}), n, x, incx, y, incy, c, s)
 end
 
 function drot_error(n, x, incx, y, incy, c, s)
@@ -4302,10 +4241,6 @@ end
 
 function magma_cblas_dnrm2(n, x, incx)
     ccall((:magma_cblas_dnrm2, libmagma), Cdouble, (magma_int_t, Ptr{Cdouble}, magma_int_t), n, x, incx)
-end
-
-function magma_cblas_ddot(n, x, incx, y, incy)
-    ccall((:magma_cblas_ddot, libmagma), Cdouble, (magma_int_t, Ptr{Cdouble}, magma_int_t, Ptr{Cdouble}, magma_int_t), n, x, incx, y, incy)
 end
 
 function magma_cblas_ddot(n, x, incx, y, incy)
@@ -4498,10 +4433,6 @@ end
 
 function dlanst_error(norm, n, d, e)
     ccall((:dlanst_error, libmagma), Cdouble, (Cstring, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}), norm, n, d, e)
-end
-
-function dlansy_error(norm, uplo, n, A, lda, work)
-    ccall((:dlansy_error, libmagma), Cdouble, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}), norm, uplo, n, A, lda, work)
 end
 
 function dlantr_error(norm, uplo, diag, m, n, A, lda, work)
@@ -4810,10 +4741,6 @@ function magmablas_dsyrk_internal_vbatched(uplo, trans, n, k, alpha, dA_array, l
     ccall((:magmablas_dsyrk_internal_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, max_n, max_k, batchCount, queue)
 end
 
-function magmablas_dsyrk_internal_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, max_n, max_k, batchCount, queue)
-    ccall((:magmablas_dsyrk_internal_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, max_n, max_k, batchCount, queue)
-end
-
 function magmablas_dsyrk_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
     ccall((:magmablas_dsyrk_vbatched_max_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
 end
@@ -4828,38 +4755,6 @@ end
 
 function magmablas_dsyrk_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
     ccall((:magmablas_dsyrk_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_dsyrk_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_dsyrk_vbatched_max_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_dsyrk_vbatched_max(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_dsyrk_vbatched_max, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_dsyrk_vbatched_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_dsyrk_vbatched_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_dsyrk_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_dsyrk_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_dsyr2k_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_dsyr2k_vbatched_max_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_dsyr2k_vbatched_max(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_dsyr2k_vbatched_max, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_dsyr2k_vbatched_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_dsyr2k_vbatched_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_dsyr2k_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_dsyr2k_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, Cdouble, Ptr{Ptr{Cdouble}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
 end
 
 function magmablas_dsyr2k_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
@@ -5926,14 +5821,14 @@ end
 function magma_sdisplace_pointers(output_array, input_array, lda, row, column, batchCount, queue)
     ccall((:magma_sdisplace_pointers, libmagma), Cvoid, (Ptr{Ptr{Cfloat}}, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), output_array, input_array, lda, row, column, batchCount, queue)
 end
-
-function magma_srecommend_cublas_gemm_batched(transa, transb, m, n, k)
-    ccall((:magma_srecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
-
-function magma_srecommend_cublas_gemm_stream(transa, transb, m, n, k)
-    ccall((:magma_srecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
+#
+# function magma_srecommend_cublas_gemm_batched(transa, transb, m, n, k)
+#     ccall((:magma_srecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
+#
+# function magma_srecommend_cublas_gemm_stream(transa, transb, m, n, k)
+#     ccall((:magma_srecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
 
 function magma_get_spotrf_batched_nbparam(n, nb, recnb)
     ccall((:magma_get_spotrf_batched_nbparam, libmagma), Cvoid, (magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), n, nb, recnb)
@@ -6007,24 +5902,12 @@ function magmablas_ssyrk_batched_core(uplo, trans, n, k, alpha, dA_array, ai, aj
     ccall((:magmablas_ssyrk_batched_core, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_int_t, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ai, aj, ldda, dB_array, bi, bj, lddb, beta, dC_array, ci, cj, lddc, batchCount, queue)
 end
 
-function magmablas_ssyrk_batched_core(uplo, trans, n, k, alpha, dA_array, ai, aj, ldda, dB_array, bi, bj, lddb, beta, dC_array, ci, cj, lddc, batchCount, queue)
-    ccall((:magmablas_ssyrk_batched_core, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_int_t, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ai, aj, ldda, dB_array, bi, bj, lddb, beta, dC_array, ci, cj, lddc, batchCount, queue)
-end
-
 function magmablas_ssyrk_batched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
     ccall((:magmablas_ssyrk_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
 end
 
 function magma_ssyrk_batched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
     ccall((:magma_ssyrk_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_ssyrk_batched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_ssyrk_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_ssyr2k_batched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_ssyr2k_batched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, Ptr{Ptr{Cfloat}}, magma_int_t, Cfloat, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
 end
 
 function magmablas_ssyr2k_batched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
@@ -6291,10 +6174,6 @@ function magma_spotf2_sdot_batched(n, x_array, incx, offset, info_array, gbstep,
     ccall((:magma_spotf2_sdot_batched, libmagma), Cvoid, (magma_int_t, Ptr{Ptr{Cfloat}}, magma_int_t, magma_int_t, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), n, x_array, incx, offset, info_array, gbstep, batchCount, queue)
 end
 
-function setup_pivinfo(pivinfo, ipiv, m, nb, queue)
-    ccall((:setup_pivinfo, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), pivinfo, ipiv, m, nb, queue)
-end
-
 function magmablas_sgeadd_batched(m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
     ccall((:magmablas_sgeadd_batched, libmagma), Cvoid, (magma_int_t, magma_int_t, Cfloat, Ptr{magmaFloat_const_ptr}, magma_int_t, Ptr{magmaFloat_ptr}, magma_int_t, magma_int_t, magma_queue_t), m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
 end
@@ -6522,10 +6401,6 @@ function magma_sbulge_getlwstg2(n, threads, wantz, Vblksiz, ldv, ldt, blkcnt, si
     ccall((:magma_sbulge_getlwstg2, libmagma), magma_int_t, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n, threads, wantz, Vblksiz, ldv, ldt, blkcnt, sizTAU2, sizT2, sizV2)
 end
 
-function magma_bulge_get_VTsiz(n, nb, threads, Vblksiz, ldv, ldt)
-    ccall((:magma_bulge_get_VTsiz, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n, nb, threads, Vblksiz, ldv, ldt)
-end
-
 function magma_ssyevdx_getworksize(n, threads, wantz, lwmin, liwmin)
     ccall((:magma_ssyevdx_getworksize, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), n, threads, wantz, lwmin, liwmin)
 end
@@ -6540,14 +6415,6 @@ end
 # Julia wrapper for header: magma_sbulgeinc.h
 # Automatically generated using Clang.jl
 
-
-function findVTpos(N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-    ccall((:findVTpos, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-end
-
-function findVTsiz(N, NB, Vblksiz, blkcnt, LDV)
-    ccall((:findVTsiz, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, blkcnt, LDV)
-end
 # Julia wrapper for header: magma_sgehrd_m.h
 # Automatically generated using Clang.jl
 
@@ -6573,10 +6440,6 @@ end
 
 function sgemv_error(transa, m, n, alpha, A, lda, x, incx, beta, y, incy)
     ccall((:sgemv_error, libmagma), Cvoid, (Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), transa, m, n, alpha, A, lda, x, incx, beta, y, incy)
-end
-
-function sger_error(m, n, alpha, x, incx, y, incy, A, lda)
-    ccall((:sger_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}), m, n, alpha, x, incx, y, incy, A, lda)
 end
 
 function sger_error(m, n, alpha, x, incx, y, incy, A, lda)
@@ -6611,32 +6474,12 @@ function sscal_error(n, alpha, x, incx)
     ccall((:sscal_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), n, alpha, x, incx)
 end
 
-function sscal_error(n, alpha, x, incx)
-    ccall((:sscal_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), n, alpha, x, incx)
-end
-
 function sswap_error(n, x, incx, y, incy)
     ccall((:sswap_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}), n, x, incx, y, incy)
 end
 
-function ssymm_error(side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc)
-    ccall((:ssymm_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), side, uplo, m, n, alpha, A, lda, B, ldb, beta, C, ldc)
-end
-
-function ssyr2k_error(uplo, trans, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
-    ccall((:ssyr2k_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), uplo, trans, n, k, alpha, A, lda, B, ldb, beta, C, ldc)
-end
-
-function ssyrk_error(uplo, trans, n, k, alpha, A, lda, beta, C, ldc)
-    ccall((:ssyrk_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), uplo, trans, n, k, alpha, A, lda, beta, C, ldc)
-end
-
 function srotg_error(ca, cb, c, s)
     ccall((:srotg_error, libmagma), Cvoid, (Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}), ca, cb, c, s)
-end
-
-function srot_error(n, x, incx, y, incy, c, s)
-    ccall((:srot_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}), n, x, incx, y, incy, c, s)
 end
 
 function srot_error(n, x, incx, y, incy, c, s)
@@ -6665,10 +6508,6 @@ end
 
 function magma_cblas_snrm2(n, x, incx)
     ccall((:magma_cblas_snrm2, libmagma), Cfloat, (magma_int_t, Ptr{Cfloat}, magma_int_t), n, x, incx)
-end
-
-function magma_cblas_sdot(n, x, incx, y, incy)
-    ccall((:magma_cblas_sdot, libmagma), Cfloat, (magma_int_t, Ptr{Cfloat}, magma_int_t, Ptr{Cfloat}, magma_int_t), n, x, incx, y, incy)
 end
 
 function magma_cblas_sdot(n, x, incx, y, incy)
@@ -6863,10 +6702,6 @@ function slanst_error(norm, n, d, e)
     ccall((:slanst_error, libmagma), Cfloat, (Cstring, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}), norm, n, d, e)
 end
 
-function slansy_error(norm, uplo, n, A, lda, work)
-    ccall((:slansy_error, libmagma), Cfloat, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}), norm, uplo, n, A, lda, work)
-end
-
 function slantr_error(norm, uplo, diag, m, n, A, lda, work)
     ccall((:slantr_error, libmagma), Cfloat, (Cstring, Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}), norm, uplo, diag, m, n, A, lda, work)
 end
@@ -7031,38 +6866,6 @@ function sormtr_error(side, uplo, trans, m, n, A, lda, tau, C, ldc, work, lwork,
     ccall((:sormtr_error, libmagma), Cvoid, (Cstring, Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}), side, uplo, trans, m, n, A, lda, tau, C, ldc, work, lwork, info)
 end
 
-function sstebz_error(range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit, work, iwork, info)
-    ccall((:sstebz_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}), range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit, work, iwork, info)
-end
-
-function slaln2_error(ltrans, na, nw, smin, ca, a, lda, d1, d2, b, ldb, wr, wi, x, ldx, scale, xnorm, info)
-    ccall((:slaln2_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), ltrans, na, nw, smin, ca, a, lda, d1, d2, b, ldb, wr, wi, x, ldx, scale, xnorm, info)
-end
-
-function slamc3_error(a, b)
-    ccall((:slamc3_error, libmagma), Cfloat, (Ptr{Cfloat}, Ptr{Cfloat}), a, b)
-end
-
-function slamrg_error(n1, n2, a, dtrd1, dtrd2, index)
-    ccall((:slamrg_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n1, n2, a, dtrd1, dtrd2, index)
-end
-
-function slapy3_error(x, y, z)
-    ccall((:slapy3_error, libmagma), Cfloat, (Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}), x, y, z)
-end
-
-function slaed2_error(k, n, n1, d, q, ldq, indxq, rho, z, dlamda, w, q2, indx, indxc, indxp, coltyp, info)
-    ccall((:slaed2_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), k, n, n1, d, q, ldq, indxq, rho, z, dlamda, w, q2, indx, indxc, indxp, coltyp, info)
-end
-
-function slaed4_error(n, i, d, z, delta, rho, dlam, info)
-    ccall((:slaed4_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}), n, i, d, z, delta, rho, dlam, info)
-end
-
-function slasrt_error(id, n, d, info)
-    ccall((:slasrt_error, libmagma), Cvoid, (Cstring, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}), id, n, d, info)
-end
-
 function sbdt01_error(m, n, kd, A, lda, Q, ldq, d, e, Pt, ldpt, work, resid)
     ccall((:sbdt01_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{Cfloat}, Ptr{magma_int_t}, Ptr{Cfloat}, Ptr{Cfloat}), m, n, kd, A, lda, Q, ldq, d, e, Pt, ldpt, work, resid)
 end
@@ -7150,10 +6953,6 @@ function magmablas_ssyrk_internal_vbatched(uplo, trans, n, k, alpha, dA_array, l
     ccall((:magmablas_ssyrk_internal_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, max_n, max_k, batchCount, queue)
 end
 
-function magmablas_ssyrk_internal_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, max_n, max_k, batchCount, queue)
-    ccall((:magmablas_ssyrk_internal_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, max_n, max_k, batchCount, queue)
-end
-
 function magmablas_ssyrk_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
     ccall((:magmablas_ssyrk_vbatched_max_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
 end
@@ -7168,38 +6967,6 @@ end
 
 function magmablas_ssyrk_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
     ccall((:magmablas_ssyrk_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_ssyrk_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_ssyrk_vbatched_max_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_ssyrk_vbatched_max(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_ssyrk_vbatched_max, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_ssyrk_vbatched_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_ssyrk_vbatched_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_ssyrk_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_ssyrk_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_ssyr2k_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_ssyr2k_vbatched_max_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_ssyr2k_vbatched_max(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-    ccall((:magmablas_ssyr2k_vbatched_max, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
-end
-
-function magmablas_ssyr2k_vbatched_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_ssyr2k_vbatched_nocheck, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-end
-
-function magmablas_ssyr2k_vbatched(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
-    ccall((:magmablas_ssyr2k_vbatched, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, Cfloat, Ptr{Ptr{Cfloat}}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, queue)
 end
 
 function magmablas_ssyr2k_vbatched_max_nocheck(uplo, trans, n, k, alpha, dA_array, ldda, dB_array, lddb, beta, dC_array, lddc, batchCount, max_n, max_k, queue)
@@ -7357,9 +7124,9 @@ function magma_queue_get_cuda_stream()
     ccall((:magma_queue_get_cuda_stream, libmagma), Cint, ())
 end
 
-function magma_queue_get_cublas_handle(queue)
-    ccall((:magma_queue_get_cublas_handle, libmagma), cublasHandle_t, (magma_queue_t,), queue)
-end
+# function magma_queue_get_cublas_handle(queue)
+#     ccall((:magma_queue_get_cublas_handle, libmagma), cublasHandle_t, (magma_queue_t,), queue)
+# end
 
 function magma_queue_get_cusparse_handle()
     ccall((:magma_queue_get_cusparse_handle, libmagma), Cint, ())
@@ -7560,22 +7327,22 @@ end
 function lapacke_storev_const(magma_const)
     ccall((:lapacke_storev_const, libmagma), UInt8, (magma_storev_t,), magma_const)
 end
-
-function cublas_trans_const(trans)
-    ccall((:cublas_trans_const, libmagma), cublasOperation_t, (magma_trans_t,), trans)
-end
-
-function cublas_uplo_const(uplo)
-    ccall((:cublas_uplo_const, libmagma), cublasFillMode_t, (magma_uplo_t,), uplo)
-end
-
-function cublas_diag_const(diag)
-    ccall((:cublas_diag_const, libmagma), cublasDiagType_t, (magma_diag_t,), diag)
-end
-
-function cublas_side_const(side)
-    ccall((:cublas_side_const, libmagma), cublasSideMode_t, (magma_side_t,), side)
-end
+#
+# function cublas_trans_const(trans)
+#     ccall((:cublas_trans_const, libmagma), cublasOperation_t, (magma_trans_t,), trans)
+# end
+#
+# function cublas_uplo_const(uplo)
+#     ccall((:cublas_uplo_const, libmagma), cublasFillMode_t, (magma_uplo_t,), uplo)
+# end
+#
+# function cublas_diag_const(diag)
+#     ccall((:cublas_diag_const, libmagma), cublasDiagType_t, (magma_diag_t,), diag)
+# end
+#
+# function cublas_side_const(side)
+#     ccall((:cublas_side_const, libmagma), cublasSideMode_t, (magma_side_t,), side)
+# end
 # Julia wrapper for header: magma_v2.h
 # Automatically generated using Clang.jl
 
@@ -7721,18 +7488,6 @@ end
 
 function magma_prefix_sum_outofplace_w(ivec, ovec, length, workspace, lwork, queue)
     ccall((:magma_prefix_sum_outofplace_w, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, magma_int_t, Ptr{magma_int_t}, magma_int_t, magma_queue_t), ivec, ovec, length, workspace, lwork, queue)
-end
-
-function magma_imax_size_1(n, l, queue)
-    ccall((:magma_imax_size_1, libmagma), Cvoid, (Ptr{magma_int_t}, magma_int_t, magma_queue_t), n, l, queue)
-end
-
-function magma_imax_size_2(m, n, l, queue)
-    ccall((:magma_imax_size_2, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), m, n, l, queue)
-end
-
-function magma_imax_size_3(m, n, k, l, queue)
-    ccall((:magma_imax_size_3, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, magma_int_t, magma_queue_t), m, n, k, l, queue)
 end
 # Julia wrapper for header: magma_z.h
 # Automatically generated using Clang.jl
@@ -8496,14 +8251,14 @@ end
 function magma_zdisplace_pointers(output_array, input_array, lda, row, column, batchCount, queue)
     ccall((:magma_zdisplace_pointers, libmagma), Cvoid, (Ptr{Ptr{magmaDoubleComplex}}, Ptr{Ptr{magmaDoubleComplex}}, magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_queue_t), output_array, input_array, lda, row, column, batchCount, queue)
 end
-
-function magma_zrecommend_cublas_gemm_batched(transa, transb, m, n, k)
-    ccall((:magma_zrecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
-
-function magma_zrecommend_cublas_gemm_stream(transa, transb, m, n, k)
-    ccall((:magma_zrecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
-end
+#
+# function magma_zrecommend_cublas_gemm_batched(transa, transb, m, n, k)
+#     ccall((:magma_zrecommend_cublas_gemm_batched, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
+#
+# function magma_zrecommend_cublas_gemm_stream(transa, transb, m, n, k)
+#     ccall((:magma_zrecommend_cublas_gemm_stream, libmagma), magma_int_t, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t), transa, transb, m, n, k)
+# end
 
 function magma_get_zpotrf_batched_nbparam(n, nb, recnb)
     ccall((:magma_get_zpotrf_batched_nbparam, libmagma), Cvoid, (magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), n, nb, recnb)
@@ -8861,10 +8616,6 @@ function magma_zpotf2_zdotc_batched(n, x_array, incx, offset, info_array, gbstep
     ccall((:magma_zpotf2_zdotc_batched, libmagma), Cvoid, (magma_int_t, Ptr{Ptr{magmaDoubleComplex}}, magma_int_t, magma_int_t, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), n, x_array, incx, offset, info_array, gbstep, batchCount, queue)
 end
 
-function setup_pivinfo(pivinfo, ipiv, m, nb, queue)
-    ccall((:setup_pivinfo, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, magma_int_t, magma_int_t, magma_queue_t), pivinfo, ipiv, m, nb, queue)
-end
-
 function magmablas_zgeadd_batched(m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
     ccall((:magmablas_zgeadd_batched, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex, Ptr{magmaDoubleComplex_const_ptr}, magma_int_t, Ptr{magmaDoubleComplex_ptr}, magma_int_t, magma_int_t, magma_queue_t), m, n, alpha, dAarray, ldda, dBarray, lddb, batchCount, queue)
 end
@@ -9092,10 +8843,6 @@ function magma_zbulge_getlwstg2(n, threads, wantz, Vblksiz, ldv, ldt, blkcnt, si
     ccall((:magma_zbulge_getlwstg2, libmagma), magma_int_t, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n, threads, wantz, Vblksiz, ldv, ldt, blkcnt, sizTAU2, sizT2, sizV2)
 end
 
-function magma_bulge_get_VTsiz(n, nb, threads, Vblksiz, ldv, ldt)
-    ccall((:magma_bulge_get_VTsiz, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n, nb, threads, Vblksiz, ldv, ldt)
-end
-
 function magma_zheevdx_getworksize(n, threads, wantz, lwmin, lrwmin, liwmin)
     ccall((:magma_zheevdx_getworksize, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n, threads, wantz, lwmin, lrwmin, liwmin)
 end
@@ -9110,14 +8857,6 @@ end
 # Julia wrapper for header: magma_zbulgeinc.h
 # Automatically generated using Clang.jl
 
-
-function findVTpos(N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-    ccall((:findVTpos, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, sweep, st, Vpos, TAUpos, Tpos, myblkid)
-end
-
-function findVTsiz(N, NB, Vblksiz, blkcnt, LDV)
-    ccall((:findVTsiz, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, Ptr{magma_int_t}, Ptr{magma_int_t}), N, NB, Vblksiz, blkcnt, LDV)
-end
 # Julia wrapper for header: magma_zc.h
 # Automatically generated using Clang.jl
 
@@ -9646,38 +9385,6 @@ end
 
 function zunmtr_error(side, uplo, trans, m, n, A, lda, tau, C, ldc, work, lwork, info)
     ccall((:zunmtr_error, libmagma), Cvoid, (Cstring, Cstring, Cstring, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magmaDoubleComplex}, Ptr{magma_int_t}, Ptr{magmaDoubleComplex}, Ptr{magmaDoubleComplex}, Ptr{magma_int_t}, Ptr{magmaDoubleComplex}, Ptr{magma_int_t}, Ptr{magma_int_t}), side, uplo, trans, m, n, A, lda, tau, C, ldc, work, lwork, info)
-end
-
-function dstebz_error(range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit, work, iwork, info)
-    ccall((:dstebz_error, libmagma), Cvoid, (Cstring, Cstring, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{magma_int_t}), range, order, n, vl, vu, il, iu, abstol, d, e, m, nsplit, w, iblock, isplit, work, iwork, info)
-end
-
-function dlaln2_error(ltrans, na, nw, smin, ca, a, lda, d1, d2, b, ldb, wr, wi, x, ldx, scale, xnorm, info)
-    ccall((:dlaln2_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), ltrans, na, nw, smin, ca, a, lda, d1, d2, b, ldb, wr, wi, x, ldx, scale, xnorm, info)
-end
-
-function dlamc3_error(a, b)
-    ccall((:dlamc3_error, libmagma), Cdouble, (Ptr{Cdouble}, Ptr{Cdouble}), a, b)
-end
-
-function dlamrg_error(n1, n2, a, dtrd1, dtrd2, index)
-    ccall((:dlamrg_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), n1, n2, a, dtrd1, dtrd2, index)
-end
-
-function dlapy3_error(x, y, z)
-    ccall((:dlapy3_error, libmagma), Cdouble, (Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}), x, y, z)
-end
-
-function dlaed2_error(k, n, n1, d, q, ldq, indxq, rho, z, dlamda, w, q2, indx, indxc, indxp, coltyp, info)
-    ccall((:dlaed2_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{magma_int_t}), k, n, n1, d, q, ldq, indxq, rho, z, dlamda, w, q2, indx, indxc, indxp, coltyp, info)
-end
-
-function dlaed4_error(n, i, d, z, delta, rho, dlam, info)
-    ccall((:dlaed4_error, libmagma), Cvoid, (Ptr{magma_int_t}, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{Cdouble}, Ptr{magma_int_t}), n, i, d, z, delta, rho, dlam, info)
-end
-
-function dlasrt_error(id, n, d, info)
-    ccall((:dlasrt_error, libmagma), Cvoid, (Cstring, Ptr{magma_int_t}, Ptr{Cdouble}, Ptr{magma_int_t}), id, n, d, info)
 end
 
 function zbdt01_error(m, n, kd, A, lda, Q, ldq, d, e, Pt, ldpt, work, rwork, resid)
@@ -10910,14 +10617,6 @@ function magmablas_dtranspose_inplace(n, dA, ldda, queue)
     ccall((:magmablas_dtranspose_inplace, libmagma), Cvoid, (magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t), n, dA, ldda, queue)
 end
 
-function magmablas_dtranspose_inplace(n, dA, ldda, queue)
-    ccall((:magmablas_dtranspose_inplace, libmagma), Cvoid, (magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t), n, dA, ldda, queue)
-end
-
-function magmablas_dtranspose(m, n, dA, ldda, dAT, lddat, queue)
-    ccall((:magmablas_dtranspose, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t), m, n, dA, ldda, dAT, lddat, queue)
-end
-
 function magmablas_dtranspose(m, n, dA, ldda, dAT, lddat, queue)
     ccall((:magmablas_dtranspose, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t), m, n, dA, ldda, dAT, lddat, queue)
 end
@@ -11182,14 +10881,6 @@ function magmablas_dsymv(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, que
     ccall((:magmablas_dsymv, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, queue)
 end
 
-function magmablas_dsymv(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, queue)
-    ccall((:magmablas_dsymv, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, queue)
-end
-
-function magmablas_dsymv_work(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
-    ccall((:magmablas_dsymv_work, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
-end
-
 function magmablas_dsymv_work(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
     ccall((:magmablas_dsymv_work, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
 end
@@ -11290,16 +10981,8 @@ function magma_ddot(n, dx, incx, dy, incy, queue)
     ccall((:magma_ddot, libmagma), Cdouble, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, magma_queue_t), n, dx, incx, dy, incy, queue)
 end
 
-function magma_ddot(n, dx, incx, dy, incy, queue)
-    ccall((:magma_ddot, libmagma), Cdouble, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, magma_queue_t), n, dx, incx, dy, incy, queue)
-end
-
 function magma_dnrm2(n, dx, incx, queue)
     ccall((:magma_dnrm2, libmagma), Cdouble, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magma_queue_t), n, dx, incx, queue)
-end
-
-function magma_drot(n, dx, incx, dy, incy, dc, ds, queue)
-    ccall((:magma_drot, libmagma), Cvoid, (magma_int_t, magmaDouble_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, Cdouble, Cdouble, magma_queue_t), n, dx, incx, dy, incy, dc, ds, queue)
 end
 
 function magma_drot(n, dx, incx, dy, incy, dc, ds, queue)
@@ -11316,10 +10999,6 @@ end
 
 function magma_drotmg(d1, d2, x1, y1, param, queue)
     ccall((:magma_drotmg, libmagma), Cvoid, (magmaDouble_ptr, magmaDouble_ptr, magmaDouble_ptr, magmaDouble_const_ptr, magmaDouble_ptr, magma_queue_t), d1, d2, x1, y1, param, queue)
-end
-
-function magma_dscal(n, alpha, dx, incx, queue)
-    ccall((:magma_dscal, libmagma), Cvoid, (magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magma_queue_t), n, alpha, dx, incx, queue)
 end
 
 function magma_dscal(n, alpha, dx, incx, queue)
@@ -11382,18 +11061,6 @@ function magma_dsyrk(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
     ccall((:magma_dsyrk, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
 end
 
-function magma_dsymm(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-    ccall((:magma_dsymm, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magma_queue_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-end
-
-function magma_dsyr2k(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-    ccall((:magma_dsyr2k, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-end
-
-function magma_dsyrk(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
-    ccall((:magma_dsyrk, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
-end
-
 function magma_dtrmm(side, uplo, trans, diag, m, n, alpha, dA, ldda, dB, lddb, queue)
     ccall((:magma_dtrmm, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_trans_t, magma_diag_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t), side, uplo, trans, diag, m, n, alpha, dA, ldda, dB, lddb, queue)
 end
@@ -11419,14 +11086,6 @@ end
 
 function magmablas_dtranspose_inplace_v1(n, dA, ldda)
     ccall((:magmablas_dtranspose_inplace_v1, libmagma), Cvoid, (magma_int_t, magmaDouble_ptr, magma_int_t), n, dA, ldda)
-end
-
-function magmablas_dtranspose_inplace_v1(n, dA, ldda)
-    ccall((:magmablas_dtranspose_inplace_v1, libmagma), Cvoid, (magma_int_t, magmaDouble_ptr, magma_int_t), n, dA, ldda)
-end
-
-function magmablas_dtranspose_v1(m, n, dA, ldda, dAT, lddat)
-    ccall((:magmablas_dtranspose_v1, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t), m, n, dA, ldda, dAT, lddat)
 end
 
 function magmablas_dtranspose_v1(m, n, dA, ldda, dAT, lddat)
@@ -11495,10 +11154,6 @@ end
 
 function magmablas_dlange_v1(norm, m, n, dA, ldda, dwork, lwork)
     ccall((:magmablas_dlange_v1, libmagma), Cdouble, (magma_norm_t, magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t), norm, m, n, dA, ldda, dwork, lwork)
-end
-
-function magmablas_dlansy_v1(norm, uplo, n, dA, ldda, dwork, lwork)
-    ccall((:magmablas_dlansy_v1, libmagma), Cdouble, (magma_norm_t, magma_uplo_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t), norm, uplo, n, dA, ldda, dwork, lwork)
 end
 
 function magmablas_dlansy_v1(norm, uplo, n, dA, ldda, dwork, lwork)
@@ -11633,10 +11288,6 @@ function magmablas_dsymv_v1(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
     ccall((:magmablas_dsymv_v1, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
 end
 
-function magmablas_dsymv_v1(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
-    ccall((:magmablas_dsymv_v1, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
-end
-
 function magmablas_dgemm_v1(transA, transB, m, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
     ccall((:magmablas_dgemm_v1, libmagma), Cvoid, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), transA, transB, m, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
 end
@@ -11649,20 +11300,8 @@ function magmablas_dsymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, d
     ccall((:magmablas_dsymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
 end
 
-function magmablas_dsymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magmablas_dsymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
 function magmablas_dsyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
     ccall((:magmablas_dsyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magmablas_dsyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magmablas_dsyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magmablas_dsyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
-    ccall((:magmablas_dsyrk_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
 end
 
 function magmablas_dsyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
@@ -11729,16 +11368,8 @@ function magma_ddot_v1(n, dx, incx, dy, incy)
     ccall((:magma_ddot_v1, libmagma), Cdouble, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t), n, dx, incx, dy, incy)
 end
 
-function magma_ddot_v1(n, dx, incx, dy, incy)
-    ccall((:magma_ddot_v1, libmagma), Cdouble, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t), n, dx, incx, dy, incy)
-end
-
 function magma_dnrm2_v1(n, dx, incx)
     ccall((:magma_dnrm2_v1, libmagma), Cdouble, (magma_int_t, magmaDouble_const_ptr, magma_int_t), n, dx, incx)
-end
-
-function magma_drot_v1(n, dx, incx, dy, incy, dc, ds)
-    ccall((:magma_drot_v1, libmagma), Cvoid, (magma_int_t, magmaDouble_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, Cdouble, Cdouble), n, dx, incx, dy, incy, dc, ds)
 end
 
 function magma_drot_v1(n, dx, incx, dy, incy, dc, ds)
@@ -11757,20 +11388,12 @@ function magma_dscal_v1(n, alpha, dx, incx)
     ccall((:magma_dscal_v1, libmagma), Cvoid, (magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), n, alpha, dx, incx)
 end
 
-function magma_dscal_v1(n, alpha, dx, incx)
-    ccall((:magma_dscal_v1, libmagma), Cvoid, (magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), n, alpha, dx, incx)
-end
-
 function magma_dswap_v1(n, dx, incx, dy, incy)
     ccall((:magma_dswap_v1, libmagma), Cvoid, (magma_int_t, magmaDouble_ptr, magma_int_t, magmaDouble_ptr, magma_int_t), n, dx, incx, dy, incy)
 end
 
 function magma_dgemv_v1(transA, m, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
     ccall((:magma_dgemv_v1, libmagma), Cvoid, (magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), transA, m, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
-end
-
-function magma_dger_v1(m, n, alpha, dx, incx, dy, incy, dA, ldda)
-    ccall((:magma_dger_v1, libmagma), Cvoid, (magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t), m, n, alpha, dx, incx, dy, incy, dA, ldda)
 end
 
 function magma_dger_v1(m, n, alpha, dx, incx, dy, incy, dA, ldda)
@@ -11805,20 +11428,8 @@ function magma_dsymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, l
     ccall((:magma_dsymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
 end
 
-function magma_dsymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magma_dsymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
 function magma_dsyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
     ccall((:magma_dsyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magma_dsyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magma_dsyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magma_dsyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
-    ccall((:magma_dsyrk_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cdouble, magmaDouble_const_ptr, magma_int_t, Cdouble, magmaDouble_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
 end
 
 function magma_dsyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
@@ -11901,14 +11512,6 @@ end
 
 function magmablas_stranspose_inplace(n, dA, ldda, queue)
     ccall((:magmablas_stranspose_inplace, libmagma), Cvoid, (magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t), n, dA, ldda, queue)
-end
-
-function magmablas_stranspose_inplace(n, dA, ldda, queue)
-    ccall((:magmablas_stranspose_inplace, libmagma), Cvoid, (magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t), n, dA, ldda, queue)
-end
-
-function magmablas_stranspose(m, n, dA, ldda, dAT, lddat, queue)
-    ccall((:magmablas_stranspose, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t), m, n, dA, ldda, dAT, lddat, queue)
 end
 
 function magmablas_stranspose(m, n, dA, ldda, dAT, lddat, queue)
@@ -12175,14 +11778,6 @@ function magmablas_ssymv(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, que
     ccall((:magmablas_ssymv, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, queue)
 end
 
-function magmablas_ssymv(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, queue)
-    ccall((:magmablas_ssymv, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, queue)
-end
-
-function magmablas_ssymv_work(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
-    ccall((:magmablas_ssymv_work, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
-end
-
 function magmablas_ssymv_work(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
     ccall((:magmablas_ssymv_work, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy, dwork, lwork, queue)
 end
@@ -12283,16 +11878,8 @@ function magma_sdot(n, dx, incx, dy, incy, queue)
     ccall((:magma_sdot, libmagma), Cfloat, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, magma_queue_t), n, dx, incx, dy, incy, queue)
 end
 
-function magma_sdot(n, dx, incx, dy, incy, queue)
-    ccall((:magma_sdot, libmagma), Cfloat, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, magma_queue_t), n, dx, incx, dy, incy, queue)
-end
-
 function magma_snrm2(n, dx, incx, queue)
     ccall((:magma_snrm2, libmagma), Cfloat, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magma_queue_t), n, dx, incx, queue)
-end
-
-function magma_srot(n, dx, incx, dy, incy, dc, ds, queue)
-    ccall((:magma_srot, libmagma), Cvoid, (magma_int_t, magmaFloat_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, Cfloat, Cfloat, magma_queue_t), n, dx, incx, dy, incy, dc, ds, queue)
 end
 
 function magma_srot(n, dx, incx, dy, incy, dc, ds, queue)
@@ -12309,10 +11896,6 @@ end
 
 function magma_srotmg(d1, d2, x1, y1, param, queue)
     ccall((:magma_srotmg, libmagma), Cvoid, (magmaFloat_ptr, magmaFloat_ptr, magmaFloat_ptr, magmaFloat_const_ptr, magmaFloat_ptr, magma_queue_t), d1, d2, x1, y1, param, queue)
-end
-
-function magma_sscal(n, alpha, dx, incx, queue)
-    ccall((:magma_sscal, libmagma), Cvoid, (magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magma_queue_t), n, alpha, dx, incx, queue)
 end
 
 function magma_sscal(n, alpha, dx, incx, queue)
@@ -12375,18 +11958,6 @@ function magma_ssyrk(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
     ccall((:magma_ssyrk, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
 end
 
-function magma_ssymm(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-    ccall((:magma_ssymm, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magma_queue_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-end
-
-function magma_ssyr2k(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-    ccall((:magma_ssyr2k, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc, queue)
-end
-
-function magma_ssyrk(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
-    ccall((:magma_ssyrk, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t, magma_queue_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc, queue)
-end
-
 function magma_strmm(side, uplo, trans, diag, m, n, alpha, dA, ldda, dB, lddb, queue)
     ccall((:magma_strmm, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_trans_t, magma_diag_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t), side, uplo, trans, diag, m, n, alpha, dA, ldda, dB, lddb, queue)
 end
@@ -12412,14 +11983,6 @@ end
 
 function magmablas_stranspose_inplace_v1(n, dA, ldda)
     ccall((:magmablas_stranspose_inplace_v1, libmagma), Cvoid, (magma_int_t, magmaFloat_ptr, magma_int_t), n, dA, ldda)
-end
-
-function magmablas_stranspose_inplace_v1(n, dA, ldda)
-    ccall((:magmablas_stranspose_inplace_v1, libmagma), Cvoid, (magma_int_t, magmaFloat_ptr, magma_int_t), n, dA, ldda)
-end
-
-function magmablas_stranspose_v1(m, n, dA, ldda, dAT, lddat)
-    ccall((:magmablas_stranspose_v1, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t), m, n, dA, ldda, dAT, lddat)
 end
 
 function magmablas_stranspose_v1(m, n, dA, ldda, dAT, lddat)
@@ -12488,10 +12051,6 @@ end
 
 function magmablas_slange_v1(norm, m, n, dA, ldda, dwork, lwork)
     ccall((:magmablas_slange_v1, libmagma), Cfloat, (magma_norm_t, magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t), norm, m, n, dA, ldda, dwork, lwork)
-end
-
-function magmablas_slansy_v1(norm, uplo, n, dA, ldda, dwork, lwork)
-    ccall((:magmablas_slansy_v1, libmagma), Cfloat, (magma_norm_t, magma_uplo_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t), norm, uplo, n, dA, ldda, dwork, lwork)
 end
 
 function magmablas_slansy_v1(norm, uplo, n, dA, ldda, dwork, lwork)
@@ -12626,10 +12185,6 @@ function magmablas_ssymv_v1(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
     ccall((:magmablas_ssymv_v1, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
 end
 
-function magmablas_ssymv_v1(uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
-    ccall((:magmablas_ssymv_v1, libmagma), magma_int_t, (magma_uplo_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
-end
-
 function magmablas_sgemm_v1(transA, transB, m, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
     ccall((:magmablas_sgemm_v1, libmagma), Cvoid, (magma_trans_t, magma_trans_t, magma_int_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), transA, transB, m, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
 end
@@ -12642,20 +12197,8 @@ function magmablas_ssymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, d
     ccall((:magmablas_ssymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
 end
 
-function magmablas_ssymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magmablas_ssymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
 function magmablas_ssyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
     ccall((:magmablas_ssyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magmablas_ssyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magmablas_ssyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magmablas_ssyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
-    ccall((:magmablas_ssyrk_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
 end
 
 function magmablas_ssyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
@@ -12722,16 +12265,8 @@ function magma_sdot_v1(n, dx, incx, dy, incy)
     ccall((:magma_sdot_v1, libmagma), Cfloat, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t), n, dx, incx, dy, incy)
 end
 
-function magma_sdot_v1(n, dx, incx, dy, incy)
-    ccall((:magma_sdot_v1, libmagma), Cfloat, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t), n, dx, incx, dy, incy)
-end
-
 function magma_snrm2_v1(n, dx, incx)
     ccall((:magma_snrm2_v1, libmagma), Cfloat, (magma_int_t, magmaFloat_const_ptr, magma_int_t), n, dx, incx)
-end
-
-function magma_srot_v1(n, dx, incx, dy, incy, dc, ds)
-    ccall((:magma_srot_v1, libmagma), Cvoid, (magma_int_t, magmaFloat_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, Cfloat, Cfloat), n, dx, incx, dy, incy, dc, ds)
 end
 
 function magma_srot_v1(n, dx, incx, dy, incy, dc, ds)
@@ -12750,20 +12285,12 @@ function magma_sscal_v1(n, alpha, dx, incx)
     ccall((:magma_sscal_v1, libmagma), Cvoid, (magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), n, alpha, dx, incx)
 end
 
-function magma_sscal_v1(n, alpha, dx, incx)
-    ccall((:magma_sscal_v1, libmagma), Cvoid, (magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), n, alpha, dx, incx)
-end
-
 function magma_sswap_v1(n, dx, incx, dy, incy)
     ccall((:magma_sswap_v1, libmagma), Cvoid, (magma_int_t, magmaFloat_ptr, magma_int_t, magmaFloat_ptr, magma_int_t), n, dx, incx, dy, incy)
 end
 
 function magma_sgemv_v1(transA, m, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
     ccall((:magma_sgemv_v1, libmagma), Cvoid, (magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), transA, m, n, alpha, dA, ldda, dx, incx, beta, dy, incy)
-end
-
-function magma_sger_v1(m, n, alpha, dx, incx, dy, incy, dA, ldda)
-    ccall((:magma_sger_v1, libmagma), Cvoid, (magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t), m, n, alpha, dx, incx, dy, incy, dA, ldda)
 end
 
 function magma_sger_v1(m, n, alpha, dx, incx, dy, incy, dA, ldda)
@@ -12798,20 +12325,8 @@ function magma_ssymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, l
     ccall((:magma_ssymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
 end
 
-function magma_ssymm_v1(side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magma_ssymm_v1, libmagma), Cvoid, (magma_side_t, magma_uplo_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), side, uplo, m, n, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
 function magma_ssyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
     ccall((:magma_ssyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magma_ssyr2k_v1(uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-    ccall((:magma_ssyr2k_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, dB, lddb, beta, dC, lddc)
-end
-
-function magma_ssyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
-    ccall((:magma_ssyrk_v1, libmagma), Cvoid, (magma_uplo_t, magma_trans_t, magma_int_t, magma_int_t, Cfloat, magmaFloat_const_ptr, magma_int_t, Cfloat, magmaFloat_ptr, magma_int_t), uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
 end
 
 function magma_ssyrk_v1(uplo, trans, n, k, alpha, dA, ldda, beta, dC, lddc)
