@@ -74,6 +74,8 @@ function site_expectation_value(G_list, l_list, O)
     # Expectation value for a site operator
     E = []
     for isite in 1:2
+        Gisite = G[isite]
+        Disit = diagm(0=>l_list[mod(isite, 2) + 1])
         # TODO: complete the codes
     end
     
