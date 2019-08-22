@@ -2,6 +2,7 @@ using TensorOperations
 using QuadGK
 using LinearAlgebra
 using Einsum
+using Statistics
 
 function itebd(G_list, l_list, U, chi)
     d = size(G_list[1])[1]
@@ -22,31 +23,42 @@ function itebd(G_list, l_list, U, chi)
         Dia = diagm(0=>l_list[ia])
         Dib = diagm(0=>l_list[ib])
         println("Dia: ", Dia)
-        theta = zeros((size(Dib, 1), size(Gia, 1), size(Gib, 1), size(Dib, 2)))
-        @tensor theta[i, j, k, l] = Dib[i, b] * Gia[j, b, d] * Dia[d, e] * Gib[k, e, g] * Dib[g, l]
+        theta0 = zeros((size(Dib, 1), size(Gia, 1), size(Gib, 1), size(Dib, 2)))
+        theta  = zeros((size(Dib, 1), size(Dib, 2), size(Gia, 1), size(Gib, 1)))
+        @tensor theta0[i, j, k, l] = Dib[i, b] * Gia[j, b, d] * Dia[d, e] * Gib[k, e, g] * Dib[g, l]
+        println("theta = ", theta0)
+        println("Size of theta0 = ", size(theta0))
 
         # Apply U 
-        @tensor theta[i, j, k, l] = theta[i, a, b, j] * reshape(U, (d, d, d, d))[a, b, k, l]
+        tempU = reshape(U, (d,d,d,d))
+        println("Size of temp U = ", size(tempU))
+        println("Size of theta = ", size(theta))
+        @tensor theta[i, j, k, l] = theta0[i, a, b, j] * tempU[a, b, k, l]
 
         # SVD
-        theta = reshape(transpose(theta, (3, 1, 4, 2)), (d * chi1, d * chi3))
+        theta = reshape(permutedims(theta, (3, 1, 4, 2)), (d * chi1, d * chi3))
         X, Y, Z = svd(theta)
-        Z = Z.transpose()
-
-        chi2 = min([sum(Y > 10. ^ (-10)), chi_max])
+        println("X=",X)
+        println("Y=",Y)
+        println("Z=",Z)
+        Z = permutedims(Z)
+        notzero = [Real(y > 10. ^ (-10)) for y in Y]
+        println("notezero=",notzero)
+        println("Sum = ", sum(notzero))
+        chi2 = minimum([sum(notzero), chi_max])
 
         # Truncate
-        l_list[ia] = Y[1:chi2] / sqrt(sum(Y[1:chi2] ^ 2))
+        l_list[ia] = Y[1:chi2] / sqrt(sum(Y[1:chi2] .^ 2))
 
-        X = reshape(X[:, 0:chi2], (d, chi1, chi2))
+        X = reshape(X[:, 1:chi2], (d, chi1, chi2))
 
-        Dibinv = diag(l_list[ib] ^ (-1))
+        Dibinv = diagm(0=>l_list[ib] .^ (-1))
 
         temp = zeros(size(Dibinv, 1), size(X, 1), size(X, 3))
         @tensor temp[i, j, k]=Dibinv[i, a]*X[j, a, k]
         G_list[ia] = permutedims(temp, (2, 1, 3))
 
-        Z = permutedims(reshape(Z[:, 1:chi2], (d, chi3, chi2)), (0, 2, 1))
+        Z = permutedims(reshape(Z[:, 1:chi2], (d, chi3, chi2)), (1, 3, 2))
         temp2 = zeros(size(Z, 1), size(Z, 2), size(Dibinv, 2))
         @tensor temp2[i, j, k]=Z[i, j, a]*Dibinv[a, k]
         G_list[ib] = temp2
@@ -82,7 +94,7 @@ end
 # Define the simulation parameters
 chi_max   = 10
 δ       = 0.01
-N       = 1000
+N       = 2
 d       = 2
 g       = 0.5
 
@@ -107,7 +119,7 @@ la = zeros(1)
 la[1] = 1.
 lb = zeros(1)
 lb[1] = 1.
-l_list = [la lb]
+l_list = [la, lb]
 
 for step in 1:4
     itebd(G_list, l_list, U, chi_max)
