@@ -3,7 +3,7 @@ using QuadGK
 using LinearAlgebra
 using Einsum
 
-function itebd(G_list, l_list, U, χ)
+function itebd(G_list, l_list, U, chi)
     d = size(G_list[1])[1]
 
     for ibond in [0 1]
@@ -11,15 +11,50 @@ function itebd(G_list, l_list, U, χ)
         ia = mod(ibond, 2) + 1
         ib = mod(ibond + 1, 2) + 1
 
-        χ1 = size(G_list[ia])[2]
-        χ3 = size(G_list[ib])[3]
+        chi1 = size(G_list[ia])[2]
+        chi3 = size(G_list[ib])[3]
 
         # Construct theta
         Gia = G_list[ia]
         Gib = G_list[ib]
-        Dia = diagm(0=>l_list[ib])
+        println("GIA ", Gia)
+        println("l list = ", l_list)
+        Dia = diagm(0=>l_list[ia])
+        Dib = diagm(0=>l_list[ib])
+        println("Dia: ", Dia)
+        theta = zeros((size(Dib, 1), size(Gia, 1), size(Gib, 1), size(Dib, 2)))
+        @tensor theta[i, j, k, l] = Dib[i, b] * Gia[j, b, d] * Dia[d, e] * Gib[k, e, g] * Dib[g, l]
 
+        # Apply U 
+        @tensor theta[i, j, k, l] = theta[i, a, b, j] * reshape(U, (d, d, d, d))[a, b, k, l]
+
+        # SVD
+        theta = reshape(transpose(theta, (3, 1, 4, 2)), (d * chi1, d * chi3))
+        X, Y, Z = svd(theta)
+        Z = Z.transpose()
+
+        chi2 = min([sum(Y > 10. ^ (-10)), chi_max])
+
+        # Truncate
+        l_list[ia] = Y[1:chi2] / sqrt(sum(Y[1:chi2] ^ 2))
+
+        X = reshape(X[:, 0:chi2], (d, chi1, chi2))
+
+        Dibinv = diag(l_list[ib] ^ (-1))
+
+        temp = zeros(size(Dibinv, 1), size(X, 1), size(X, 3))
+        @tensor temp[i, j, k]=Dibinv[i, a]*X[j, a, k]
+        G_list[ia] = permutedims(temp, (2, 1, 3))
+
+        Z = permutedims(reshape(Z[:, 1:chi2], (d, chi3, chi2)), (0, 2, 1))
+        temp2 = zeros(size(Z, 1), size(Z, 2), size(Dibinv, 2))
+        @tensor temp2[i, j, k]=Z[i, j, a]*Dibinv[a, k]
+        G_list[ib] = temp2
+
+        println("G list: ", G_list)
+        
         # TODO: complete the codes
+
     end
 end
 
@@ -45,7 +80,7 @@ function bond_expectation_value(G_list, l_list, O)
 end
 
 # Define the simulation parameters
-χ_max   = 10
+chi_max   = 10
 δ       = 0.01
 N       = 1000
 d       = 2
@@ -75,7 +110,7 @@ lb[1] = 1.
 l_list = [la lb]
 
 for step in 1:4
-    itebd(G_list, l_list, U, χ_max)
+    itebd(G_list, l_list, U, chi_max)
 end
 println("m       = ", mean(site_expectation_value(G_list, l_list, sz)))
 println("E_itebd = ", mean(bond_expectation_value(G_list, l_list, H)))
