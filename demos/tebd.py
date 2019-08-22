@@ -4,7 +4,7 @@ from scipy import integrate
 
 
 def itebd(G_list, l_list, U, chi_max):
-    " Updates the G and s matrices using U and the TEBD protocol "
+    """ Updates the G and s matrices using U and the TEBD protocol """
     d = G_list[0].shape[0]
 
     for ibond in [0, 1]:
