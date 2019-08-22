@@ -8,7 +8,7 @@ def itebd(G_list, l_list, U, chi_max):
     d = G_list[0].shape[0]
 
     for ibond in [0, 1]:
-        ia = np.mod(ibond, 2);
+        ia = np.mod(ibond, 2)
         ib = np.mod(ibond + 1, 2)
 
         chi1 = G_list[ia].shape[1]
@@ -25,7 +25,7 @@ def itebd(G_list, l_list, U, chi_max):
 
         # SVD
         theta = np.reshape(np.transpose(theta, (2, 0, 3, 1)), (d * chi1, d * chi3))  # ip a jp b
-        X, Y, Z = np.linalg.svd(theta);
+        X, Y, Z = np.linalg.svd(theta)
         Z = Z.T
         chi2 = np.min([np.sum(Y > 10. ** (-10)), chi_max])
 
@@ -54,7 +54,7 @@ def bond_expectation_value(G_list, l_list, O):
     " Expectation value for a site operator "
     E = []
     for ibond in range(0, 2):
-        ia = np.mod(ibond, 2);
+        ia = np.mod(ibond, 2)
         ib = np.mod(ibond + 1, 2)
         theta = np.tensordot(np.diag(l_list[ib]), G_list[ia], axes=(1, 1))
         theta = np.tensordot(theta, np.diag(l_list[ia], 0), axes=(2, 0))
@@ -67,8 +67,8 @@ def bond_expectation_value(G_list, l_list, O):
 
 
 ######## Define the simulation parameter ######################
-chi_max = 10;
-delta = 0.01;
+chi_max = 10
+delta = 0.01
 N = 1000;
 d = 2;
 g = 0.5
@@ -81,15 +81,15 @@ H = -np.kron(sz, sz) + g * np.kron(sx, np.eye(2, 2))
 U = expm(-delta * H)
 
 ############### Initial state : |0000> ########################
-Ga = np.zeros((d, 1, 1), dtype=float);
+Ga = np.zeros((d, 1, 1), dtype=float)
 Ga[0, 0, 0] = 1.
-Gb = np.zeros((d, 1, 1), dtype=float);
+Gb = np.zeros((d, 1, 1), dtype=float)
 Gb[0, 0, 0] = 1.
 G_list = [Ga, Gb]
 
-la = np.zeros(1);
+la = np.zeros(1)
 la[0] = 1.
-lb = np.zeros(1);
+lb = np.zeros(1)
 lb[0] = 1.
 l_list = [la, lb]
 
