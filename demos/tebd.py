@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.linalg import expm
 from scipy import integrate
-
+import time
 
 def itebd(G_list, l_list, U, chi_max):
     """ Updates the G and s matrices using U and the TEBD protocol """
@@ -10,22 +10,44 @@ def itebd(G_list, l_list, U, chi_max):
     for ibond in [0, 1]:
         ia = np.mod(ibond, 2)
         ib = np.mod(ibond + 1, 2)
+        #print("ia = ", ia, "\nib = ", ib)
 
         chi1 = G_list[ia].shape[1]
         chi3 = G_list[ib].shape[2]
+        # print(chi1, chi3)
 
         # Construct theta
-        theta = np.tensordot(np.diag(l_list[ib]), G_list[ia], axes=(1, 1))
-        theta = np.tensordot(theta, np.diag(l_list[ia], 0), axes=(2, 0))
-        theta = np.tensordot(theta, G_list[ib], axes=(2, 1))
-        theta = np.tensordot(theta, np.diag(l_list[ib], 0), axes=(3, 0))
+        Dia = np.diag(l_list[ia])
+        Dib = np.diag(l_list[ib])
+        Gia = (G_list[ia])
+        Gib = (G_list[ib])
+
+        # print("Dia: ", Dia)
+        # print("Dib: ", Dib)
+        # print("Gia: ", Gia)
+        # print("Gib: ", Gib)
+
+        theta = np.tensordot(Dib, Gia, axes=(1, 1))
+        # print("theta1: ", theta)
+        theta = np.tensordot(theta, Dia, axes=(2, 0))
+        # print("theta2: ", theta)
+        theta = np.tensordot(theta, Gib, axes=(2, 1))
+        # print("theta3: ", theta)
+        theta = np.tensordot(theta, Dib, axes=(3, 0))
+        # print("theta4: ", theta)
 
         # Apply U
-        theta = np.tensordot(theta, np.reshape(U, (d, d, d, d)), axes=([1, 2], [0, 1]))
+        Ur = np.reshape(U, (d, d, d, d))
+        # print("Ur = ", Ur)
+        theta = np.tensordot(theta, Ur, axes=([1, 2], [0, 1]))
 
         # SVD
         theta = np.reshape(np.transpose(theta, (2, 0, 3, 1)), (d * chi1, d * chi3))  # ip a jp b
+        # print("Theta = ", theta)
         X, Y, Z = np.linalg.svd(theta)
+        # print("X=",X)
+        # print("Y=",Y)
+        # print("Z=",Z)
         Z = Z.T
         chi2 = np.min([np.sum(Y > 10. ** (-10)), chi_max])
 
@@ -37,6 +59,7 @@ def itebd(G_list, l_list, U, chi_max):
 
         Z = np.transpose(np.reshape(Z[:, 0:chi2], (d, chi3, chi2)), (0, 2, 1))
         G_list[ib] = np.tensordot(Z, np.diag(l_list[ib] ** (-1)), axes=(2, 0))
+        # print("G list = ", G_list)
 
 
 def site_expectation_value(G_list, l_list, O):
@@ -65,11 +88,11 @@ def bond_expectation_value(G_list, l_list, O):
 
     return (E)
 
-
+begin = time.time()
 ######## Define the simulation parameter ######################
 chi_max = 10
 delta = 0.01
-N = 1000
+N = 200
 d = 2
 g = 0.5
 
@@ -79,6 +102,7 @@ sz = np.array([[1., 0.], [0., -1.]])
 
 H = -1 * np.kron(sz, sz) + g * np.kron(sx, np.eye(2, 2))
 U = expm(-delta * H)
+# print("U=", U)
 
 ############### Initial state : |0000> ########################
 Ga = np.zeros((d, 1, 1), dtype=float)
@@ -102,3 +126,5 @@ print("E_itebd = ", np.mean(bond_expectation_value(G_list, l_list, H)))
 f = lambda k, g: -2 * np.sqrt(1 + g ** 2 - 2 * g * np.cos(k)) / np.pi / 2.
 E0_exact = integrate.quad(f, 0, np.pi, args=(g,))[0]
 print("E_exact = ", E0_exact)
+end = time.time()
+print("Time elapsed: ", end-begin)
