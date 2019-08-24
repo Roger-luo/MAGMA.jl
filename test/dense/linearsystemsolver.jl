@@ -22,7 +22,7 @@ import LinearAlgebra.LAPACK: gels!, gesv!
     magma_init()
     # result = interface == "GPU" ? magma_gels!(MAGMA.MagmaNoTrans, dA, dB) : magma_gels!(MAGMA.MagmaNoTrans, A_copy, B_copy)
     result = magma_gels!(MAGMA.MagmaNoTrans, A_test, B_test)
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
@@ -50,7 +50,7 @@ end
 
     magma_init()
     result = magma_gesv!(A_test, B_test)
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)

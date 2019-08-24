@@ -31,7 +31,7 @@ import LinearAlgebra.LAPACK: gebrd!
     s = result[2]
 
     # finalize the MAGMA lib, serving as a necessary part after working
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     @test S ≈ s
@@ -67,7 +67,7 @@ end
     s = result[2]
 
     # finalize the MAGMA lib, serving as a necessary part after working
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     @test S ≈ s
@@ -96,7 +96,7 @@ end
     result = magma_gebrd!(matrixToTest_copy)
 
     # finalize the MAGMA lib, serving as a necessary part after working
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for index in 1:length(result)
