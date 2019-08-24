@@ -46,24 +46,33 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                 jobvt_magma     = char_to_magmaInt(jobvt)
 
                 for i in 1:2
-                    println("@magmafunc(gesvd): ", @magmafunc($gesvd))
-                    ccall((@magmafunc($gesvd), libmagma), Cint,
-                            (Cint, Cint,
-                            Cint, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{$relty},
-                            Ptr{$elty}, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{$elty}, Cint,
-                            Ptr{Cint}),
-                            jobu_magma, jobvt_magma,
-                            m, n,
-                            A, lda,
-                            S,
-                            U, ldu,
-                            VT, ldvt,
-                            work, lwork,
-                            info)
+                    # println("@magmafunc(gesvd): ", @magmafunc($gesvd))
+                    func = eval(@magmafunc($gesvd))
+                    func(jobu_magma, jobvt_magma,
+                        m, n,
+                        A, lda,
+                        S,
+                        U, ldu,
+                        VT, ldvt,
+                        work, lwork,
+                        info)
+                    # ccall((@magmafunc($gesvd), libmagma), Cint,
+                    #         (Cint, Cint,
+                    #         Cint, Cint,
+                    #         Ptr{$elty}, Cint,
+                    #         Ptr{$relty},
+                    #         Ptr{$elty}, Cint,
+                    #         Ptr{$elty}, Cint,
+                    #         Ptr{$elty}, Cint,
+                    #         Ptr{Cint}),
+                    #         jobu_magma, jobvt_magma,
+                    #         m, n,
+                    #         A, lda,
+                    #         S,
+                    #         U, ldu,
+                    #         VT, ldvt,
+                    #         work, lwork,
+                    #         info)
                     if i == 1
                         lwork = ceil(Int, real(work[1]))
                         resize!(work, lwork)
