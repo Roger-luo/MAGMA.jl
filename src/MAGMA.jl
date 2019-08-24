@@ -9,7 +9,7 @@ export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_
 export magma_gesv!
 
 # export some wrappers in clang auto-generation
-export magma_init
+export magma_init, magma_finalize
 
 # MAGMA enum constants
 # the whole file will be stored as enums.jl
