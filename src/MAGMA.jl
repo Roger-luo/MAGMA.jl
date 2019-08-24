@@ -11,23 +11,8 @@ export magma_gesv!
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize
 
-# MAGMA enum constants
-# the whole file will be stored as enums.jl
-#just like in JuliaGPU/MAGMA.jl
-
-# MAGMA constants indicating the vectors status
-# as input/output for some functions
-# For example, the gesvd functions will use
-# MagmaNoVec, MagmaSomeVec, MagmaAllVec and
-# MagmaOverwriteVec to indicate the
-# strategies that will be applied to the SVD
-# U matrix and VT matrix in A = U Σ V**T
-# (for MagmaOverwriteVec it is going to overwrite A)
-# include("enums.jl")
 include("clang/libmagma_common.jl")
 include("clang/libmagma_api.jl")
-
-
 
 """
 the path to magma binary
