@@ -19,7 +19,7 @@ import LinearAlgebra.LAPACK: gels!, gesv!
 
     right_answer = gels!('N', A, B)
 
-    magmaInit()
+    magma_init()
     # result = interface == "GPU" ? magma_gels!(MAGMA.MagmaNoTrans, dA, dB) : magma_gels!(MAGMA.MagmaNoTrans, A_copy, B_copy)
     result = magma_gels!(MAGMA.MagmaNoTrans, A_test, B_test)
     magmaFinalize()
@@ -48,7 +48,7 @@ end
 
     right_answer = gesv!(A, B)
 
-    magmaInit()
+    magma_init()
     result = magma_gesv!(A_test, B_test)
     magmaFinalize()
 
