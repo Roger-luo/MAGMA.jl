@@ -49,23 +49,23 @@ function itebd(G_list, l_list, U, chi)
         # @tensor theta[i, j, k, l] := theta0[i, a, b, j] * tempU[a, b, k, l]
         
         """Multiple steps"""
-        @tensor theta[i, j, k] := Dib[i, a] * Gia[j, a, k]
-        # println("theta[i, j, k] := Dib[i, a] * Gia[j, a, k]\n", theta)
-        @tensor theta[i, j, k] := theta[i, j, a] * Dia[a, k]
-        # println("theta[i, j, k] := theta[i, j, a] * Dia[a, k]\n", theta)
-        @tensor theta[i, j, k, l] := theta[i, j, a] * Gib[k, a, l]
-        # println("theta[i, j, k, l] := theta[i, j, a] * Gib[k, a, l]\n", theta)
-        @tensor theta[i, j, k, l] := theta[i, j, k, a] * Dib[a, l]
-        # println("theta[i, j, k, l] := theta[i, j, k, a] * Dib[a, l]\n", theta)
-        Ur = reshape(U, (d,d,d,d))
+        # @tensor theta[i, j, k] := Dib[i, a] * Gia[j, a, k]
+        # # println("theta[i, j, k] := Dib[i, a] * Gia[j, a, k]\n", theta)
+        # @tensor theta[i, j, k] := theta[i, j, a] * Dia[a, k]
+        # # println("theta[i, j, k] := theta[i, j, a] * Dia[a, k]\n", theta)
+        # @tensor theta[i, j, k, l] := theta[i, j, a] * Gib[k, a, l]
+        # # println("theta[i, j, k, l] := theta[i, j, a] * Gib[k, a, l]\n", theta)
+        # @tensor theta[i, j, k, l] := theta[i, j, k, a] * Dib[a, l]
+        # # println("theta[i, j, k, l] := theta[i, j, k, a] * Dib[a, l]\n", theta)
+        # Ur = reshape(U, (d,d,d,d))
 
-        # theta = permutedims(theta, (4, 3, 2, 1))
-        Ur = permutedims(Ur, (4, 3, 2, 1))
-        # println("Ur = ", Ur)
-        @tensor theta[i, j, k, l] := theta[i, a1, a2, j] * Ur[a1, a2, k, l]
+        # # theta = permutedims(theta, (4, 3, 2, 1))
+        # Ur = permutedims(Ur, (4, 3, 2, 1))
+        # # println("Ur = ", Ur)
+        # @tensor theta[i, j, k, l] := theta[i, a1, a2, j] * Ur[a1, a2, k, l]
 
         """One step"""
-        # @tensor theta[i, j, k, l] := Dib[i, b] * Gia[a, b, h] * Dia[h, e] * Gib[f, e, g] * Dib[g, j] * reshape(U, (d,d,d,d))[a, f, k, l]
+        @tensor theta[i, j, k, l] := Dib[i, b] * Gia[a, b, h] * Dia[h, e] * Gib[f, e, g] * Dib[g, j] * reshape(U, (d,d,d,d))[a, f, k, l]
 
         # SVD
         theta = reshape(permutedims(theta, (3, 1, 4, 2)), (d * chi1, d * chi3))
