@@ -57,22 +57,6 @@ macro magmatype(elty)
 	end
 end
 
-# >>> The following are some Utility functions' wrappers >>>
-# magma_init
-# function magmaInit()
-# 	success = ccall((:magma_init, libmagma),Cint,())
-# 	if success != 0
-# 		println("MAGMA initiation error with success = ", success)
-# 	end
-# end
-
-# magma_finalize
-# function magmaFinalize()
-# 	ccall((:magma_finalize, libmagma),Cint,())
-# end
-
-# <<< End of wrappers for Utility
-
 # include the files of subroutines
 include("dense/dense.jl")
 
