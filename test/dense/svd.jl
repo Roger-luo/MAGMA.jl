@@ -22,7 +22,7 @@ import LinearAlgebra.LAPACK: gebrd!
     jobvt = 'A'
 
     # initialize the MAGMA lib, serving as a necessary part before working
-    magmaInit()
+    magma_init()
 
     # call the basic (overloaded) wrapper gesvd! for gesvd subroutines
     result = magma_gesvd!(jobu,jobvt,matrixToTest)
@@ -58,7 +58,7 @@ end
     job_magma = 'A'
 
     # initialize the MAGMA lib, serving as a necessary part before working
-    magmaInit()
+    magma_init()
 
     # call the basic (overloaded) wrapper gesdd! for gesvd subroutines
     result = magma_gesdd!(job_magma,matrixToTest)
@@ -90,7 +90,7 @@ end
     end
 
     # initialize the MAGMA lib, serving as a necessary part before working
-    magmaInit()
+    magma_init()
 
     # call the basic (overloaded) wrapper gesdd! for gesvd subroutines
     result = magma_gebrd!(matrixToTest_copy)
