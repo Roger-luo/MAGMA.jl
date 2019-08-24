@@ -1,5 +1,5 @@
 using MAGMA
-using Test, Random, LinearAlgebra
+using Test, Random, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 
 using Test, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 
