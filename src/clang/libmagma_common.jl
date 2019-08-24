@@ -24,17 +24,17 @@ end
 const real_Double_t = Cdouble
 
 struct gbstrct_blg
-    dQ1::Ptr{magmaFloatComplex}
-    dT1::Ptr{magmaFloatComplex}
-    dT2::Ptr{magmaFloatComplex}
-    dV2::Ptr{magmaFloatComplex}
-    dE::Ptr{magmaFloatComplex}
-    T::Ptr{magmaFloatComplex}
-    A::Ptr{magmaFloatComplex}
-    V::Ptr{magmaFloatComplex}
-    TAU::Ptr{magmaFloatComplex}
-    E::Ptr{magmaFloatComplex}
-    E_CPU::Ptr{magmaFloatComplex}
+    dQ1::PtrOrCuPtr{magmaFloatComplex}
+    dT1::PtrOrCuPtr{magmaFloatComplex}
+    dT2::PtrOrCuPtr{magmaFloatComplex}
+    dV2::PtrOrCuPtr{magmaFloatComplex}
+    dE::PtrOrCuPtr{magmaFloatComplex}
+    T::PtrOrCuPtr{magmaFloatComplex}
+    A::PtrOrCuPtr{magmaFloatComplex}
+    V::PtrOrCuPtr{magmaFloatComplex}
+    TAU::PtrOrCuPtr{magmaFloatComplex}
+    E::PtrOrCuPtr{magmaFloatComplex}
+    E_CPU::PtrOrCuPtr{magmaFloatComplex}
     cores_num::Cint
     locores_num::Cint
     overlapQ1::Cint
@@ -52,15 +52,15 @@ struct gbstrct_blg
     Vblksiz::Cint
     WANTZ::Cint
     SIDE::magma_side_t
-    timeblg::Ptr{real_Double_t}
-    timeaplQ::Ptr{real_Double_t}
-    ss_prog::Ptr{Cint}
+    timeblg::PtrOrCuPtr{real_Double_t}
+    timeaplQ::PtrOrCuPtr{real_Double_t}
+    ss_prog::PtrOrCuPtr{Cint}
 end
 
 const magma_int_t = Cint
-const magmaFloatComplex_ptr = Ptr{magmaFloatComplex}
+const magmaFloatComplex_ptr = PtrOrCuPtr{magmaFloatComplex}
 const magma_queue = Cvoid
-const magma_queue_t = Ptr{magma_queue}
+const magma_queue_t = PtrOrCuPtr{magma_queue}
 
 struct cgehrd_data
     ngpu::magma_int_t
@@ -76,7 +76,7 @@ struct cgehrd_data
     queues::NTuple{8, magma_queue_t}
 end
 
-const magmaDouble_ptr = Ptr{Cdouble}
+const magmaDouble_ptr = PtrOrCuPtr{Cdouble}
 
 struct dgehrd_data
     ngpu::magma_int_t
@@ -92,7 +92,7 @@ struct dgehrd_data
     queues::NTuple{8, magma_queue_t}
 end
 
-const magmaFloat_ptr = Ptr{Cfloat}
+const magmaFloat_ptr = PtrOrCuPtr{Cfloat}
 
 struct sgehrd_data
     ngpu::magma_int_t
@@ -213,21 +213,21 @@ const magma_event_t = Cint
 const magma_device_t = magma_int_t
 const magmaHalf = Int16
 const magmaDoubleComplex = Cint
-const magma_ptr = Ptr{Cvoid}
-const magmaInt_ptr = Ptr{magma_int_t}
-const magmaIndex_ptr = Ptr{magma_index_t}
-const magmaUIndex_ptr = Ptr{magma_uindex_t}
-const magmaDoubleComplex_ptr = Ptr{magmaDoubleComplex}
-const magmaHalf_ptr = Ptr{magmaHalf}
-const magma_const_ptr = Ptr{Cvoid}
-const magmaInt_const_ptr = Ptr{magma_int_t}
-const magmaIndex_const_ptr = Ptr{magma_index_t}
-const magmaUIndex_const_ptr = Ptr{magma_uindex_t}
-const magmaFloat_const_ptr = Ptr{Cfloat}
-const magmaDouble_const_ptr = Ptr{Cdouble}
-const magmaFloatComplex_const_ptr = Ptr{magmaFloatComplex}
-const magmaDoubleComplex_const_ptr = Ptr{magmaDoubleComplex}
-const magmaHalf_const_ptr = Ptr{magmaHalf}
+const magma_ptr = PtrOrCuPtr{Cvoid}
+const magmaInt_ptr = PtrOrCuPtr{magma_int_t}
+const magmaIndex_ptr = PtrOrCuPtr{magma_index_t}
+const magmaUIndex_ptr = PtrOrCuPtr{magma_uindex_t}
+const magmaDoubleComplex_ptr = PtrOrCuPtr{magmaDoubleComplex}
+const magmaHalf_ptr = PtrOrCuPtr{magmaHalf}
+const magma_const_ptr = PtrOrCuPtr{Cvoid}
+const magmaInt_const_ptr = PtrOrCuPtr{magma_int_t}
+const magmaIndex_const_ptr = PtrOrCuPtr{magma_index_t}
+const magmaUIndex_const_ptr = PtrOrCuPtr{magma_uindex_t}
+const magmaFloat_const_ptr = PtrOrCuPtr{Cfloat}
+const magmaDouble_const_ptr = PtrOrCuPtr{Cdouble}
+const magmaFloatComplex_const_ptr = PtrOrCuPtr{magmaFloatComplex}
+const magmaDoubleComplex_const_ptr = PtrOrCuPtr{magmaDoubleComplex}
+const magmaHalf_const_ptr = PtrOrCuPtr{magmaHalf}
 
 @cenum magma_order_t::UInt32 begin
     MagmaRowMajor = 101

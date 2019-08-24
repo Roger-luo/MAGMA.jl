@@ -16,13 +16,19 @@ for (gels, gesv, getrs, getri, elty) in
             lwork = Cint(-1)
 
             for i = 1:2  # first call returns lwork as work[1]
-                ccall((@magmafunc_gpu($gels), libmagma), Cint,
-                      (Cint, Cint, Cint, Cint,
-                       PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                       Ptr{$elty}, Cint, Ptr{Cint}),
-                      MagmaNoTrans, m, n, size(B,2),
-                      A, max(1,stride(A,2)), B, max(1,stride(B,2)),
-                      work, lwork, info)
+                func = eval(@magmafunc_gpu($gels))
+                func(
+                    MagmaNoTrans, m, n, size(B,2),
+                    A, max(1,stride(A,2)), B, max(1,stride(B,2)),
+                    work, lwork, info
+                )
+                # ccall((@magmafunc_gpu($gels), libmagma), Cint,
+                #       (Cint, Cint, Cint, Cint,
+                #        PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
+                #        Ptr{$elty}, Cint, Ptr{Cint}),
+                #       MagmaNoTrans, m, n, size(B,2),
+                #       A, max(1,stride(A,2)), B, max(1,stride(B,2)),
+                #       work, lwork, info)
 
                 if i == 1
                     lwork = ceil(Int, real(work[1]))
@@ -49,13 +55,19 @@ for (gels, gesv, getrs, getri, elty) in
             lwork = Cint(-1)
 
             for i = 1:2  # first call returns lwork as work[1]
-                ccall((@magmafunc($gels), libmagma), Cint,
-                      (Cint, Cint, Cint, Cint,
-                       PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                       Ptr{$elty}, Cint, Ptr{Cint}),
-                      MagmaNoTrans, m, n, size(B,2),
-                      A, max(1,stride(A,2)), B, max(1,stride(B,2)),
-                      work, lwork, info)
+                func = eval(@magmafunc($gels))
+                func(
+                    MagmaNoTrans, m, n, size(B,2),
+                    A, max(1,stride(A,2)), B, max(1,stride(B,2)),
+                    work, lwork, info
+                )
+                # ccall((@magmafunc($gels), libmagma), Cint,
+                #       (Cint, Cint, Cint, Cint,
+                #        PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
+                #        Ptr{$elty}, Cint, Ptr{Cint}),
+                #       MagmaNoTrans, m, n, size(B,2),
+                #       A, max(1,stride(A,2)), B, max(1,stride(B,2)),
+                #       work, lwork, info)
 
                 if i == 1
                     lwork = ceil(Int, real(work[1]))
@@ -101,13 +113,19 @@ for (gels, gesv, getrs, getri, elty) in
             ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Cint}()
 
-            ccall((@magmafunc_gpu($gesv), libmagma), Cint,
-                  (Cint, Cint,
-                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
-                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
-                   n, size(B,2),
-                   A, lda, ipiv,
-                   B, ldb, info)
+            func = eval(@magmafunc_gpu($gesv))
+            func(
+                n, size(B,2),
+                A, lda, ipiv,
+                B, ldb, info
+            )
+            # ccall((@magmafunc_gpu($gesv), libmagma), Cint,
+            #       (Cint, Cint,
+            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
+            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
+            #        n, size(B,2),
+            #        A, lda, ipiv,
+            #        B, ldb, info)
             # chkmagmaerror(info[])
             B, A, ipiv
         end
@@ -125,13 +143,19 @@ for (gels, gesv, getrs, getri, elty) in
             ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Cint}()
 
-            ccall((@magmafunc($gesv), libmagma), Cint,
-                  (Cint, Cint,
-                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
-                   PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
-                   n, size(B,2),
-                   A, lda, ipiv,
-                   B, ldb, info)
+            func = eval(@magmafunc($gesv))
+            func(
+                n, size(B,2),
+                A, lda, ipiv,
+                B, ldb, info
+            )
+            # ccall((@magmafunc($gesv), libmagma), Cint,
+            #       (Cint, Cint,
+            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
+            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
+            #        n, size(B,2),
+            #        A, lda, ipiv,
+            #        B, ldb, info)
 
             # chkmagmaerror(info[])
             B, A, ipiv
