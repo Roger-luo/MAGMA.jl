@@ -46,6 +46,7 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                 jobvt_magma     = char_to_magmaInt(jobvt)
 
                 for i in 1:2
+                    println("@magmafunc(gesvd): ", @magmafunc($gesvd))
                     ccall((@magmafunc($gesvd), libmagma), Cint,
                             (Cint, Cint,
                             Cint, Cint,
