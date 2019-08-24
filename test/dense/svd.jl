@@ -1,5 +1,3 @@
-using MAGMA
-using Test, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 import LinearAlgebra.LAPACK: gebrd!
 
 @testset "test svd $T by gesvd $interface" for T in [Float32, Float64, ComplexF32, ComplexF64], interface in ["CPU", "GPU"]
