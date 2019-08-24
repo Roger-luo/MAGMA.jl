@@ -24,7 +24,7 @@ export magma_init, magma_finalize
 # U matrix and VT matrix in A = U Σ V**T
 # (for MagmaOverwriteVec it is going to overwrite A)
 # include("enums.jl")
-include("clang/libmagma_common_v2.jl")
+include("clang/libmagma_common.jl")
 include("clang/libmagma_api.jl")
 
 
