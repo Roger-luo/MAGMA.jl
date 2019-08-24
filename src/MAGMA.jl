@@ -67,9 +67,9 @@ end
 # end
 
 # magma_finalize
-function magmaFinalize()
-	ccall((:magma_finalize, libmagma),Cint,())
-end
+# function magmaFinalize()
+# 	ccall((:magma_finalize, libmagma),Cint,())
+# end
 
 # <<< End of wrappers for Utility
 
