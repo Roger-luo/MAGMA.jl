@@ -446,15 +446,21 @@ for (gebrd, elty, relty) in    ((:sgebrd, :Float32, :Float32),
                 info = Ref{Cint}()
 
                 for i in 1:2 # first call returns lwork as work[1]
-                    ccall((@magmafunc($gebrd), libmagma), Cint,
-                        (Cint, Cint, Ptr{$elty}, Cint,
-                        Ptr{$relty}, Ptr{$relty}, Ptr{$elty}, Ptr{$elty},
-                        Ptr{$elty}, Cint, Ptr{Cint}),
-
+                    func = eval(@magmafunc($gebrd))
+                    func(
                         m, n, A, lda,
                         d, e, tauq, taup,
-                        work, lwork, info)
-                    if i == 1
+                        work, lwork, info
+                    )
+                    # ccall((@magmafunc($gebrd), libmagma), Cint,
+                    #     (Cint, Cint, Ptr{$elty}, Cint,
+                    #     Ptr{$relty}, Ptr{$relty}, Ptr{$elty}, Ptr{$elty},
+                    #     Ptr{$elty}, Cint, Ptr{Cint}),
+
+                    #     m, n, A, lda,
+                    #     d, e, tauq, taup,
+                    #     work, lwork, info)
+                    if i == 1 
                         lwork = ceil(Cint, nextfloat(real(work[1])))
                         resize!(work, lwork)
                     end
