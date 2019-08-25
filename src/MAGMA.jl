@@ -4,7 +4,8 @@ using CEnum
 
 using LinearAlgebra: triu, tril, dot, checksquare
 
-export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!, libmagma, magmafunc_gpu
+# export wrappers
+export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
 export magma_gesv!
 
