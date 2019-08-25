@@ -43,6 +43,8 @@ macro magmatype(elty)
 	end
 end
 
+const magmaTypeList = [Float32, Float64, ComplexF32, ComplexF64]
+
 # include the files of subroutines
 include("dense/dense.jl")
 
