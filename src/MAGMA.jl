@@ -28,22 +28,9 @@ macro magmafunc_gpu(function_name)
 	return Expr(:quote, Symbol("magma_", function_name, "_gpu"))
 end
 
-macro magmatype(elty)
-	if elty == Float32
-		return 's'
-	end
-	if elty == Float64
-		return 'd'
-	end
-	if elty == ComplexF32
-		return 'c'
-	end
-	if elty == ComplexF64
-		return 'z'
-	end
-end
-
-const magmaTypeList = [Float32, Float64, ComplexF32, ComplexF64]
+const magmaTypeList = ["Float32", "Float64", "ComplexF32", "ComplexF64"]
+const magmaTypeDict = Dict(Float32=>"s", Float64=>"d", ComplexF32=>"c", ComplexF64=>"z",
+"Float32"=>"s", "Float64"=>"d", "ComplexF32"=>"c", "ComplexF64"=>"z",)
 
 # include the files of subroutines
 include("dense/dense.jl")

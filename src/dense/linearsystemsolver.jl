@@ -1,9 +1,18 @@
 ## (GE) general matrices, solvers with factorization, solver and inverse
-for (gels, gesv, getrs, getri, elty) in
-    ((:dgels,:dgesv,:dgetrs,:dgetri,:Float64),
-     (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
-     (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
-     (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
+# for (gels, gesv, getrs, getri, elty) in
+#     ((:dgels,:dgesv,:dgetrs,:dgetri,:Float64),
+#      (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
+#      (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
+#      (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
+const function_list = ("gels", "gesv", "getrs", "getri")
+for type in magmaTypeList
+    # create the symbols for element types
+    elty = Symbol(type)
+    # generate the symbol variables for our wrappers
+    for func_name in function_list
+        @eval $(Symbol(func_name)) = (Symbol(magmaTypeDict[$type], $func_name))
+    end
+    
     @eval begin
         #      SUBROUTINE DGELS( TRANS, M, N, NRHS, A, LDA, B, LDB, WORK, LWORK,INFO)
         # *     .. Scalar Arguments ..
