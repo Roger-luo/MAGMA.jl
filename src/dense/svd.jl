@@ -83,10 +83,9 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
 
                 jobu_magma      = char_to_magmaInt(jobu)
                 jobvt_magma     = char_to_magmaInt(jobvt)
+                func = eval(@magmafunc($gesvd))
 
                 for i in 1:2
-                    # println("@magmafunc(gesvd): ", @magmafunc($gesvd))
-                    func = eval(@magmafunc($gesvd))
                     func(jobu_magma, jobvt_magma,
                         m, n,
                         A, lda,
@@ -177,9 +176,9 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                 info    = Ref{Cint}()
 
                 job_magma      = char_to_magmaInt(job)
+                func = eval(@magmafunc($gesdd))
 
                 for i in 1:2
-                    func = eval(@magmafunc($gesdd))
                     func(
                         job_magma,
                         m, n,
@@ -282,8 +281,8 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
                 jobu_magma      = char_to_magmaInt(jobu)
                 jobvt_magma     = char_to_magmaInt(jobvt)
 
+                func = eval(@magmafunc($gesvd))
                 for i in 1:2
-                    func = eval(@magmafunc($gesvd))
                     func(
                         jobu_magma, jobvt_magma,
                         m, n,
@@ -384,9 +383,9 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
             info    = Ref{Cint}()
 
             job_magma      = char_to_magmaInt(job)
+            func = eval(@magmafunc($gesdd))
 
             for i in 1:2
-                func = eval(@magmafunc($gesdd))
                 func(
                     job_magma,
                     m, n,
@@ -483,9 +482,9 @@ for (gebrd, elty, relty) in    ((:sgebrd, :Float32, :Float32),
                 work    = Vector{$elty}(undef, 1)
                 lwork   = Cint(-1)
                 info = Ref{Cint}()
+                func = eval(@magmafunc($gebrd))
 
                 for i in 1:2 # first call returns lwork as work[1]
-                    func = eval(@magmafunc($gebrd))
                     func(
                         m, n, A, lda,
                         d, e, tauq, taup,
