@@ -179,7 +179,7 @@ for type in magmaTypeList
         #     .. Array Arguments ..
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
-        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::AbstractVector{Int}, B::CuArray{$elty})
+        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::Array{Int}, B::CuArray{$elty})
             # require_one_based_indexing(A, ipiv, B)
             # chktrans(trans)
             # chkstride1(A, B, ipiv)
@@ -252,7 +252,7 @@ for type in magmaTypeList
             chkstride1(A)
             m, n = size(A)
             lda = max(1, stride(A, 2))
-            ipiv = similar(A, Int, min(m, n))
+            ipiv = similar(A, Cint, min(m, n))
             info = Ref{Cint}()
             func = eval(@magmafunc($getrf))
             func(m, n, A, lda, ipiv, info)
