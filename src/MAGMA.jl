@@ -2,7 +2,7 @@ module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 using CEnum
 
-using LinearAlgebra: triu, tril, dot, checksquare
+using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
 
 # export wrappers
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
