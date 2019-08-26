@@ -33,6 +33,7 @@ macro magmafunc_nb(function_name)
 	return Expr(:quote, Symbol("magma_get_", function_name, "_nb"))
 end
 
+const magmaTypeTuple= (Float32, Float64, ComplexF32, ComplexF64)
 const magmaTypeList = ["Float32", "Float64", "ComplexF32", "ComplexF64"]
 const magmaTypeDict = Dict(Float32=>"s", Float64=>"d", ComplexF32=>"c", ComplexF64=>"z",
 "Float32"=>"s", "Float64"=>"d", "ComplexF32"=>"c", "ComplexF64"=>"z",)

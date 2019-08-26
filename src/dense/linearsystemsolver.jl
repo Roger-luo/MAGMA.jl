@@ -6,7 +6,7 @@ using Base: has_offset_axes
 #      (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
 #      (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
 #      (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
-const function_list = ("gels", "gesv", "getrs", "getri", "getrf ")
+const function_list = ("gels", "gesv", "getrs", "getri", "getrf")
 for type in magmaTypeList
     # create the symbols for element types
     elty = Symbol(type)
@@ -247,7 +247,7 @@ for type in magmaTypeList
             magma_getri!(cu(A), ipiv)
         end
 
-        function magma_getrf!(A:AbstractMatrix)
+        function magma_getrf!(A::AbstractMatrix{$elty})
             @assert !has_offset_axes(A)
             chkstride1(A)
             m, n = size(A)

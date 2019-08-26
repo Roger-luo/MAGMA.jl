@@ -118,3 +118,19 @@ end
         end
     end
 end
+
+@testset "getrf" begin
+    @testset for elty in MAGMA.magmaTypeTuple
+        @testset for interface in (Array, CuArray)
+            # println(magmaTypeTuple)
+            A = rand(elty, 2, 2)
+            B = copy(A)
+
+            A, ipiv, info = magma_getrf!(A)
+            B, ipivB,infoB= LAPACK.getrf!(B)
+
+            @test A ≈ B
+            @test ipiv ≈ ipivB
+        end
+    end
+end
