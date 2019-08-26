@@ -60,55 +60,61 @@ end
 @testset "getrf/getri" begin
     @testset for elty in (Float32, Float64, ComplexF32, ComplexF64)
         @testset for interface in (CuMatrix, Matrix)
-        A = rand(elty,2,2)
-        B = (copy(A))
+            A = rand(elty,2,2)
+            B = (copy(A))
 
-        iA = inv(A)
-        A, ipiv = LAPACK.getrf!(A)
-        # println("A = ", A)
-        # println("ipiv = ", ipiv)
-        # println("inverse of A = ", iA)
-        A = LAPACK.getri!(A, ipiv)
+            iA = inv(A)
+            A, ipiv = LAPACK.getrf!(A)
+            # println("A = ", A)
+            # println("ipiv = ", ipiv)
+            # println("inverse of A = ", iA)
+            A = LAPACK.getri!(A, ipiv)
 
-        iB = inv(B)
-        B, ipivB = LAPACK.getrf!(B)
+            iB = inv(B)
+            B, ipivB = LAPACK.getrf!(B)
 
-        # println("B = ", B)
-        # println("ipiv = ", ipiv)
-        # println("inverse of B = ", iB)
-        magma_init()
-        B = interface(B)
-        B = magma_getri!(B, ipivB)
-        magma_finalize()
-        
-        @test iB ≈ B
+            # println("B = ", B)
+            # println("ipiv = ", ipiv)
+            # println("inverse of B = ", iB)
+            magma_init()
+            B = interface(B)
+            B = magma_getri!(B, ipivB)
+            magma_finalize()
+            
+            @test A ≈ B
         end
     end
 end
 
 @testset "getrs" begin
     @testset for elty in (Float32, Float64, ComplexF32, ComplexF64)
-        A = rand(elty,2,2)
-        B = rand(elty,2,2)
-        trans = MagmaNoTrans
+        @testset for interface in (CuMatrix, Matrix)
+            A = rand(elty,2,2)
+            B = rand(elty,2,2)
+            trans_char = 'N'
 
-        iA = inv(A)
-        A, ipiv = LAPACK.getrf!(A)
-        # println("A = ", A)
-        # println("ipiv = ", ipiv)
-        # println("inverse of A = ", iA)
-        A = LAPACK.getri!(A, ipiv)
+            Atest = copy(A)
+            Btest = copy(B)
+            trans = MAGMA.MagmaNoTrans
 
-        iB = inv(B)
-        B, ipivB = LAPACK.getrf!(B)
+            A, ipiv = LAPACK.getrf!(A)
+            println("ipiv is ", ipiv)
+            # println("A = ", A)
+            # println("ipiv = ", ipiv)
+            # println("inverse of A = ", iA)
+            B = getrs!(trans_char, A, ipiv, B)
 
-        # println("B = ", B)
-        # println("ipiv = ", ipiv)
-        # println("inverse of B = ", iB)
-        magma_init()
-        B = magma_getrs!(trans, A, )
-        magma_finalize()
-        
-        @test iB ≈ B
+            # println("B = ", B)
+            # println("ipiv = ", ipiv)
+            # println("inverse of B = ", iB)
+            Atest, ipivtest = LAPACK.getrf!(Atest)
+            println("ipiv of test matrix is ", ipivtest)
+            magma_init()
+            Btest = magma_getrs!(trans, Atest, ipivtest, Btest)
+            magma_finalize()
+            # println("A ≈ Atest: ", A≈Atest)
+            # println("ipiv", ipiv ≈ ipivtest)
+            @test B ≈ Btest
+        end
     end
 end

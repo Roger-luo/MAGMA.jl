@@ -1,3 +1,5 @@
+using Base: has_offset_axes
+
 ## (GE) general matrices, solvers with factorization, solver and inverse
 # for (gels, gesv, getrs, getri, elty) in
 #     ((:dgels,:dgesv,:dgetrs,:dgetri,:Float64),
@@ -177,10 +179,11 @@ for type in magmaTypeList
         #     .. Array Arguments ..
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
-        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::AbstractVector{Cint}, B::CuArray{$elty})
+        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::AbstractVector{Int}, B::CuArray{$elty})
             # require_one_based_indexing(A, ipiv, B)
             # chktrans(trans)
             # chkstride1(A, B, ipiv)
+            @assert !has_offset_axes(A, ipiv, B)
             n = checksquare(A)
             if n != size(B, 1)
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
@@ -193,8 +196,9 @@ for type in magmaTypeList
             func = eval(@magmafunc_gpu($getrs))
             func(trans, n, nrhs, A, lda, ipiv, B, ldb, info)
             B
+            # println("\nThe info variable is: ", info, "\n")
         end
-        function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Cint}, B::Array{$elty})
+        function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Int}, B::Array{$elty})
             magma_getrs!(trans, cu(A), ipiv, cu(B))
         end
 
