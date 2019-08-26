@@ -1,27 +1,20 @@
 module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
+using CEnum
 
-using LinearAlgebra: triu, tril, dot, checksquare
+using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
 
-export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!, libmagma, magmafunc_gpu
+# export wrappers in svds
+export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
-export magma_gesv!
+# export wrappers in linearsystemsolver
+export magma_gesv!, magma_getri!, magma_getrs!, magma_getrf!
 
-# MAGMA enum constants
-# the whole file will be stored as enums.jl
-#just like in JuliaGPU/MAGMA.jl
+# export some wrappers in clang auto-generation
+export magma_init, magma_finalize
 
-# MAGMA constants indicating the vectors status
-# as input/output for some functions
-# For example, the gesvd functions will use
-# MagmaNoVec, MagmaSomeVec, MagmaAllVec and
-# MagmaOverwriteVec to indicate the
-# strategies that will be applied to the SVD
-# U matrix and VT matrix in A = U Σ V**T
-# (for MagmaOverwriteVec it is going to overwrite A)
-include("enums.jl")
-
-
+include("clang/libmagma_common.jl")
+include("clang/libmagma_api.jl")
 
 """
 the path to magma binary
@@ -36,36 +29,15 @@ macro magmafunc_gpu(function_name)
 	return Expr(:quote, Symbol("magma_", function_name, "_gpu"))
 end
 
-macro magmatype(elty)
-	if elty == Float32
-		return 's'
-	end
-	if elty == Float64
-		return 'd'
-	end
-	if elty == ComplexF32
-		return 'c'
-	end
-	if elty == ComplexF64
-		return 'z'
-	end
+# ! for parts of subroutines which can not do the query
+macro magmafunc_nb(function_name)
+	return Expr(:quote, Symbol("magma_get_", function_name, "_nb"))
 end
 
-# >>> The following are some Utility functions' wrappers >>>
-# magma_init
-function magmaInit()
-	success = ccall((:magma_init, libmagma),Cint,())
-	if success != 0
-		println("MAGMA initiation error with success = ", success)
-	end
-end
-
-# magma_finalize
-function magmaFinalize()
-	ccall((:magma_finalize, libmagma),Cint,())
-end
-
-# <<< End of wrappers for Utility
+const magmaTypeTuple= (Float32, Float64, ComplexF32, ComplexF64)
+const magmaTypeList = ["Float32", "Float64", "ComplexF32", "ComplexF64"]
+const magmaTypeDict = Dict(Float32=>"s", Float64=>"d", ComplexF32=>"c", ComplexF64=>"z",
+"Float32"=>"s", "Float64"=>"d", "ComplexF32"=>"c", "ComplexF64"=>"z",)
 
 # include the files of subroutines
 include("dense/dense.jl")

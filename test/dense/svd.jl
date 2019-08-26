@@ -1,5 +1,3 @@
-using MAGMA
-using Test, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 import LinearAlgebra.LAPACK: gebrd!
 
 @testset "test svd $T by gesvd $interface" for T in [Float32, Float64, ComplexF32, ComplexF64], interface in ["CPU", "GPU"]
@@ -22,7 +20,7 @@ import LinearAlgebra.LAPACK: gebrd!
     jobvt = 'A'
 
     # initialize the MAGMA lib, serving as a necessary part before working
-    magmaInit()
+    magma_init()
 
     # call the basic (overloaded) wrapper gesvd! for gesvd subroutines
     result = magma_gesvd!(jobu,jobvt,matrixToTest)
@@ -31,7 +29,7 @@ import LinearAlgebra.LAPACK: gebrd!
     s = result[2]
 
     # finalize the MAGMA lib, serving as a necessary part after working
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     @test S ≈ s
@@ -58,7 +56,7 @@ end
     job_magma = 'A'
 
     # initialize the MAGMA lib, serving as a necessary part before working
-    magmaInit()
+    magma_init()
 
     # call the basic (overloaded) wrapper gesdd! for gesvd subroutines
     result = magma_gesdd!(job_magma,matrixToTest)
@@ -67,7 +65,7 @@ end
     s = result[2]
 
     # finalize the MAGMA lib, serving as a necessary part after working
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     @test S ≈ s
@@ -90,13 +88,13 @@ end
     end
 
     # initialize the MAGMA lib, serving as a necessary part before working
-    magmaInit()
+    magma_init()
 
     # call the basic (overloaded) wrapper gesdd! for gesvd subroutines
     result = magma_gebrd!(matrixToTest_copy)
 
     # finalize the MAGMA lib, serving as a necessary part after working
-    magmaFinalize()
+    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for index in 1:length(result)
