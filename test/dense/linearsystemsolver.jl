@@ -59,6 +59,7 @@ end
 
 @testset "getrf/getri" begin
     @testset for elty in (Float32, Float64, ComplexF32, ComplexF64)
+        @testset for interface in (CuMatrix, Matrix)
         A = rand(elty,2,2)
         B = (copy(A))
 
@@ -76,8 +77,36 @@ end
         # println("ipiv = ", ipiv)
         # println("inverse of B = ", iB)
         magma_init()
-        B = cu(B)
+        B = interface(B)
         B = magma_getri!(B, ipivB)
+        magma_finalize()
+        
+        @test iB ≈ B
+        end
+    end
+end
+
+@testset "getrs" begin
+    @testset for elty in (Float32, Float64, ComplexF32, ComplexF64)
+        A = rand(elty,2,2)
+        B = rand(elty,2,2)
+        trans = MagmaNoTrans
+
+        iA = inv(A)
+        A, ipiv = LAPACK.getrf!(A)
+        # println("A = ", A)
+        # println("ipiv = ", ipiv)
+        # println("inverse of A = ", iA)
+        A = LAPACK.getri!(A, ipiv)
+
+        iB = inv(B)
+        B, ipivB = LAPACK.getrf!(B)
+
+        # println("B = ", B)
+        # println("ipiv = ", ipiv)
+        # println("inverse of B = ", iB)
+        magma_init()
+        B = magma_getrs!(trans, A, )
         magma_finalize()
         
         @test iB ≈ B

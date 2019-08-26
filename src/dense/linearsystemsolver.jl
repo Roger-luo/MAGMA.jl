@@ -177,67 +177,39 @@ for type in magmaTypeList
         #     .. Array Arguments ..
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
-        function magma_getrs!(trans::AbstractChar, A::AbstractMatrix{$elty}, ipiv::AbstractVector{Cint}, B::AbstractVecOrMat{$elty})
+        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::AbstractVector{Cint}, B::CuArray{$elty})
             # require_one_based_indexing(A, ipiv, B)
             # chktrans(trans)
             # chkstride1(A, B, ipiv)
-            # n = checksquare(A)
+            n = checksquare(A)
             if n != size(B, 1)
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
             nrhs = size(B, 2)
+            lda  = max(1,stride(A,2))
+            ldb  = max(1,stride(B,2))
             info = Ref{Cint}()
-            ccall((@magmafunc($getrs), libmagma), Cvoid,
-                  (Ref{UInt8}, Ref{Cint}, Ref{Cint}, Ptr{$elty}, Ref{Cint},
-                   Ptr{Cint}, Ptr{$elty}, Ref{Cint}, Ptr{Cint}),
-                  trans, n, size(B,2), A, max(1,stride(A,2)), ipiv, B, max(1,stride(B,2)), info)
-            # chkmagmaerror(info[])
+            
+            func = eval(@magmafunc_gpu($getrs))
+            func(trans, n, nrhs, A, lda, ipiv, B, ldb, info)
             B
         end
-
-        # Parameters
-        # [in]	n	INTEGER The order of the matrix A. N >= 0.
-        # [in,out]	dA	COMPLEX array on the GPU, dimension (LDDA,N) On entry, the factors L and U from the factorization A = P*L*U as computed by CGETRF_GPU. On exit, if INFO = 0, the inverse of the original matrix A.
-        # [in]	ldda	INTEGER The leading dimension of the array A. LDDA >= max(1,N).
-        # [in]	ipiv	INTEGER array, dimension (N) The pivot indices from CGETRF; for 1 <= i <= N, row i of the matrix was interchanged with row IPIV(i).
-        # [out]	dwork	(workspace) COMPLEX array on the GPU, dimension (MAX(1,LWORK))
-        # [in]	lwork	INTEGER The dimension of the array DWORK. LWORK >= N*NB, where NB is the optimal blocksize returned by magma_get_cgetri_nb(n). 
-        # Unlike LAPACK, this version does not currently support a workspace query, because the workspace is on the GPU.
-        # [out]	info	INTEGER
-        # = 0: successful exit
-        # < 0: if INFO = -i, the i-th argument had an illegal value
-        # > 0: if INFO = i, U(i,i) is exactly zero; the matrix is singular and its cannot be computed.
-        function magma_getri!(A::Matrix{$elty}, ipiv::Array{Int})
-            # require_one_based_indexing(A, ipiv)
-            # chkstride1(A, ipiv)
-            A = cu(A)
-            n = checksquare(A)
-            if n != length(ipiv)
-                throw(DimensionMismatch("ipiv has length $(length(ipiv)), but needs $n"))
-            end
-            lda = max(1,stride(A, 2))
-
-            func_nb = eval(@magmafunc_nb($getri))
-            nb    = func_nb(n)
-            lwork = ceil(Int, real(n * nb))            
-            work  = cu(Vector{$elty}(undef, max(1, lwork)))
-
-            info  = Ref{Cint}()
-            # for i = 1:2  # first call returns lwork as work[1]
-                # ccall((@magmafunc_gpu($getri), libmagma), Cvoid, # ! MAGMA has no native cpu interface for getri
-                #       (Ref{Cint}, PtrOrCuPtr{$elty}, Ref{Cint}, PtrOrCuPtr{Cint},
-                #        PtrOrCuPtr{$elty}, Ref{Cint}, PtrOrCuPtr{Cint}),
-                #       n, A, lda, ipiv, work, lwork, info)
-                # # chkmagmaerror(info[])
-            func = eval(@magmafunc_gpu($getri))
-            func(n, A, lda, ipiv, work, lwork, info)
-            #     if i == 1
-            #         lwork = ceil(Int, real(work[1]))
-            #         resize!(work, lwork)
-            #     end
-            # end
-            A
+        function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Cint}, B::Array{$elty})
+            magma_getrs!(trans, cu(A), ipiv, cu(B))
         end
+
+        #*# Parameters of getri
+        #*# [in]	n	INTEGER The order of the matrix A. N >= 0.
+        #*# [in,out]	dA	COMPLEX array on the GPU, dimension (LDDA,N) On entry, the factors L and U from the factorization A = P*L*U as computed by CGETRF_GPU. On exit, if INFO = 0, the inverse of the original matrix A.
+        #*# [in]	ldda	INTEGER The leading dimension of the array A. LDDA >= max(1,N).
+        #*# [in]	ipiv	INTEGER array, dimension (N) The pivot indices from CGETRF; for 1 <= i <= N, row i of the matrix was interchanged with row IPIV(i).
+        #*# [out]	dwork	(workspace) COMPLEX array on the GPU, dimension (MAX(1,LWORK))
+        #*# [in]	lwork	INTEGER The dimension of the array DWORK. LWORK >= N*NB, where NB is the optimal blocksize returned by magma_get_cgetri_nb(n). 
+        #*# Unlike LAPACK, this version does not currently support a workspace query, because the workspace is on the GPU.
+        #*# [out]	info	INTEGER
+        #*#         = 0: successful exit
+        #*#         < 0: if INFO = -i, the i-th argument had an illegal value
+        #*#         > 0: if INFO = i, U(i,i) is exactly zero; the matrix is singular and its cannot be computed.
         function magma_getri!(A::CuMatrix{$elty}, ipiv::Array{Int})
             # require_one_based_indexing(A, ipiv)
             # chkstride1(A, ipiv)
@@ -250,7 +222,6 @@ for type in magmaTypeList
             func_nb = eval(@magmafunc_nb($getri))
             nb    = func_nb(n)
             lwork = ceil(Int, real(n * nb))
-            println("!!!\n The value of lwork is: ", lwork, "\n")
             work  = cu(Vector{$elty}(undef, max(1, lwork)))
             info  = Ref{Cint}()
             # for i = 1:2  # first call returns lwork as work[1]
@@ -267,6 +238,9 @@ for type in magmaTypeList
             #     end
             # end
             A
+        end
+        function magma_getri!(A::Matrix{$elty}, ipiv::Array{Int})
+            magma_getri!(cu(A), ipiv)
         end
     end
 end
