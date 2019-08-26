@@ -7,7 +7,7 @@ using LinearAlgebra: triu, tril, dot, checksquare
 # export wrappers
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
-export magma_gesv!
+export magma_gesv!, magma_getri!, magma_getrs!
 
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize
@@ -26,6 +26,11 @@ end
 
 macro magmafunc_gpu(function_name)
 	return Expr(:quote, Symbol("magma_", function_name, "_gpu"))
+end
+
+# ! for parts of subroutines which can not do the query
+macro magmafunc_nb(function_name)
+	return Expr(:quote, Symbol("magma_get_", function_name, "_nb"))
 end
 
 const magmaTypeList = ["Float32", "Float64", "ComplexF32", "ComplexF64"]
