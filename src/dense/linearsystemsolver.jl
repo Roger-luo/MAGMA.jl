@@ -180,6 +180,7 @@ for type in magmaTypeList
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
         function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::Array{Cint}, B::CuArray{$elty})
+
             # require_one_based_indexing(A, ipiv, B)
             # chktrans(trans)
             # chkstride1(A, B, ipiv)
