@@ -4,10 +4,11 @@ using CEnum
 
 using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
 
-# export wrappers
+# export wrappers in svds
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
-export magma_gesv!, magma_getri!, magma_getrs!
+# export wrappers in linearsystemsolver
+export magma_gesv!, magma_getri!, magma_getrs!, magma_getrf!
 
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize
