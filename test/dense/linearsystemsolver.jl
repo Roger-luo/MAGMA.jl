@@ -64,17 +64,17 @@ end
 
         iA = inv(A)
         A, ipiv = LAPACK.getrf!(A)
-        println("A = ", A)
-        println("ipiv = ", ipiv)
-        println("inverse of A = ", iA)
+        # println("A = ", A)
+        # println("ipiv = ", ipiv)
+        # println("inverse of A = ", iA)
         A = LAPACK.getri!(A, ipiv)
 
         iB = inv(B)
         B, ipivB = LAPACK.getrf!(B)
 
-        println("B = ", B)
-        println("ipiv = ", ipiv)
-        println("inverse of B = ", iB)
+        # println("B = ", B)
+        # println("ipiv = ", ipiv)
+        # println("inverse of B = ", iB)
         magma_init()
         B = cu(B)
         B = magma_getri!(B, ipivB)

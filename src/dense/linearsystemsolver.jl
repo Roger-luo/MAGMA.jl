@@ -219,10 +219,9 @@ for type in magmaTypeList
 
             func_nb = eval(@magmafunc_nb($getri))
             nb    = func_nb(n)
-            lwork = ceil(Int, real(n * nb))
-            println("!!!\n The value of lwork is: ", lwork, "\n")
-            work  = Vector{$elty}(undef, max(1, lwork))
-            work = cu(work)
+            lwork = ceil(Int, real(n * nb))            
+            work  = cu(Vector{$elty}(undef, max(1, lwork)))
+
             info  = Ref{Cint}()
             # for i = 1:2  # first call returns lwork as work[1]
                 # ccall((@magmafunc_gpu($getri), libmagma), Cvoid, # ! MAGMA has no native cpu interface for getri
@@ -252,8 +251,7 @@ for type in magmaTypeList
             nb    = func_nb(n)
             lwork = ceil(Int, real(n * nb))
             println("!!!\n The value of lwork is: ", lwork, "\n")
-            work  = Vector{$elty}(undef, max(1, lwork))
-            work  = cu(work)
+            work  = cu(Vector{$elty}(undef, max(1, lwork)))
             info  = Ref{Cint}()
             # for i = 1:2  # first call returns lwork as work[1]
                 # ccall((@magmafunc_gpu($getri), libmagma), Cvoid, # ! MAGMA has no native cpu interface for getri
