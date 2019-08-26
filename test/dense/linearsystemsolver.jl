@@ -98,7 +98,7 @@ end
             trans = MAGMA.MagmaNoTrans
 
             A, ipiv = LAPACK.getrf!(A)
-            println("ipiv is ", ipiv)
+            # println("ipiv is ", ipiv)
             # println("A = ", A)
             # println("ipiv = ", ipiv)
             # println("inverse of A = ", iA)
@@ -108,7 +108,7 @@ end
             # println("ipiv = ", ipiv)
             # println("inverse of B = ", iB)
             Atest, ipivtest = LAPACK.getrf!(Atest)
-            println("ipiv of test matrix is ", ipivtest)
+            # println("ipiv of test matrix is ", ipivtest)
             magma_init()
             Btest = magma_getrs!(trans, Atest, ipivtest, Btest)
             magma_finalize()
