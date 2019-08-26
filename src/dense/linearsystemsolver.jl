@@ -179,7 +179,7 @@ for type in magmaTypeList
         #     .. Array Arguments ..
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
-        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::Array{Int}, B::CuArray{$elty})
+        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::Array{Cint}, B::CuArray{$elty})
             # require_one_based_indexing(A, ipiv, B)
             # chktrans(trans)
             # chkstride1(A, B, ipiv)
@@ -198,7 +198,7 @@ for type in magmaTypeList
             B
             # println("\nThe info variable is: ", info, "\n")
         end
-        function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Int}, B::Array{$elty})
+        function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Cint}, B::Array{$elty})
             magma_getrs!(trans, cu(A), ipiv, cu(B))
         end
 
@@ -256,7 +256,7 @@ for type in magmaTypeList
             info = Ref{Cint}()
             func = eval(@magmafunc($getrf))
             func(m, n, A, lda, ipiv, info)
-            A, ipiv, info[]
+            A, ipiv
         end
     end
 end

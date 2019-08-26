@@ -107,14 +107,15 @@ end
             # println("B = ", B)
             # println("ipiv = ", ipiv)
             # println("inverse of B = ", iB)
-            Atest, ipivtest = LAPACK.getrf!(Atest)
+            # Atest, ipivtest = LAPACK.getrf!(Atest)
             # println("ipiv of test matrix is ", ipivtest)
             magma_init()
+            Atest, ipivtest = magma_getrf!(Atest)
             Btest = magma_getrs!(trans, Atest, ipivtest, Btest)
             magma_finalize()
             # println("A ≈ Atest: ", A≈Atest)
             # println("ipiv", ipiv ≈ ipivtest)
-            @test_broken B ≈ Btest
+            @test B ≈ Btest
         end
     end
 end

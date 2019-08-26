@@ -88,13 +88,13 @@ end
     end
 
     # initialize the MAGMA lib, serving as a necessary part before working
-    magma_init()
+    # magma_init()
 
     # call the basic (overloaded) wrapper gesdd! for gesvd subroutines
     result = magma_gebrd!(matrixToTest_copy)
 
     # finalize the MAGMA lib, serving as a necessary part after working
-    magma_finalize()
+    # magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for index in 1:length(result)

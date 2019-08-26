@@ -85,6 +85,7 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                 jobvt_magma     = char_to_magmaInt(jobvt)
                 func = eval(@magmafunc($gesvd))
 
+                magma_init()
                 for i in 1:2
                     func(jobu_magma, jobvt_magma,
                         m, n,
@@ -116,6 +117,7 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                         resize!(work, lwork)
                     end
                 end
+                magma_finalize()
 
                 if jobu == 'O'
                     return (A, S, VT)
@@ -178,6 +180,7 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                 job_magma      = char_to_magmaInt(job)
                 func = eval(@magmafunc($gesdd))
 
+                magma_init()
                 for i in 1:2
                     func(
                         job_magma,
@@ -212,6 +215,7 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                         resize!(work, lwork)
                     end
                 end
+                magma_finalize()
 
                 if job == 'O'
                     if m >= n
@@ -507,4 +511,10 @@ for (gebrd, elty, relty) in    ((:sgebrd, :Float32, :Float32),
             return (A, d, e, tauq, taup)
         end
     end
+end
+function magma_gebrd!(A::AbstractMatrix{T}) where T
+    println("Begin to initialize\n")
+    magma_init()
+    magma_gebrd!(A)
+    magma_finalize()
 end
