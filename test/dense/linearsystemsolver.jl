@@ -17,10 +17,7 @@ import LinearAlgebra.LAPACK: gels!, gesv!, getrs!, getri!
 
     right_answer = gels!('N', A, B)
 
-    magma_init()
-    # result = interface == "GPU" ? magma_gels!(MAGMA.MagmaNoTrans, dA, dB) : magma_gels!(MAGMA.MagmaNoTrans, A_copy, B_copy)
     result = magma_gels!(MAGMA.MagmaNoTrans, A_test, B_test)
-    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
@@ -46,9 +43,7 @@ end
 
     right_answer = gesv!(A, B)
 
-    magma_init()
     result = magma_gesv!(A_test, B_test)
-    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
@@ -65,21 +60,12 @@ end
 
             iA = inv(A)
             A, ipiv = LAPACK.getrf!(A)
-            # println("A = ", A)
-            # println("ipiv = ", ipiv)
-            # println("inverse of A = ", iA)
             A = LAPACK.getri!(A, ipiv)
 
             iB = inv(B)
             B, ipivB = LAPACK.getrf!(B)
-
-            # println("B = ", B)
-            # println("ipiv = ", ipiv)
-            # println("inverse of B = ", iB)
-            magma_init()
             B = interface(B)
             B = magma_getri!(B, ipivB)
-            magma_finalize()
             
             @test A ≈ B
         end
@@ -98,23 +84,9 @@ end
             trans = MAGMA.MagmaNoTrans
 
             A, ipiv = LAPACK.getrf!(A)
-            # println("ipiv is ", ipiv)
-            # println("A = ", A)
-            # println("ipiv = ", ipiv)
-            # println("inverse of A = ", iA)
             B = getrs!(trans_char, A, ipiv, B)
-
-            # println("B = ", B)
-            # println("ipiv = ", ipiv)
-            # println("inverse of B = ", iB)
-            # Atest, ipivtest = LAPACK.getrf!(Atest)
-            # println("ipiv of test matrix is ", ipivtest)
-            magma_init()
             Atest, ipivtest = magma_getrf!(Atest)
             Btest = magma_getrs!(trans, Atest, ipivtest, Btest)
-            magma_finalize()
-            # println("A ≈ Atest: ", A≈Atest)
-            # println("ipiv", ipiv ≈ ipivtest)
             @test B ≈ Btest
         end
     end
@@ -127,9 +99,7 @@ end
             A = rand(elty, 2, 2)
             B = copy(A)
 
-            magma_init()
             A, ipiv = magma_getrf!(A)
-            magma_finalize()
             B, ipivB,infoB= LAPACK.getrf!(B)
 
             @test A ≈ B
