@@ -213,7 +213,7 @@ for type in magmaTypeList
             magma_getri!(cu(A), ipiv)
         end
 
-        function magma_getrf!(A::AbstractMatrix{$elty})
+        function magma_getrf!(A::Matrix{$elty})
             @assert !has_offset_axes(A)
             chkstride1(A)
             m, n = size(A)
@@ -221,6 +221,19 @@ for type in magmaTypeList
             ipiv = similar(A, Cint, min(m, n))
             info = Ref{Cint}()
             func = eval(@magmafunc($getrf))
+            magma_init()
+            func(m, n, A, lda, ipiv, info)
+            magma_finalize()
+            A, ipiv
+        end
+        function magma_getrf!(A::CuMatrix{$elty})
+            @assert !has_offset_axes(A)
+            chkstride1(A)
+            m, n = size(A)
+            lda = max(1, stride(A, 2))
+            ipiv = (similar(Matrix(A), Cint, min(m, n)))
+            info = Ref{Cint}()
+            func = eval(@magmafunc_gpu($getrf))
             magma_init()
             func(m, n, A, lda, ipiv, info)
             magma_finalize()

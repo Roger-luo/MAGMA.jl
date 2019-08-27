@@ -96,8 +96,8 @@ end
     @testset for elty in MAGMA.magmaTypeTuple
         @testset for interface in (Array, CuArray)
             # println(magmaTypeTuple)
-            A = rand(elty, 2, 2)
-            B = copy(A)
+            A = interface(rand(elty, 2, 2))
+            B = copy(Matrix(A))
 
             A, ipiv = magma_getrf!(A)
             B, ipivB,infoB= LAPACK.getrf!(B)
