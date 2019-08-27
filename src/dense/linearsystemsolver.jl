@@ -6,7 +6,7 @@ using Base: has_offset_axes
 #      (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
 #      (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
 #      (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
-const function_list = ("gels", "gesv", "getrs", "getri", "getrf", "gerbt")
+const function_list = ("gels", "gesv", "getrs", "getri", "getrf", "gerbt", "gesv_rbt")
 for type in magmaTypeList
     # create the symbols for element types
     elty = Symbol(type)
@@ -238,7 +238,7 @@ for type in magmaTypeList
             magma_finalize()
             A, ipiv
         end
-        function magma_gerbt!(A::CuArray{$elty}, B::CuArray{$elty}, gen::Bool)
+        function magma_gerbt!(A::CuArray{$elty}, B::CuArray{$elty}, gen::magma_bool_t=MagmaTrue)
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -248,8 +248,9 @@ for type in magmaTypeList
             nrhs = size(B, 2)
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
-            ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Cint}()
+            U    = Array{$elty}(undef, 2, n)
+            V    = Array{$elty}(undef, 2, n)
 
             func = eval(@magmafunc_gpu($gerbt))
             magma_init()
@@ -262,6 +263,29 @@ for type in magmaTypeList
             )
             magma_finalize()
             A, B, U, V, info[]
+        end
+        function magma_gesv_rbt!(A::CuArray{$elty}, B::CuArray{$elty}, refine::magma_bool_t=MagmaTrue)
+            @assert !has_offset_axes(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            end
+            nrhs = size(B, 2)
+            lda  = max(1,stride(A,2))
+            ldb  = max(1,stride(B,2))
+            info = Ref{Cint}()
+
+            func = eval(@magmafunc($gesv_rbt))
+            magma_init()
+            func(
+                refine, n, nrhs, 
+                A, lda,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, info[]
         end
     end
 end

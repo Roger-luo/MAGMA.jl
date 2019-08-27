@@ -107,3 +107,17 @@ end
         end
     end
 end
+
+@testset "gesv_rbt" begin
+    @testset for elty in MAGMA.magmaTypeTuple
+        A = Array(rand(elty, 2, 2))
+        B = Array{elty}(I, 2, 2)
+
+        A_backup = Matrix(A)
+        B_backup = Matrix(B)
+        result = inv(Matrix(A))
+
+        A, B, info = magma_gesv_rbt!(A, B)
+        @test (A_backup * Matrix(B)) ≈ B_backup
+    end
+end

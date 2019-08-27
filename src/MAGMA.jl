@@ -8,7 +8,7 @@ using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
 
 # export wrappers in linearsystemsolver
-export magma_gesv!, magma_getri!, magma_getrs!, magma_getrf!
+export magma_gesv!, magma_getri!, magma_getrs!, magma_getrf!, magma_gerbt!
 
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize
