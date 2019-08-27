@@ -264,7 +264,7 @@ for type in magmaTypeList
             magma_finalize()
             A, B, U, V, info[]
         end
-        function magma_gesv_rbt!(A::CuArray{$elty}, B::CuArray{$elty}, refine::magma_bool_t=MagmaTrue)
+        function magma_gesv_rbt!(A::Array{$elty}, B::Array{$elty}, refine::magma_bool_t=MagmaTrue)
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)

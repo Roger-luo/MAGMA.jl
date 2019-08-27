@@ -117,7 +117,7 @@ end
         B_backup = Matrix(B)
         result = inv(Matrix(A))
 
-        A, B, info = magma_gesv_rbt!(A, B)
+        A, B, info = magma_gesv_rbt!(A, B, MAGMA.MagmaTrue)
         @test (A_backup * Matrix(B)) ≈ B_backup
     end
 end
