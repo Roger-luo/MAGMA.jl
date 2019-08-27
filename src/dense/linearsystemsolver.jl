@@ -26,6 +26,7 @@ for type in magmaTypeList
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
 
+            magma_init()
             for i = 1:2  # first call returns lwork as work[1]
                 func = eval(@magmafunc_gpu($gels))
                 func(
@@ -38,6 +39,7 @@ for type in magmaTypeList
                     resize!(work, lwork)
                 end
             end
+            magma_finalize()
 
             k   = min(m, n)
             F   = m < n ? tril(A[1:k, 1:k]) : triu(A[1:k, 1:k])
@@ -56,9 +58,10 @@ for type in magmaTypeList
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
-
+            func = eval(@magmafunc($gels))
+            
+            magma_init()
             for i = 1:2  # first call returns lwork as work[1]
-                func = eval(@magmafunc($gels))
                 func(
                     MagmaNoTrans, m, n, size(B,2),
                     A, max(1,stride(A,2)), B, max(1,stride(B,2)),
@@ -69,6 +72,7 @@ for type in magmaTypeList
                     resize!(work, lwork)
                 end
             end
+            magma_finalize()
 
             k   = min(m, n)
             F   = m < n ? tril(A[1:k, 1:k]) : triu(A[1:k, 1:k])
@@ -108,12 +112,14 @@ for type in magmaTypeList
             ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Cint}()
 
+            magma_init()
             func = eval(@magmafunc_gpu($gesv))
             func(
                 n, size(B,2),
                 A, lda, ipiv,
                 B, ldb, info
             )
+            magma_finalize()
             B, A, ipiv
         end
     
@@ -131,11 +137,13 @@ for type in magmaTypeList
             info = Ref{Cint}()
 
             func = eval(@magmafunc($gesv))
+            magma_init()
             func(
                 n, size(B,2),
                 A, lda, ipiv,
                 B, ldb, info
             )
+            magma_finalize()
             B, A, ipiv
         end
 
@@ -160,8 +168,10 @@ for type in magmaTypeList
             ldb  = max(1,stride(B,2))
             info = Ref{Cint}()
             
+            magma_init()
             func = eval(@magmafunc_gpu($getrs))
             func(trans, n, nrhs, A, lda, ipiv, B, ldb, info)
+            magma_finalize()
             B
         end
         function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Cint}, B::Array{$elty})
@@ -194,7 +204,9 @@ for type in magmaTypeList
             work  = cu(Vector{$elty}(undef, max(1, lwork)))
             info  = Ref{Cint}()
             func = eval(@magmafunc_gpu($getri))
+            magma_init()
             func(n, A, lda, ipiv, work, lwork, info)
+            magma_finalize()
             A
         end
         function magma_getri!(A::Matrix{$elty}, ipiv::Array{Int})
@@ -209,7 +221,9 @@ for type in magmaTypeList
             ipiv = similar(A, Cint, min(m, n))
             info = Ref{Cint}()
             func = eval(@magmafunc($getrf))
+            magma_init()
             func(m, n, A, lda, ipiv, info)
+            magma_finalize()
             A, ipiv
         end
     end

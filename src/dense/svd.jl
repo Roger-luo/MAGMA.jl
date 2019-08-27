@@ -95,23 +95,6 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                         VT, ldvt,
                         work, lwork,
                         info)
-                    # ccall((@magmafunc($gesvd), libmagma), Cint,
-                    #         (Cint, Cint,
-                    #         Cint, Cint,
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{$relty},
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{Cint}),
-                    #         jobu_magma, jobvt_magma,
-                    #         m, n,
-                    #         A, lda,
-                    #         S,
-                    #         U, ldu,
-                    #         VT, ldvt,
-                    #         work, lwork,
-                    #         info)
                     if i == 1
                         lwork = ceil(Int, real(work[1]))
                         resize!(work, lwork)
@@ -192,24 +175,6 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                         work, lwork,
                         iwork, info
                     )
-                    # ccall((@magmafunc($gesdd), libmagma), Cint,
-                    #         (Cint,
-                    #         Cint, Cint,
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{$relty},
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{$elty}, Cint,
-                    #         Ptr{Cint}, Ptr{Cint}),
-
-                    #         job_magma,
-                    #         m, n,
-                    #         A, lda,
-                    #         S,
-                    #         U, ldu,
-                    #         VT, ldvt,
-                    #         work, lwork,
-                    #         iwork, info)
                     if i == 1
                         lwork = ceil(Cint, nextfloat(real(work[1])))
                         resize!(work, lwork)
@@ -221,14 +186,6 @@ for (gesvd, gesdd, elty, relty) in    ((:sgesvd, :sgesdd, :Float32, :Float32),
                     if m >= n
                         return (A, S, VT)
                     else
-                        # ()__
-                        # ||::Z__
-                        # ||::|:::Z____
-                        # ||::|:::|====|
-                        # ||==|===|====|
-                        # ||""|===|====|
-                        # ||  `"""|====|
-                        # ||      `""""`
                         return (U, S, A)
                     end
                 end
@@ -286,6 +243,7 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
                 jobvt_magma     = char_to_magmaInt(jobvt)
 
                 func = eval(@magmafunc($gesvd))
+                magma_init()
                 for i in 1:2
                     func(
                         jobu_magma, jobvt_magma,
@@ -300,31 +258,12 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
 
                         info
                     )
-                    # ccall((@magmafunc($gesvd), libmagma), Cint,
-                    #     (Cint, Cint,
-                    #     Cint, Cint,
-                    #     Ptr{$elty}, Cint,
-                    #     Ptr{$relty},
-                    #     Ptr{$elty}, Cint,
-                    #     Ptr{$elty}, Cint,
-                    #     Ptr{$elty}, Cint, Ptr{$relty},
-                    #     Ptr{Cint}),
-                    #     jobu_magma, jobvt_magma,
-                    #     m, n,
-                    #     A, lda,
-                    #     S,
-                    #     U, ldu,
-                    #     VT, ldvt,
-                    #     work, lwork,
-
-                    #         rwork,
-
-                    #     info)
                     if i == 1
                         lwork = ceil(Int, real(work[1]))
                         resize!(work, lwork)
                     end
                 end
+                magma_finalize()
 
                 if jobu == 'O'
                     return (A, S, VT)
@@ -389,6 +328,7 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
             job_magma      = char_to_magmaInt(job)
             func = eval(@magmafunc($gesdd))
 
+            magma_init()
             for i in 1:2
                 func(
                     job_magma,
@@ -401,31 +341,12 @@ for (gesvd, gesdd, elty, relty) in    ((:cgesvd, :cgesdd, :ComplexF32, :Float32)
                     rwork,
                     iwork, info
                 )
-                # ccall((@magmafunc($gesdd), libmagma), Cint,
-                #         (Cint,
-                #         Cint, Cint,
-                #         Ptr{$elty}, Cint,
-                #         Ptr{$relty},
-                #         Ptr{$elty}, Cint,
-                #         Ptr{$elty}, Cint,
-                #         Ptr{$elty}, Cint,
-                #         Ptr{$relty},
-                #         Ptr{Cint}, Ptr{Cint}),
-
-                #         job_magma,
-                #         m, n,
-                #         A, lda,
-                #         S,
-                #         U, ldu,
-                #         VT, ldvt,
-                #         work, lwork,
-                #         rwork,
-                #         iwork, info)
                 if i == 1
                     lwork = ceil(Cint, nextfloat(real(work[1])))
                     resize!(work, lwork)
                 end
             end
+            magma_finalize()
 
             if job == 'O'
                 if m >= n
@@ -488,33 +409,21 @@ for (gebrd, elty, relty) in    ((:sgebrd, :Float32, :Float32),
                 info = Ref{Cint}()
                 func = eval(@magmafunc($gebrd))
 
+                magma_init()
                 for i in 1:2 # first call returns lwork as work[1]
                     func(
                         m, n, A, lda,
                         d, e, tauq, taup,
                         work, lwork, info
                     )
-                    # ccall((@magmafunc($gebrd), libmagma), Cint,
-                    #     (Cint, Cint, Ptr{$elty}, Cint,
-                    #     Ptr{$relty}, Ptr{$relty}, Ptr{$elty}, Ptr{$elty},
-                    #     Ptr{$elty}, Cint, Ptr{Cint}),
-
-                    #     m, n, A, lda,
-                    #     d, e, tauq, taup,
-                    #     work, lwork, info)
                     if i == 1 
                         lwork = ceil(Cint, nextfloat(real(work[1])))
                         resize!(work, lwork)
                     end
                 end
+                magma_finalize()
 
             return (A, d, e, tauq, taup)
         end
     end
-end
-function magma_gebrd!(A::AbstractMatrix{T}) where T
-    println("Begin to initialize\n")
-    magma_init()
-    magma_gebrd!(A)
-    magma_finalize()
 end
