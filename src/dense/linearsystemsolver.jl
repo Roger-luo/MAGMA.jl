@@ -161,6 +161,7 @@ for type in magmaTypeList
             if n != size(B, 1)
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
+
             nrhs = size(B, 2)
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
@@ -244,12 +245,13 @@ for type in magmaTypeList
             if size(B,1) != n
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
+            nrhs = size(B, 2)
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
             ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Cint}()
 
-            func = eval(@magmafunc($gerbt))
+            func = eval(@magmafunc_gpu($gerbt))
             magma_init()
             func(
                 gen, n, nrhs, 
@@ -259,8 +261,7 @@ for type in magmaTypeList
                 info
             )
             magma_finalize()
-            B, A, ipiv
-
+            A, B, U, V, info[]
         end
     end
 end
