@@ -6,7 +6,7 @@ using Base: has_offset_axes
 #      (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
 #      (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
 #      (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
-const function_list = ("gels", "gesv", "getrs", "getri", "getrf")
+const function_list = ("gels", "gesv", "getrs", "getri", "getrf", "gerbt")
 for type in magmaTypeList
     # create the symbols for element types
     elty = Symbol(type)
@@ -103,7 +103,6 @@ for type in magmaTypeList
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)
-            isGPU = (A isa CuArray && B isa CuArray)
             if size(B,1) != n
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
@@ -127,7 +126,6 @@ for type in magmaTypeList
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)
-            isGPU = (A isa CuArray && B isa CuArray)
             if size(B,1) != n
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
@@ -238,6 +236,31 @@ for type in magmaTypeList
             func(m, n, A, lda, ipiv, info)
             magma_finalize()
             A, ipiv
+        end
+        function magma_gerbt!(A::CuArray{$elty}, B::CuArray{$elty}, gen::Bool)
+            @assert !has_offset_axes(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            end
+            lda  = max(1,stride(A,2))
+            ldb  = max(1,stride(B,2))
+            ipiv = similar(Matrix(A), Int32, n)
+            info = Ref{Cint}()
+
+            func = eval(@magmafunc($gerbt))
+            magma_init()
+            func(
+                gen, n, nrhs, 
+                A, lda,
+                B, ldb,
+                U, V,
+                info
+            )
+            magma_finalize()
+            B, A, ipiv
+
         end
     end
 end
