@@ -371,3 +371,69 @@ for type in magmaTypeList
         end
     end
 end
+
+for (elty, hesv) in ((:ComplexF32, :chesv), (:ComplexF64, :zhesv))
+    @eval begin
+        function magma_hesv(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+            ipiv = similar(Matrix(A), Int32, n)
+
+            func = eval(@magmafunc($hesv))
+            magma_init()
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                ipiv,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, ipiv, info[]
+        end
+    end
+end
+
+function magma_hesv(uplo::magma_uplo_t, A::CuMatrix{ComplexF64}, B::CuArray{ComplexF64})
+    require_one_based_indexing(A, B)
+    chkstride1(A, B)
+    n = checksquare(A)
+    if size(B,1) != n
+        throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+    end
+    n = checksquare(A)
+    nrhs = size(B, 2)
+    lda  = max(1, n)
+    ldb  = max(1, n)
+    iter = Ref{Cint}()
+    info = Ref{Cint}()
+
+    ldx  = max(1, n)
+    X    = CuArray{ComplexF64}(undef, ldx, nrhs)
+
+    dworkd = CuArray{ComplexF64}(undef, n*nrhs)
+    dworks = CuArray{ComplexF32}(undef, n*(n+nrhs))
+
+    magma_init()
+    magma_zchesv_gpu(
+        uplo,
+        n, nrhs,
+        A, lda,
+        B, ldb,
+        X, ldx,
+        dworkd, dworks,
+        iter, info
+    )
+    magma_finalize()
+    A, B, iter[], info[]
+end

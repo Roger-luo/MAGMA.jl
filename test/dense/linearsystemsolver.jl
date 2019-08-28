@@ -144,3 +144,22 @@ end
         end
     end
 end
+
+@testset "hesv" begin
+    @testset for elty in (ComplexF32, ComplexF64)
+        A = rand(elty,10,10)
+        A = A + A' #hermitian!
+        b = rand(elty,10)
+        c = A \ b
+        b,A = LAPACK.hesv!('U',A,b)
+        @test b ≈ c
+        @test_throws DimensionMismatch LAPACK.hesv!('U',A,rand(elty,11))
+        A = rand(elty,10,10)
+        A = A + A' #hermitian!
+        b = rand(elty,10)
+        c = A \ b
+        b,A = LAPACK.hesv_rook!('U',A,b)
+        @test b ≈ c
+        @test_throws DimensionMismatch LAPACK.hesv_rook!('U',A,rand(elty,11))
+    end
+end
