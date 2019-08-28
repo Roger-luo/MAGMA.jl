@@ -3,6 +3,7 @@ using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 using CEnum
 
 using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
+using Base: require_one_based_indexing
 
 # export wrappers in svds
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
