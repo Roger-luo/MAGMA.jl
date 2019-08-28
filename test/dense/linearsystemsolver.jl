@@ -109,7 +109,7 @@ end
 end
 
 @testset "gesv_rbt" begin
-    @testset for elty in MAGMA.magmaTypeTuple
+    @testset for elty in (Float32, Float64)#MAGMA.magmaTypeTuple
         local n = 2
         A = Array(rand(elty, n, n))
         B = Array{elty}(I, n, n)
@@ -138,7 +138,12 @@ end
         D = copy(A)
         C = copy(B)
         D,C = LAPACK.posv!('U',D,C)
+
+        Dtest = copy(A)
+        Ctest = copy(B)
+        Dtest, Ctest, info = magma_posv!(MAGMA.MagmaUpper, Dtest, Ctest)
         @test A\B ≈ C
+        @test A\B ≈ Ctest
         offsizemat = Matrix{elty}(undef, n+1, n+1)
         @test_throws DimensionMismatch LAPACK.posv!('U', D, offsizemat)
         @test_throws DimensionMismatch LAPACK.potrs!('U', D, offsizemat)
