@@ -437,3 +437,36 @@ function magma_hesv!(uplo::magma_uplo_t, A::CuMatrix{ComplexF64}, B::CuArray{Com
     magma_finalize()
     A, B, iter[], info[]
 end
+
+
+for (elty, sysv) in ((:Float32, :ssysv), (:Float64, :dsysv))
+    @eval begin
+        function magma_sysv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+            ipiv = similar(Matrix(A), Int32, n)
+
+            func = eval(@magmafunc($sysv))
+            magma_init()
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                ipiv,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, ipiv, info[]
+        end
+    end
+end

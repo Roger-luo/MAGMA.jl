@@ -147,12 +147,16 @@ end
 
 @testset "hesv" begin
     @testset for elty in (ComplexF32, ComplexF64)
+        # @testset for interface in (Array)
         A = rand(elty,10,10)
         A = A + A' #hermitian!
         b = rand(elty,10)
         c = A \ b
-        A, b, ipiv, info = magma_hesv!(MAGMA.MagmaUpper, A, b)
+        # A = interface(A)
+        # b = interface(b)
+        A, b, iter, info = magma_hesv!(MAGMA.MagmaUpper, A, b)
         @test b ≈ c
+        # println("Iter = $(iter)\nInfo = $(info)")
 
         # b,A = LAPACK.hesv!('U',A,b)
         # @test b ≈ c
@@ -164,5 +168,6 @@ end
         # b,A = LAPACK.hesv_rook!('U',A,b)
         # @test b ≈ c
         # @test_throws DimensionMismatch LAPACK.hesv_rook!('U',A,rand(elty,11))
+        # end
     end
 end
