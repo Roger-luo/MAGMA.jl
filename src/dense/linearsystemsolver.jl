@@ -374,7 +374,7 @@ end
 
 for (elty, hesv) in ((:ComplexF32, :chesv), (:ComplexF64, :zhesv))
     @eval begin
-        function magma_hesv(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+        function magma_hesv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
             require_one_based_indexing(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -404,7 +404,7 @@ for (elty, hesv) in ((:ComplexF32, :chesv), (:ComplexF64, :zhesv))
     end
 end
 
-function magma_hesv(uplo::magma_uplo_t, A::CuMatrix{ComplexF64}, B::CuArray{ComplexF64})
+function magma_hesv!(uplo::magma_uplo_t, A::CuMatrix{ComplexF64}, B::CuArray{ComplexF64})
     require_one_based_indexing(A, B)
     chkstride1(A, B)
     n = checksquare(A)
