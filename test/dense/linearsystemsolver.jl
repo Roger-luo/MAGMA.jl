@@ -110,8 +110,9 @@ end
 
 @testset "gesv_rbt" begin
     @testset for elty in MAGMA.magmaTypeTuple
-        A = Array(rand(elty, 2, 2))
-        B = Array{elty}(I, 2, 2)
+        local n = 2
+        A = Array(rand(elty, n, n))
+        B = Array{elty}(I, n, n)
 
         A_backup = Matrix(A)
         B_backup = Matrix(B)
@@ -119,5 +120,29 @@ end
 
         A, B, info = magma_gesv_rbt!(A, B, MAGMA.MagmaTrue)
         @test (A_backup * Matrix(B)) ≈ B_backup
+    end
+end
+
+@testset "posv" begin
+    @testset for elty in MAGMA.magmaTypeTuple
+        local n = 10
+        A = rand(elty,n,n)/100
+        A += real(diagm(0 => n*real(rand(elty,n))))
+        if elty <: Complex
+            A = A + A'
+        else
+            A = A + transpose(A)
+        end
+        B = rand(elty,n,n)
+
+        D = copy(A)
+        C = copy(B)
+        D,C = LAPACK.posv!('U',D,C)
+        @test A\B ≈ C
+        offsizemat = Matrix{elty}(undef, n+1, n+1)
+        @test_throws DimensionMismatch LAPACK.posv!('U', D, offsizemat)
+        @test_throws DimensionMismatch LAPACK.potrs!('U', D, offsizemat)
+
+        @test LAPACK.potrs!('U',Matrix{elty}(undef,0,0),elty[]) == elty[]
     end
 end

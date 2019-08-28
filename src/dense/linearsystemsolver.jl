@@ -320,5 +320,54 @@ for type in magmaTypeList
 
         #* Symmetry/Hermitian
         function magma_posv!(uplo::magma_uplo_t, A::CuMatrix{$elty}, B::CuArray{$elty})
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+
+            func = eval(@magmafunc_gpu($posv))
+            magma_init()
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, info[]
+        end
+        function magma_posv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+
+            func = eval(@magmafunc($posv))
+            magma_init()
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, info[]
+        end
     end
 end
