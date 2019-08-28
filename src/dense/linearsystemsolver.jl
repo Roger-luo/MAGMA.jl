@@ -6,7 +6,7 @@ using Base: has_offset_axes
 #      (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
 #      (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
 #      (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
-const function_list = ("gels", "gesv", "getrs", "getri", "getrf", "gerbt", "gesv_rbt")
+const function_list = ("gels", "gesv", "getrs", "getri", "getrf", "gerbt", "gesv_rbt", "geqrsv")
 for type in magmaTypeList
     # create the symbols for element types
     elty = Symbol(type)
@@ -286,6 +286,34 @@ for type in magmaTypeList
             )
             magma_finalize()
             A, B, info[]
+        end
+        function magma_geqrsv!(A::CuArray{$elty}, B::CuArray{$elty}, refine::magma_bool_t=MagmaTrue)
+            # @assert !has_offset_axes(A, B)
+            # chkstride1(A, B)
+            # n = checksquare(A)
+            m, n = size(A)
+            # if size(B,1) != n
+            #     throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            # end
+            nrhs = size(B, 2)
+            lda  = max(1, m)
+            ldb  = max(1, m)
+            ldx  = max(1, n)
+            X    = CuArray{$elty}(undef, ldx, nrhs)
+            info = Ref{Cint}()
+            iter = Ref{Cint}()
+
+            func = eval(@magmafunc_gpu($geqrsv))
+            magma_init()
+            func(
+                m, n, nrhs, 
+                A, lda,
+                B, ldb,
+                X, ldx,
+                iter, info
+            )
+            magma_finalize()
+            A, B, X, iter[], info[]
         end
     end
 end
