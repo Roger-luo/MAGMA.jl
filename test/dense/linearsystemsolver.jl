@@ -125,29 +125,22 @@ end
 
 @testset "posv" begin
     @testset for elty in MAGMA.magmaTypeTuple
-        local n = 10
-        A = rand(elty,n,n)/100
-        A += real(diagm(0 => n*real(rand(elty,n))))
-        if elty <: Complex
-            A = A + A'
-        else
-            A = A + transpose(A)
+        @testset for interface in (CuArray, Array)
+            local n = 10
+            A = rand(elty,n,n)/100
+            A += real(diagm(0 => n*real(rand(elty,n))))
+            if elty <: Complex
+                A = A + A'
+            else
+                A = A + transpose(A)
+            end
+            B = rand(elty,n,n)
+
+            Dtest = interface(copy(A))
+            Ctest = interface(copy(B))
+            Dtest, Ctest, info = magma_posv!(MAGMA.MagmaUpper, Dtest, Ctest)
+            
+            @test A\B ≈ Ctest
         end
-        B = rand(elty,n,n)
-
-        D = copy(A)
-        C = copy(B)
-        D,C = LAPACK.posv!('U',D,C)
-
-        Dtest = copy(A)
-        Ctest = copy(B)
-        Dtest, Ctest, info = magma_posv!(MAGMA.MagmaUpper, Dtest, Ctest)
-        @test A\B ≈ C
-        @test A\B ≈ Ctest
-        offsizemat = Matrix{elty}(undef, n+1, n+1)
-        @test_throws DimensionMismatch LAPACK.posv!('U', D, offsizemat)
-        @test_throws DimensionMismatch LAPACK.potrs!('U', D, offsizemat)
-
-        @test LAPACK.potrs!('U',Matrix{elty}(undef,0,0),elty[]) == elty[]
     end
 end
