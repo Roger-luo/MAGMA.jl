@@ -6,7 +6,9 @@ using Base: has_offset_axes
 #      (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
 #      (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
 #      (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
-const function_list = ("gels", "gesv", "getrs", "getri", "getrf", "gerbt", "gesv_rbt", "geqrsv")
+const function_list = ("gels",  "gesv",     "getrs",    "getri",    "getrf", 
+                       "gerbt", "gesv_rbt", "geqrsv",
+                       "posv")
 for type in magmaTypeList
     # create the symbols for element types
     elty = Symbol(type)
@@ -315,5 +317,8 @@ for type in magmaTypeList
             magma_finalize()
             A, B, X, iter[], info[]
         end
+
+        #* Symmetry/Hermitian
+        function magma_posv!(uplo::magma_uplo_t, A::CuMatrix{$elty}, B::CuArray{$elty})
     end
 end
