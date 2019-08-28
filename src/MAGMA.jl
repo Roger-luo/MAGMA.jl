@@ -3,7 +3,6 @@ using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 using CEnum
 
 using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
-using Base: require_one_based_indexing
 
 # export wrappers in svds
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
@@ -14,6 +13,9 @@ export magma_posv!
 
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize
+
+#* some extra equipments
+require_one_based_indexing(A...) = !has_offset_axes(A...) || throw(ArgumentError("offset arrays are not supported but got an array with index other than 1"))
 
 include("clang/libmagma_common.jl")
 include("clang/libmagma_api.jl")
