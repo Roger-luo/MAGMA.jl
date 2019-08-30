@@ -22,12 +22,26 @@ for type in magmaTypeList
             func  = eval(@magmafunc($geqrf))
             magma_init()
             for i = 1:2                # 
-                func(m, n, A, lda, tau, lwork, info)
+                func(m, n, A, lda, tau, work, lwork, info)
                 if i == 1
-                    lwork = ceil(real(work[1]))
+                    lwork = ceil(Int, real(work[1]))
                     resize!(work, lwork)
                 end
             end
+            magma_finalize()
+            A, tau
+        end
+        function magma_geqrf!(A::CuMatrix{$elty})
+            magma_init()
+            m, n  = size(A)
+            nb    = (eval(@magmafunc_nb($geqrf)))( m, n )
+            info  = Ref{Cint}()
+            lda   = max(1, m)
+            tau   = similar(Matrix(A), min(m, n))
+            T     = similar(A, (2*min( m, n ) + ceil(Int, n/32)*32 )*nb)
+
+            func  = eval(@magmafunc_gpu($geqrf))
+            func(m, n, A, lda, tau, T, info)
             magma_finalize()
             A, tau
         end

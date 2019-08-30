@@ -2,7 +2,11 @@ module MAGMA
 using CUDAdrv, CUDAapi, CUDAnative, CuArrays
 using CEnum
 
+# some useful functions from LinearAlgebra for some intermediate processes
 using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
+
+# some useful const definitions used by magmaTypeList
+export magmaTypeTuple, magmaTypeDict, magmaTypeList
 
 # export wrappers in svds
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
@@ -10,6 +14,9 @@ export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_
 # export wrappers in linearsystemsolver
 export magma_gesv!, magma_getri!, magma_getrs!, magma_getrf!, magma_gerbt!, magma_gesv_rbt!, magma_geqrsv!
 export magma_posv!, magma_hesv!, magma_sysv!
+
+# export wrappers in factorization
+export magma_geqrf!
 
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize

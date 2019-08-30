@@ -23,12 +23,12 @@ for type in magmaTypeList
         #       CHARACTER          TRANS
         #       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
         function magma_gels!(trans::magma_trans_t, A::CuArray{$elty}, B::CuArray{$elty})
+            magma_init()
             m, n  = size(A)
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
 
-            magma_init()
             for i = 1:2  # first call returns lwork as work[1]
                 func = eval(@magmafunc_gpu($gels))
                 func(
@@ -56,13 +56,13 @@ for type in magmaTypeList
             F, subsetrows(B, B, k), ssr
         end
         function magma_gels!(trans::magma_trans_t, A::Array{$elty}, B::Array{$elty})
+            magma_init()
             m, n  = size(A)
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
             func = eval(@magmafunc($gels))
             
-            magma_init()
             for i = 1:2  # first call returns lwork as work[1]
                 func(
                     MagmaNoTrans, m, n, size(B,2),
@@ -102,6 +102,7 @@ for type in magmaTypeList
         #               = 0: successful exit
         #               < 0: if INFO = -i, the i-th argument had an illegal value
         function magma_gesv!(A::CuArray{$elty}, B::CuArray{$elty})
+            magma_init()
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -113,7 +114,6 @@ for type in magmaTypeList
             ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Cint}()
 
-            magma_init()
             func = eval(@magmafunc_gpu($gesv))
             func(
                 n, size(B,2),
@@ -125,6 +125,7 @@ for type in magmaTypeList
         end
     
         function magma_gesv!(A::Array{$elty}, B::Array{$elty})
+            magma_init()
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -137,7 +138,6 @@ for type in magmaTypeList
             info = Ref{Cint}()
 
             func = eval(@magmafunc($gesv))
-            magma_init()
             func(
                 n, size(B,2),
                 A, lda, ipiv,
@@ -155,7 +155,8 @@ for type in magmaTypeList
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
         function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::Array{Cint}, B::CuArray{$elty})
-
+            magma_init()
+            
             @assert !has_offset_axes(A, ipiv, B)            # chktrans(trans)
             chkstride1(A, B, ipiv)
             @assert !has_offset_axes(A, ipiv, B)
@@ -169,7 +170,6 @@ for type in magmaTypeList
             ldb  = max(1,stride(B,2))
             info = Ref{Cint}()
             
-            magma_init()
             func = eval(@magmafunc_gpu($getrs))
             func(trans, n, nrhs, A, lda, ipiv, B, ldb, info)
             magma_finalize()
@@ -192,6 +192,7 @@ for type in magmaTypeList
         #*#         < 0: if INFO = -i, the i-th argument had an illegal value
         #*#         > 0: if INFO = i, U(i,i) is exactly zero; the matrix is singular and its cannot be computed.
         function magma_getri!(A::CuMatrix{$elty}, ipiv::Array{Int})
+            magma_init()
             @assert !has_offset_axes(A, ipiv)            # chkstride1(A, ipiv)
             n = checksquare(A)
             if n != length(ipiv)
@@ -205,7 +206,6 @@ for type in magmaTypeList
             work  = cu(Vector{$elty}(undef, max(1, lwork)))
             info  = Ref{Cint}()
             func = eval(@magmafunc_gpu($getri))
-            magma_init()
             func(n, A, lda, ipiv, work, lwork, info)
             magma_finalize()
             A
@@ -215,6 +215,7 @@ for type in magmaTypeList
         end
 
         function magma_getrf!(A::Matrix{$elty})
+            magma_init()
             @assert !has_offset_axes(A)
             chkstride1(A)
             m, n = size(A)
@@ -222,12 +223,12 @@ for type in magmaTypeList
             ipiv = similar(A, Cint, min(m, n))
             info = Ref{Cint}()
             func = eval(@magmafunc($getrf))
-            magma_init()
             func(m, n, A, lda, ipiv, info)
             magma_finalize()
             A, ipiv
         end
         function magma_getrf!(A::CuMatrix{$elty})
+            magma_init()
             @assert !has_offset_axes(A)
             chkstride1(A)
             m, n = size(A)
@@ -235,12 +236,12 @@ for type in magmaTypeList
             ipiv = (similar(Matrix(A), Cint, min(m, n)))
             info = Ref{Cint}()
             func = eval(@magmafunc_gpu($getrf))
-            magma_init()
             func(m, n, A, lda, ipiv, info)
             magma_finalize()
             A, ipiv
         end
         function magma_gerbt!(A::CuArray{$elty}, B::CuArray{$elty}, gen::magma_bool_t=MagmaTrue)
+            magma_init()
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -255,7 +256,6 @@ for type in magmaTypeList
             V    = Array{$elty}(undef, 2, n)
 
             func = eval(@magmafunc_gpu($gerbt))
-            magma_init()
             func(
                 gen, n, nrhs, 
                 A, lda,
@@ -267,6 +267,7 @@ for type in magmaTypeList
             A, B, U, V, info[]
         end
         function magma_gesv_rbt!(A::Array{$elty}, B::Array{$elty}, refine::magma_bool_t=MagmaTrue)
+            magma_init()
             @assert !has_offset_axes(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -279,7 +280,6 @@ for type in magmaTypeList
             info = Ref{Cint}()
 
             func = eval(@magmafunc($gesv_rbt))
-            magma_init()
             func(
                 refine, n, nrhs, 
                 A, lda,
@@ -290,6 +290,7 @@ for type in magmaTypeList
             A, B, info[]
         end
         function magma_geqrsv!(A::CuArray{$elty}, B::CuArray{$elty}, refine::magma_bool_t=MagmaTrue)
+            magma_init()
             # @assert !has_offset_axes(A, B)
             # chkstride1(A, B)
             # n = checksquare(A)
@@ -306,7 +307,6 @@ for type in magmaTypeList
             iter = Ref{Cint}()
 
             func = eval(@magmafunc_gpu($geqrsv))
-            magma_init()
             func(
                 m, n, nrhs, 
                 A, lda,
@@ -320,6 +320,7 @@ for type in magmaTypeList
 
         #* Symmetry/Hermitian
         function magma_posv!(uplo::magma_uplo_t, A::CuMatrix{$elty}, B::CuArray{$elty})
+            magma_init()
             require_one_based_indexing(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -333,7 +334,6 @@ for type in magmaTypeList
             info = Ref{Cint}()
 
             func = eval(@magmafunc_gpu($posv))
-            magma_init()
             func(
                 uplo,
                 n, nrhs,
@@ -345,6 +345,7 @@ for type in magmaTypeList
             A, B, info[]
         end
         function magma_posv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            magma_init()
             require_one_based_indexing(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -358,7 +359,6 @@ for type in magmaTypeList
             info = Ref{Cint}()
 
             func = eval(@magmafunc($posv))
-            magma_init()
             func(
                 uplo,
                 n, nrhs,
@@ -375,6 +375,7 @@ end
 for (elty, hesv) in ((:ComplexF32, :chesv), (:ComplexF64, :zhesv))
     @eval begin
         function magma_hesv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            magma_init()
             require_one_based_indexing(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -389,7 +390,6 @@ for (elty, hesv) in ((:ComplexF32, :chesv), (:ComplexF64, :zhesv))
             ipiv = similar(Matrix(A), Int32, n)
 
             func = eval(@magmafunc($hesv))
-            magma_init()
             func(
                 uplo,
                 n, nrhs,
@@ -405,6 +405,7 @@ for (elty, hesv) in ((:ComplexF32, :chesv), (:ComplexF64, :zhesv))
 end
 
 function magma_hesv!(uplo::magma_uplo_t, A::CuMatrix{ComplexF64}, B::CuArray{ComplexF64})
+    magma_init()
     require_one_based_indexing(A, B)
     chkstride1(A, B)
     n = checksquare(A)
@@ -424,7 +425,6 @@ function magma_hesv!(uplo::magma_uplo_t, A::CuMatrix{ComplexF64}, B::CuArray{Com
     dworkd = CuArray{ComplexF64}(undef, n*nrhs)
     dworks = CuArray{ComplexF32}(undef, n*(n+nrhs))
 
-    magma_init()
     magma_zchesv_gpu(
         uplo,
         n, nrhs,
@@ -442,6 +442,7 @@ end
 for (elty, sysv) in ((:Float32, :ssysv), (:Float64, :dsysv))
     @eval begin
         function magma_sysv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            magma_init()
             require_one_based_indexing(A, B)
             chkstride1(A, B)
             n = checksquare(A)
@@ -456,7 +457,6 @@ for (elty, sysv) in ((:Float32, :ssysv), (:Float64, :dsysv))
             ipiv = similar(Matrix(A), Int32, n)
 
             func = eval(@magmafunc($sysv))
-            magma_init()
             func(
                 uplo,
                 n, nrhs,

@@ -6,4 +6,5 @@ using Test, LinearAlgebra, CuArrays, CUDAnative, CUDAapi, CUDAdrv
 @testset "dense linear algebra" begin
     include("dense/svd.jl")
     include("dense/linearsystemsolver.jl")
+    include("dense/factorization.jl")
 end
