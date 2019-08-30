@@ -46,6 +46,98 @@ for type in magmaTypeList
             A, tau
         end
 
+        # ! Strangely, it seems that MAGMA does not provide any API for gerqf
+        # function magma_gerqf!(A::Matrix{$elty})
+        #     m, n  = size(A)
+        #     work  = Vector{$elty}(undef, 1)
+        #     lwork = Cint(-1)
+        #     info  = Ref{Cint}()
+        #     lda   = max(1, m)
+        #     tau   = similar(A, min(m, n))
+        #     func  = (eval(@magmafunc_generic($geqrf, "_error")))
+        #     magma_init()
+        #     for i = 1:2                # 
+        #         func(m, n, A, lda, tau, work, lwork, info)
+        #         if i == 1
+        #             lwork = ceil(Int, real(work[1]))
+        #             resize!(work, lwork)
+        #         end
+        #     end
+        #     magma_finalize()
+        #     A, tau
+        # end
+        # function magma_gerqf!(A::CuMatrix{$elty})
+        #     #! MAGMA does not provide direct GPU interface for gerqf
+        #     A = Matrix(A)
+        #     magma_gerqf!(A)
+        # end
+
+        function magma_geqlf!(A::Matrix{$elty})
+            m, n  = size(A)
+            work  = Vector{$elty}(undef, 1)
+            lwork = Cint(-1)
+            info  = Ref{Cint}()
+            lda   = max(1, m)
+            tau   = similar(A, min(m, n))
+
+            func  = eval(@magmafunc($geqlf))
+            magma_init()
+            for i = 1:2                # 
+                func(m, n, A, lda, tau, work, lwork, info)
+                if i == 1
+                    lwork = ceil(Int, real(work[1]))
+                    resize!(work, lwork)
+                end
+            end
+            magma_finalize()
+            A, tau
+        end
+        function magma_geqlf!(A::CuMatrix{$elty})
+            A = Matrix(A)
+            magma_geqlf!(A)
+        end
+
+        function magma_gelqf!(A::Matrix{$elty})
+            m, n  = size(A)
+            work  = Vector{$elty}(undef, 1)
+            lwork = Cint(-1)
+            info  = Ref{Cint}()
+            lda   = max(1, m)
+            tau   = similar(A, min(m, n))
+
+            func  = eval(@magmafunc($gelqf))
+            magma_init()
+            for i = 1:2                # 
+                func(m, n, A, lda, tau, work, lwork, info)
+                if i == 1
+                    lwork = ceil(Int, real(work[1]))
+                    resize!(work, lwork)
+                end
+            end
+            magma_finalize()
+            A, tau
+        end
+        function magma_gelqf!(A::CuMatrix{$elty})
+            m, n  = size(A)
+            work  = Vector{$elty}(undef, 1)
+            lwork = Cint(-1)
+            info  = Ref{Cint}()
+            lda   = max(1, m)
+            tau   = similar(Matrix(A), min(m, n))
+
+            func  = eval(@magmafunc_gpu($gelqf))
+            magma_init()
+            for i = 1:2                # 
+                func(m, n, A, lda, tau, work, lwork, info)
+                if i == 1
+                    lwork = ceil(Int, real(work[1]))
+                    resize!(work, lwork)
+                end
+            end
+            magma_finalize()
+            A, tau
+        end
+
     end
 
 end

@@ -16,7 +16,7 @@ export magma_gesv!, magma_getri!, magma_getrs!, magma_getrf!, magma_gerbt!, magm
 export magma_posv!, magma_hesv!, magma_sysv!
 
 # export wrappers in factorization
-export magma_geqrf!
+export magma_geqrf!, magma_geqlf!, magma_gelqf!
 
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize
@@ -43,6 +43,10 @@ end
 # ! for parts of subroutines which can not do the query
 macro magmafunc_nb(function_name)
 	return Expr(:quote, Symbol("magma_get_", function_name, "_nb"))
+end
+
+macro magmafunc_generic(function_name, str)
+	return Expr(:quote, Symbol(function_name, str))
 end
 
 const magmaTypeTuple= (Float32, Float64, ComplexF32, ComplexF64)
