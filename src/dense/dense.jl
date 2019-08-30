@@ -15,3 +15,4 @@ subsetrows(X::AbstractMatrix, Y::AbstractArray, k) = Y[1:k, :]
 
 include("svd.jl")
 include("linearsystemsolver.jl")
+include("factorization.jl")
