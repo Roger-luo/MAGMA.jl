@@ -17,7 +17,7 @@ end
         magma_result = MAGMA.magma_gehrd!(1,10,copy(A))
         lapack_result= LAPACK.gehrd!(1, 10, copy(A))
         for i in 1:length(magma_result)
-            println("Testing the $(i)th result: ")
+            # println("Testing the $(i)th result: ")
             @test magma_result[i] ≈ lapack_result[i]
         end
     end
