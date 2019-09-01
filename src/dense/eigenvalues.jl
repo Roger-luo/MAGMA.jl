@@ -99,3 +99,43 @@ for type in magmaTypeList_complex
     end
 
 end
+
+for type in magmaTypeList
+    # create the symbols for element types
+    elty = Symbol(type)
+    relty= Symbol(@type_to_rtype(type))
+    # generate the symbol variables for our wrappers
+    for func_name in function_list_eigenvalues
+        @eval $(Symbol(func_name)) = (Symbol(magmaTypeDict[$type], $func_name))
+    end
+
+    @eval begin
+
+        function magma_gehrd!(ilo::Integer, ihi::Integer, A::AbstractMatrix{$elty})
+            magma_init()
+            chkstride1(A)
+            n = checksquare(A)
+            chkfinite(A) # balancing routines don't support NaNs and Infs
+            tau = similar(A, $elty, max(0,n - 1))
+            work = Vector{$elty}(undef, 1)
+            lwork = Cint(-1)
+            info = Ref{Cint}()
+            func  = eval(@magmafunc($gehrd))    
+            nb    = eval(@magmafunc_nb($gehrd))(n)
+            T     = CuArray{$elty}(undef, nb*n)
+            for i = 1:2  # first call returns lwork as work[1]
+                func(n, ilo, ihi, A,
+                    max(1, stride(A, 2)), tau, work, lwork, T, 
+                    info)
+                if i == 1
+                    lwork = ceil(Int, real(work[1]))
+                    resize!(work, lwork)
+                end
+            end
+            magma_finalize()
+            A, tau
+        end
+
+    end
+
+end
