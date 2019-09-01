@@ -19,6 +19,9 @@ export magma_posv!, magma_hesv!, magma_sysv!
 # export wrappers in factorization
 export magma_geqrf!, magma_geqlf!, magma_gelqf!
 
+# export wrappers in eigenvalues
+export magma_geev!
+
 # export some wrappers in clang auto-generation
 export magma_init, magma_finalize
 
