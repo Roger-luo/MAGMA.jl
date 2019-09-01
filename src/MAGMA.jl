@@ -5,8 +5,9 @@ using CEnum
 # some useful functions from LinearAlgebra for some intermediate processes
 using LinearAlgebra: triu, tril, dot, checksquare, chkstride1
 
-# some useful const definitions used by magmaTypeList
+# some useful const definitions or utility functions
 export magmaTypeTuple, magmaTypeDict, magmaTypeList
+export chkfinite
 
 # export wrappers in svds
 export magma_gels!, magma_gesvd!, magma_gesdd!, magmaInit, magmaFinalize, magma_gebrd!
@@ -51,8 +52,19 @@ end
 
 const magmaTypeTuple= (Float32, Float64, ComplexF32, ComplexF64)
 const magmaTypeList = ["Float32", "Float64", "ComplexF32", "ComplexF64"]
+const magmaTypeList_real = ["Float32", "Float64"]
+const magmaTypeList_complex = ["ComplexF32", "ComplexF64"]
 const magmaTypeDict = Dict(Float32=>"s", Float64=>"d", ComplexF32=>"c", ComplexF64=>"z",
 "Float32"=>"s", "Float64"=>"d", "ComplexF32"=>"c", "ComplexF64"=>"z",)
+
+function chkfinite(A::AbstractMatrix)
+    for a in A
+        if !isfinite(a)
+            throw(ArgumentError("matrix contains Infs or NaNs"))
+        end
+    end
+    return true
+end
 
 # include the files of subroutines
 include("dense/dense.jl")
