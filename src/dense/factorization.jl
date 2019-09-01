@@ -138,6 +138,20 @@ for type in magmaTypeList
             A, tau
         end
 
+        function magma_geqrs!(A::CuArray{$elty}, B::CuArray{$elty})
+            magma_init()
+
+            m, n = size(A)
+            nrhs = size(B, 2)
+            lda  = max(1, m)
+            ldb  = max(1, m)
+            tau  = Array{$elty}(undef, n)
+
+
+            magma_finalize()
+            B, info[]
+        end
+
     end
 
 end
