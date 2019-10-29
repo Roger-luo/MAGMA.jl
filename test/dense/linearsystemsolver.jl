@@ -17,10 +17,7 @@ import LinearAlgebra.LAPACK: gels!, gesv!, getrs!, getri!
 
     right_answer = gels!('N', A, B)
 
-    magma_init()
-    # result = interface == "GPU" ? magma_gels!(MAGMA.MagmaNoTrans, dA, dB) : magma_gels!(MAGMA.MagmaNoTrans, A_copy, B_copy)
     result = magma_gels!(MAGMA.MagmaNoTrans, A_test, B_test)
-    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
@@ -46,9 +43,7 @@ end
 
     right_answer = gesv!(A, B)
 
-    magma_init()
     result = magma_gesv!(A_test, B_test)
-    magma_finalize()
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
@@ -65,21 +60,12 @@ end
 
             iA = inv(A)
             A, ipiv = LAPACK.getrf!(A)
-            # println("A = ", A)
-            # println("ipiv = ", ipiv)
-            # println("inverse of A = ", iA)
             A = LAPACK.getri!(A, ipiv)
 
             iB = inv(B)
             B, ipivB = LAPACK.getrf!(B)
-
-            # println("B = ", B)
-            # println("ipiv = ", ipiv)
-            # println("inverse of B = ", iB)
-            magma_init()
             B = interface(B)
             B = magma_getri!(B, ipivB)
-            magma_finalize()
             
             @test A ≈ B
         end
@@ -98,23 +84,10 @@ end
             trans = MAGMA.MagmaNoTrans
 
             A, ipiv = LAPACK.getrf!(A)
-            # println("ipiv is ", ipiv)
-            # println("A = ", A)
-            # println("ipiv = ", ipiv)
-            # println("inverse of A = ", iA)
             B = getrs!(trans_char, A, ipiv, B)
-
-            # println("B = ", B)
-            # println("ipiv = ", ipiv)
-            # println("inverse of B = ", iB)
-            Atest, ipivtest = LAPACK.getrf!(Atest)
-            # println("ipiv of test matrix is ", ipivtest)
-            magma_init()
+            Atest, ipivtest = magma_getrf!(Atest)
             Btest = magma_getrs!(trans, Atest, ipivtest, Btest)
-            magma_finalize()
-            # println("A ≈ Atest: ", A≈Atest)
-            # println("ipiv", ipiv ≈ ipivtest)
-            @test_broken B ≈ Btest
+            @test B ≈ Btest
         end
     end
 end
@@ -123,16 +96,104 @@ end
     @testset for elty in MAGMA.magmaTypeTuple
         @testset for interface in (Array, CuArray)
             # println(magmaTypeTuple)
-            A = rand(elty, 2, 2)
-            B = copy(A)
+            A = interface(rand(elty, 2, 2))
+            B = copy(Matrix(A))
 
-            magma_init()
             A, ipiv = magma_getrf!(A)
-            magma_finalize()
             B, ipivB,infoB= LAPACK.getrf!(B)
 
             @test A ≈ B
             @test ipiv ≈ ipivB
         end
+    end
+end
+
+@testset "gesv_rbt" begin
+    @testset for elty in (Float32, Float64)#MAGMA.magmaTypeTuple
+        local n = 2
+        A = Array(rand(elty, n, n))
+        B = Array{elty}(I, n, n)
+
+        A_backup = Matrix(A)
+        B_backup = Matrix(B)
+        result = inv(Matrix(A))
+
+        A, B, info = magma_gesv_rbt!(A, B, MAGMA.MagmaTrue)
+        @test (A_backup * Matrix(B)) ≈ B_backup
+    end
+end
+
+@testset "posv" begin
+    @testset for elty in MAGMA.magmaTypeTuple
+        @testset for interface in (CuArray, Array)
+            local n = 10
+            A = rand(elty,n,n)/100
+            A += real(diagm(0 => n*real(rand(elty,n))))
+            if elty <: Complex
+                A = A + A'
+            else
+                A = A + transpose(A)
+            end
+            B = rand(elty,n,n)
+
+            Dtest = interface(copy(A))
+            Ctest = interface(copy(B))
+            Dtest, Ctest, info = magma_posv!(MAGMA.MagmaUpper, Dtest, Ctest)
+            
+            @test A\B ≈ Ctest
+        end
+    end
+end
+
+@testset "hesv" begin
+    @testset for elty in (ComplexF32, ComplexF64)
+        # @testset for interface in (Array)
+        A = rand(elty,10,10)
+        A = A + A' #hermitian!
+        b = rand(elty,10)
+        c = A \ b
+        # A = interface(A)
+        # b = interface(b)
+        A, b, iter, info = magma_hesv!(MAGMA.MagmaUpper, A, b)
+        @test b ≈ c
+        # println("Iter = $(iter)\nInfo = $(info)")
+
+        # b,A = LAPACK.hesv!('U',A,b)
+        # @test b ≈ c
+        # @test_throws DimensionMismatch LAPACK.hesv!('U',A,rand(elty,11))
+        # A = rand(elty,10,10)
+        # A = A + A' #hermitian!
+        # b = rand(elty,10)
+        # c = A \ b
+        # b,A = LAPACK.hesv_rook!('U',A,b)
+        # @test b ≈ c
+        # @test_throws DimensionMismatch LAPACK.hesv_rook!('U',A,rand(elty,11))
+        # end
+    end
+end
+@testset "sysv" begin
+    @testset for elty in (Float32, Float64)
+        # @testset for interface in (Array)
+        A = rand(elty,10,10)
+        A = A + transpose(A) #hermitian!
+        b = rand(elty,10)
+        c = A \ b
+        # A = interface(A)
+        # b = interface(b)
+        A, b, ipiv, info = magma_sysv!(MAGMA.MagmaUpper, A, b)
+        @test b ≈ c
+        # println("Iter = $(iter)\nInfo = $(info)")
+
+        # b,A = LAPACK.hesv!('U',A,b)
+        # @test b ≈ c
+        # @test_throws DimensionMismatch LAPACK.hesv!('U',A,rand(elty,11))
+        # A = rand(elty,10,10)
+        # A = A + A' #hermitian!
+        # b = rand(elty,10)
+        # c = A \ b
+        # b,A = LAPACK.hesv_rook!('U',A,b)
+        # @test b ≈ c
+        # @test_throws DimensionMismatch LAPACK.hesv_rook!('U',A,rand(elty,11))
+        # end
     end
 end
