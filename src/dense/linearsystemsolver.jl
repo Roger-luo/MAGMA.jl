@@ -6,7 +6,9 @@ using Base: has_offset_axes
 #      (:sgels,:sgesv,:sgetrs,:sgetri,:Float32),
 #      (:zgels,:zgesv,:zgetrs,:zgetri,:ComplexF64),
 #      (:cgels,:cgesv,:cgetrs,:cgetri,:ComplexF32))
-const function_list = ("gels", "gesv", "getrs", "getri", "getrf")
+const function_list = ("gels",  "gesv",     "getrs",    "getri",    "getrf", 
+                       "gerbt", "gesv_rbt", "geqrsv",
+                       "posv")
 for type in magmaTypeList
     # create the symbols for element types
     elty = Symbol(type)
@@ -21,6 +23,7 @@ for type in magmaTypeList
         #       CHARACTER          TRANS
         #       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
         function magma_gels!(trans::magma_trans_t, A::CuArray{$elty}, B::CuArray{$elty})
+            magma_init()
             m, n  = size(A)
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
@@ -33,19 +36,12 @@ for type in magmaTypeList
                     A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                     work, lwork, info
                 )
-                # ccall((@magmafunc_gpu($gels), libmagma), Cint,
-                #       (Cint, Cint, Cint, Cint,
-                #        PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                #        Ptr{$elty}, Cint, Ptr{Cint}),
-                #       MagmaNoTrans, m, n, size(B,2),
-                #       A, max(1,stride(A,2)), B, max(1,stride(B,2)),
-                #       work, lwork, info)
-
                 if i == 1
                     lwork = ceil(Int, real(work[1]))
                     resize!(work, lwork)
                 end
             end
+            magma_finalize()
 
             k   = min(m, n)
             F   = m < n ? tril(A[1:k, 1:k]) : triu(A[1:k, 1:k])
@@ -60,31 +56,25 @@ for type in magmaTypeList
             F, subsetrows(B, B, k), ssr
         end
         function magma_gels!(trans::magma_trans_t, A::Array{$elty}, B::Array{$elty})
+            magma_init()
             m, n  = size(A)
             info  = Ref{Cint}()
             work  = Vector{$elty}(undef, 1)
             lwork = Cint(-1)
-
+            func = eval(@magmafunc($gels))
+            
             for i = 1:2  # first call returns lwork as work[1]
-                func = eval(@magmafunc($gels))
                 func(
                     MagmaNoTrans, m, n, size(B,2),
                     A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                     work, lwork, info
                 )
-                # ccall((@magmafunc($gels), libmagma), Cint,
-                #       (Cint, Cint, Cint, Cint,
-                #        PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                #        Ptr{$elty}, Cint, Ptr{Cint}),
-                #       MagmaNoTrans, m, n, size(B,2),
-                #       A, max(1,stride(A,2)), B, max(1,stride(B,2)),
-                #       work, lwork, info)
-
                 if i == 1
                     lwork = ceil(Int, real(work[1]))
                     resize!(work, lwork)
                 end
             end
+            magma_finalize()
 
             k   = min(m, n)
             F   = m < n ? tril(A[1:k, 1:k]) : triu(A[1:k, 1:k])
@@ -112,13 +102,13 @@ for type in magmaTypeList
         #               = 0: successful exit
         #               < 0: if INFO = -i, the i-th argument had an illegal value
         function magma_gesv!(A::CuArray{$elty}, B::CuArray{$elty})
-            # require_one_based_indexing(A, B)
-            # chkstride1(A, B)
+            magma_init()
+            @assert !has_offset_axes(A, B)
+            chkstride1(A, B)
             n = checksquare(A)
-            isGPU = (A isa CuArray && B isa CuArray)
-            # if size(B,1) != n
-            #     throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
-            # end
+            if size(B,1) != n
+                throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            end
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
             ipiv = similar(Matrix(A), Int32, n)
@@ -130,25 +120,18 @@ for type in magmaTypeList
                 A, lda, ipiv,
                 B, ldb, info
             )
-            # ccall((@magmafunc_gpu($gesv), libmagma), Cint,
-            #       (Cint, Cint,
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
-            #        n, size(B,2),
-            #        A, lda, ipiv,
-            #        B, ldb, info)
-            # chkmagmaerror(info[])
+            magma_finalize()
             B, A, ipiv
         end
     
         function magma_gesv!(A::Array{$elty}, B::Array{$elty})
-            # require_one_based_indexing(A, B)
-            # chkstride1(A, B)
+            magma_init()
+            @assert !has_offset_axes(A, B)
+            chkstride1(A, B)
             n = checksquare(A)
-            isGPU = (A isa CuArray && B isa CuArray)
-            # if size(B,1) != n
-            #     throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
-            # end
+            if size(B,1) != n
+                throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            end
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
             ipiv = similar(Matrix(A), Int32, n)
@@ -160,15 +143,7 @@ for type in magmaTypeList
                 A, lda, ipiv,
                 B, ldb, info
             )
-            # ccall((@magmafunc($gesv), libmagma), Cint,
-            #       (Cint, Cint,
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
-            #        n, size(B,2),
-            #        A, lda, ipiv,
-            #        B, ldb, info)
-
-            # chkmagmaerror(info[])
+            magma_finalize()
             B, A, ipiv
         end
 
@@ -179,15 +154,17 @@ for type in magmaTypeList
         #     .. Array Arguments ..
         #      INTEGER            IPIV( * )
         #      DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
-        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::Array{Int}, B::CuArray{$elty})
-            # require_one_based_indexing(A, ipiv, B)
-            # chktrans(trans)
-            # chkstride1(A, B, ipiv)
+        function magma_getrs!(trans::magma_trans_t, A::CuMatrix{$elty}, ipiv::Array{Cint}, B::CuArray{$elty})
+            magma_init()
+            
+            @assert !has_offset_axes(A, ipiv, B)            # chktrans(trans)
+            chkstride1(A, B, ipiv)
             @assert !has_offset_axes(A, ipiv, B)
             n = checksquare(A)
             if n != size(B, 1)
                 throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
             end
+
             nrhs = size(B, 2)
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
@@ -195,10 +172,10 @@ for type in magmaTypeList
             
             func = eval(@magmafunc_gpu($getrs))
             func(trans, n, nrhs, A, lda, ipiv, B, ldb, info)
+            magma_finalize()
             B
-            # println("\nThe info variable is: ", info, "\n")
         end
-        function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Int}, B::Array{$elty})
+        function magma_getrs!(trans::magma_trans_t, A::Matrix{$elty}, ipiv::AbstractVector{Cint}, B::Array{$elty})
             magma_getrs!(trans, cu(A), ipiv, cu(B))
         end
 
@@ -215,8 +192,8 @@ for type in magmaTypeList
         #*#         < 0: if INFO = -i, the i-th argument had an illegal value
         #*#         > 0: if INFO = i, U(i,i) is exactly zero; the matrix is singular and its cannot be computed.
         function magma_getri!(A::CuMatrix{$elty}, ipiv::Array{Int})
-            # require_one_based_indexing(A, ipiv)
-            # chkstride1(A, ipiv)
+            magma_init()
+            @assert !has_offset_axes(A, ipiv)            # chkstride1(A, ipiv)
             n = checksquare(A)
             if n != length(ipiv)
                 throw(DimensionMismatch("ipiv has length $(length(ipiv)), but needs $n"))
@@ -228,26 +205,17 @@ for type in magmaTypeList
             lwork = ceil(Int, real(n * nb))
             work  = cu(Vector{$elty}(undef, max(1, lwork)))
             info  = Ref{Cint}()
-            # for i = 1:2  # first call returns lwork as work[1]
-                # ccall((@magmafunc_gpu($getri), libmagma), Cvoid, # ! MAGMA has no native cpu interface for getri
-                #       (Ref{Cint}, PtrOrCuPtr{$elty}, Ref{Cint}, PtrOrCuPtr{Cint},
-                #        PtrOrCuPtr{$elty}, Ref{Cint}, PtrOrCuPtr{Cint}),
-                #       n, A, lda, ipiv, work, lwork, info)
-                # # chkmagmaerror(info[])
             func = eval(@magmafunc_gpu($getri))
             func(n, A, lda, ipiv, work, lwork, info)
-            #     if i == 1
-            #         lwork = ceil(Int, real(work[1]))
-            #         resize!(work, lwork)
-            #     end
-            # end
+            magma_finalize()
             A
         end
         function magma_getri!(A::Matrix{$elty}, ipiv::Array{Int})
             magma_getri!(cu(A), ipiv)
         end
 
-        function magma_getrf!(A::AbstractMatrix{$elty})
+        function magma_getrf!(A::Matrix{$elty})
+            magma_init()
             @assert !has_offset_axes(A)
             chkstride1(A)
             m, n = size(A)
@@ -256,7 +224,249 @@ for type in magmaTypeList
             info = Ref{Cint}()
             func = eval(@magmafunc($getrf))
             func(m, n, A, lda, ipiv, info)
-            A, ipiv, info[]
+            magma_finalize()
+            A, ipiv
+        end
+        function magma_getrf!(A::CuMatrix{$elty})
+            magma_init()
+            @assert !has_offset_axes(A)
+            chkstride1(A)
+            m, n = size(A)
+            lda = max(1, stride(A, 2))
+            ipiv = (similar(Matrix(A), Cint, min(m, n)))
+            info = Ref{Cint}()
+            func = eval(@magmafunc_gpu($getrf))
+            func(m, n, A, lda, ipiv, info)
+            magma_finalize()
+            A, ipiv
+        end
+        function magma_gerbt!(A::CuArray{$elty}, B::CuArray{$elty}, gen::magma_bool_t=MagmaTrue)
+            magma_init()
+            @assert !has_offset_axes(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            end
+            nrhs = size(B, 2)
+            lda  = max(1,stride(A,2))
+            ldb  = max(1,stride(B,2))
+            info = Ref{Cint}()
+            U    = Array{$elty}(undef, 2, n)
+            V    = Array{$elty}(undef, 2, n)
+
+            func = eval(@magmafunc_gpu($gerbt))
+            func(
+                gen, n, nrhs, 
+                A, lda,
+                B, ldb,
+                U, V,
+                info
+            )
+            magma_finalize()
+            A, B, U, V, info[]
+        end
+        function magma_gesv_rbt!(A::Array{$elty}, B::Array{$elty}, refine::magma_bool_t=MagmaTrue)
+            magma_init()
+            @assert !has_offset_axes(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            end
+            nrhs = size(B, 2)
+            lda  = max(1,stride(A,2))
+            ldb  = max(1,stride(B,2))
+            info = Ref{Cint}()
+
+            func = eval(@magmafunc($gesv_rbt))
+            func(
+                refine, n, nrhs, 
+                A, lda,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, info[]
+        end
+        function magma_geqrsv!(A::CuArray{$elty}, B::CuArray{$elty}, refine::magma_bool_t=MagmaTrue)
+            magma_init()
+            # @assert !has_offset_axes(A, B)
+            # chkstride1(A, B)
+            # n = checksquare(A)
+            m, n = size(A)
+            # if size(B,1) != n
+            #     throw(DimensionMismatch("B has leading dimension $(size(B,1)), but needs $n"))
+            # end
+            nrhs = size(B, 2)
+            lda  = max(1, m)
+            ldb  = max(1, m)
+            ldx  = max(1, n)
+            X    = CuArray{$elty}(undef, ldx, nrhs)
+            info = Ref{Cint}()
+            iter = Ref{Cint}()
+
+            func = eval(@magmafunc_gpu($geqrsv))
+            func(
+                m, n, nrhs, 
+                A, lda,
+                B, ldb,
+                X, ldx,
+                iter, info
+            )
+            magma_finalize()
+            A, B, X, iter[], info[]
+        end
+
+        #* Symmetry/Hermitian
+        function magma_posv!(uplo::magma_uplo_t, A::CuMatrix{$elty}, B::CuArray{$elty})
+            magma_init()
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+
+            func = eval(@magmafunc_gpu($posv))
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, info[]
+        end
+        function magma_posv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            magma_init()
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+
+            func = eval(@magmafunc($posv))
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, info[]
+        end
+    end
+end
+
+for (elty, hesv) in ((:ComplexF32, :chesv), (:ComplexF64, :zhesv))
+    @eval begin
+        function magma_hesv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            magma_init()
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+            ipiv = similar(Matrix(A), Int32, n)
+
+            func = eval(@magmafunc($hesv))
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                ipiv,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, ipiv, info[]
+        end
+    end
+end
+
+function magma_hesv!(uplo::magma_uplo_t, A::CuMatrix{ComplexF64}, B::CuArray{ComplexF64})
+    magma_init()
+    require_one_based_indexing(A, B)
+    chkstride1(A, B)
+    n = checksquare(A)
+    if size(B,1) != n
+        throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+    end
+    n = checksquare(A)
+    nrhs = size(B, 2)
+    lda  = max(1, n)
+    ldb  = max(1, n)
+    iter = Ref{Cint}()
+    info = Ref{Cint}()
+
+    ldx  = max(1, n)
+    X    = CuArray{ComplexF64}(undef, ldx, nrhs)
+
+    dworkd = CuArray{ComplexF64}(undef, n*nrhs)
+    dworks = CuArray{ComplexF32}(undef, n*(n+nrhs))
+
+    magma_zchesv_gpu(
+        uplo,
+        n, nrhs,
+        A, lda,
+        B, ldb,
+        X, ldx,
+        dworkd, dworks,
+        iter, info
+    )
+    magma_finalize()
+    A, B, iter[], info[]
+end
+
+
+for (elty, sysv) in ((:Float32, :ssysv), (:Float64, :dsysv))
+    @eval begin
+        function magma_sysv!(uplo::magma_uplo_t, A::Matrix{$elty}, B::Array{$elty})
+            magma_init()
+            require_one_based_indexing(A, B)
+            chkstride1(A, B)
+            n = checksquare(A)
+            if size(B,1) != n
+                throw(DimensionMismatch("first dimension of B, $(size(B,1)), and size of A, ($n,$n), must match!"))
+            end
+            n = checksquare(A)
+            nrhs = size(B, 2)
+            lda  = max(1, n)
+            ldb  = max(1, n)
+            info = Ref{Cint}()
+            ipiv = similar(Matrix(A), Int32, n)
+
+            func = eval(@magmafunc($sysv))
+            func(
+                uplo,
+                n, nrhs,
+                A, lda,
+                ipiv,
+                B, ldb,
+                info
+            )
+            magma_finalize()
+            A, B, ipiv, info[]
         end
     end
 end
