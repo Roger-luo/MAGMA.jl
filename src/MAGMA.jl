@@ -34,7 +34,7 @@ include("clang/libmagma_api.jl")
 """
 the path to magma binary
 """
-const libmagma = "/usr/local/magma/lib/libmagma.so"
+const libmagma = "../deps/libmagma.so"
 
 macro magmafunc(function_name)
 	return Expr(:quote, Symbol("magma_", function_name))
