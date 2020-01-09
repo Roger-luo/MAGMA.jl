@@ -22,9 +22,9 @@ for type in magmaTypeList
         #       INTEGER            INFO, LDA, LDB, LWORK, M, N, NRHS
         function magma_gels!(trans::magma_trans_t, A::CuArray{$elty}, B::CuArray{$elty})
             m, n  = size(A)
-            info  = Ref{Cint}()
+            info  = Ref{Int}()
             work  = Vector{$elty}(undef, 1)
-            lwork = Cint(-1)
+            lwork = Int(-1)
 
             for i = 1:2  # first call returns lwork as work[1]
                 func = eval(@magmafunc_gpu($gels))
@@ -33,10 +33,10 @@ for type in magmaTypeList
                     A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                     work, lwork, info
                 )
-                # ccall((@magmafunc_gpu($gels), libmagma), Cint,
-                #       (Cint, Cint, Cint, Cint,
-                #        PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                #        Ptr{$elty}, Cint, Ptr{Cint}),
+                # ccall((@magmafunc_gpu($gels), libmagma), Int,
+                #       (Int, Int, Int, Int,
+                #        PtrOrCuPtr{$elty}, Int, PtrOrCuPtr{$elty}, Int,
+                #        Ptr{$elty}, Int, Ptr{Int}),
                 #       MagmaNoTrans, m, n, size(B,2),
                 #       A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                 #       work, lwork, info)
@@ -61,9 +61,9 @@ for type in magmaTypeList
         end
         function magma_gels!(trans::magma_trans_t, A::Array{$elty}, B::Array{$elty})
             m, n  = size(A)
-            info  = Ref{Cint}()
+            info  = Ref{Int}()
             work  = Vector{$elty}(undef, 1)
-            lwork = Cint(-1)
+            lwork = Int(-1)
 
             for i = 1:2  # first call returns lwork as work[1]
                 func = eval(@magmafunc($gels))
@@ -72,10 +72,10 @@ for type in magmaTypeList
                     A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                     work, lwork, info
                 )
-                # ccall((@magmafunc($gels), libmagma), Cint,
-                #       (Cint, Cint, Cint, Cint,
-                #        PtrOrCuPtr{$elty}, Cint, PtrOrCuPtr{$elty}, Cint,
-                #        Ptr{$elty}, Cint, Ptr{Cint}),
+                # ccall((@magmafunc($gels), libmagma), Int,
+                #       (Int, Int, Int, Int,
+                #        PtrOrCuPtr{$elty}, Int, PtrOrCuPtr{$elty}, Int,
+                #        Ptr{$elty}, Int, Ptr{Int}),
                 #       MagmaNoTrans, m, n, size(B,2),
                 #       A, max(1,stride(A,2)), B, max(1,stride(B,2)),
                 #       work, lwork, info)
@@ -121,8 +121,8 @@ for type in magmaTypeList
             # end
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
-            ipiv = similar(Matrix(A), Int32, n)
-            info = Ref{Cint}()
+            ipiv = similar(Matrix(A), Int, n)
+            info = Ref{Int}()
 
             func = eval(@magmafunc_gpu($gesv))
             func(
@@ -130,10 +130,10 @@ for type in magmaTypeList
                 A, lda, ipiv,
                 B, ldb, info
             )
-            # ccall((@magmafunc_gpu($gesv), libmagma), Cint,
-            #       (Cint, Cint,
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
+            # ccall((@magmafunc_gpu($gesv), libmagma), Int,
+            #       (Int, Int,
+            #        PtrOrCuPtr{$elty}, Int, Ptr{Int},
+            #        PtrOrCuPtr{$elty}, Int, Ptr{Int}),
             #        n, size(B,2),
             #        A, lda, ipiv,
             #        B, ldb, info)
@@ -151,8 +151,8 @@ for type in magmaTypeList
             # end
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
-            ipiv = similar(Matrix(A), Int32, n)
-            info = Ref{Cint}()
+            ipiv = similar(Matrix(A), Int, n)
+            info = Ref{Int}()
 
             func = eval(@magmafunc($gesv))
             func(
@@ -160,10 +160,10 @@ for type in magmaTypeList
                 A, lda, ipiv,
                 B, ldb, info
             )
-            # ccall((@magmafunc($gesv), libmagma), Cint,
-            #       (Cint, Cint,
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint},
-            #        PtrOrCuPtr{$elty}, Cint, Ptr{Cint}),
+            # ccall((@magmafunc($gesv), libmagma), Int,
+            #       (Int, Int,
+            #        PtrOrCuPtr{$elty}, Int, Ptr{Int},
+            #        PtrOrCuPtr{$elty}, Int, Ptr{Int}),
             #        n, size(B,2),
             #        A, lda, ipiv,
             #        B, ldb, info)
@@ -191,7 +191,7 @@ for type in magmaTypeList
             nrhs = size(B, 2)
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
-            info = Ref{Cint}()
+            info = Ref{Int}()
             
             func = eval(@magmafunc_gpu($getrs))
             func(trans, n, nrhs, A, lda, ipiv, B, ldb, info)
@@ -227,11 +227,11 @@ for type in magmaTypeList
             nb    = func_nb(n)
             lwork = ceil(Int, real(n * nb))
             work  = cu(Vector{$elty}(undef, max(1, lwork)))
-            info  = Ref{Cint}()
+            info  = Ref{Int}()
             # for i = 1:2  # first call returns lwork as work[1]
                 # ccall((@magmafunc_gpu($getri), libmagma), Cvoid, # ! MAGMA has no native cpu interface for getri
-                #       (Ref{Cint}, PtrOrCuPtr{$elty}, Ref{Cint}, PtrOrCuPtr{Cint},
-                #        PtrOrCuPtr{$elty}, Ref{Cint}, PtrOrCuPtr{Cint}),
+                #       (Ref{Int}, PtrOrCuPtr{$elty}, Ref{Int}, PtrOrCuPtr{Int},
+                #        PtrOrCuPtr{$elty}, Ref{Int}, PtrOrCuPtr{Int}),
                 #       n, A, lda, ipiv, work, lwork, info)
                 # # chkmagmaerror(info[])
             func = eval(@magmafunc_gpu($getri))
@@ -252,8 +252,8 @@ for type in magmaTypeList
             chkstride1(A)
             m, n = size(A)
             lda = max(1, stride(A, 2))
-            ipiv = similar(A, Cint, min(m, n))
-            info = Ref{Cint}()
+            ipiv = similar(A, Int, min(m, n))
+            info = Ref{Int}()
             func = eval(@magmafunc($getrf))
             func(m, n, A, lda, ipiv, info)
             A, ipiv, info[]

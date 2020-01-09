@@ -12,9 +12,9 @@ const MAGMA_API = 2
 # Skipping MacroDefinition: magma_queue_sync ( queue ) magma_queue_sync_internal ( queue , __func__ , __FILE__ , __LINE__ )
 
 const MAX_THREADS_BLG = 256
-const magmaFloatComplex = Cint
+const magmaFloatComplex = Int
 
-@cenum magma_side_t::UInt32 begin
+@cenum magma_side_t::UInt begin
     MagmaLeft = 141
     MagmaRight = 142
     MagmaBothSides = 143
@@ -35,29 +35,29 @@ struct gbstrct_blg
     TAU::PtrOrCuPtr{magmaFloatComplex}
     E::PtrOrCuPtr{magmaFloatComplex}
     E_CPU::PtrOrCuPtr{magmaFloatComplex}
-    cores_num::Cint
-    locores_num::Cint
-    overlapQ1::Cint
-    usemulticpu::Cint
-    NB::Cint
-    NBTILES::Cint
-    N::Cint
-    NE::Cint
-    N_CPU::Cint
-    N_GPU::Cint
-    LDA::Cint
-    LDE::Cint
-    BAND::Cint
-    grsiz::Cint
-    Vblksiz::Cint
-    WANTZ::Cint
+    cores_num::Int
+    locores_num::Int
+    overlapQ1::Int
+    usemulticpu::Int
+    NB::Int
+    NBTILES::Int
+    N::Int
+    NE::Int
+    N_CPU::Int
+    N_GPU::Int
+    LDA::Int
+    LDE::Int
+    BAND::Int
+    grsiz::Int
+    Vblksiz::Int
+    WANTZ::Int
     SIDE::magma_side_t
     timeblg::PtrOrCuPtr{real_Double_t}
     timeaplQ::PtrOrCuPtr{real_Double_t}
-    ss_prog::PtrOrCuPtr{Cint}
+    ss_prog::PtrOrCuPtr{Int}
 end
 
-const magma_int_t = Cint
+const magma_int_t = Int
 const magmaFloatComplex_ptr = PtrOrCuPtr{magmaFloatComplex}
 const magma_queue = Cvoid
 const magma_queue_t = PtrOrCuPtr{magma_queue}
@@ -163,7 +163,7 @@ const MAGMA_ERR_CUSPARSE_INTERNAL_ERROR = -3007
 const MAGMA_ERR_CUSPARSE_MATRIX_TYPE_NOT_SUPPORTED = -3008
 const MAGMA_ERR_CUSPARSE_ZERO_PIVOT = -3009
 
-@cenum magma_bool_t::UInt32 begin
+@cenum magma_bool_t::UInt begin
     MagmaFalse = 0
     MagmaTrue = 1
 end
@@ -171,7 +171,7 @@ end
 
 const Magma2lapack_Min = MagmaFalse
 
-@cenum magma_storev_t::UInt32 begin
+@cenum magma_storev_t::UInt begin
     MagmaColumnwise = 401
     MagmaRowwise = 402
 end
@@ -207,12 +207,12 @@ const MagmaIVecStr = "IVec"
 const MagmaAllVecStr = "All"
 const MagmaSomeVecStr = "Some"
 const MagmaOverwriteVecStr = "Overwrite"
-const magma_index_t = Cint
-const magma_uindex_t = UInt32
-const magma_event_t = Cint
+const magma_index_t = Int
+const magma_uindex_t = UInt
+const magma_event_t = Int
 const magma_device_t = magma_int_t
 const magmaHalf = Int16
-const magmaDoubleComplex = Cint
+const magmaDoubleComplex = Int
 const magma_ptr = PtrOrCuPtr{Cvoid}
 const magmaInt_ptr = PtrOrCuPtr{magma_int_t}
 const magmaIndex_ptr = PtrOrCuPtr{magma_index_t}
@@ -229,19 +229,19 @@ const magmaFloatComplex_const_ptr = PtrOrCuPtr{magmaFloatComplex}
 const magmaDoubleComplex_const_ptr = PtrOrCuPtr{magmaDoubleComplex}
 const magmaHalf_const_ptr = PtrOrCuPtr{magmaHalf}
 
-@cenum magma_order_t::UInt32 begin
+@cenum magma_order_t::UInt begin
     MagmaRowMajor = 101
     MagmaColMajor = 102
 end
 
-@cenum magma_trans_t::UInt32 begin
+@cenum magma_trans_t::UInt begin
     MagmaNoTrans = 111
     MagmaTrans = 112
     MagmaConjTrans = 113
     Magma_ConjTrans = 113
 end
 
-@cenum magma_uplo_t::UInt32 begin
+@cenum magma_uplo_t::UInt begin
     MagmaUpper = 121
     MagmaLower = 122
     MagmaFull = 123
@@ -251,12 +251,12 @@ end
 
 const magma_type_t = magma_uplo_t
 
-@cenum magma_diag_t::UInt32 begin
+@cenum magma_diag_t::UInt begin
     MagmaNonUnit = 131
     MagmaUnit = 132
 end
 
-@cenum magma_norm_t::UInt32 begin
+@cenum magma_norm_t::UInt begin
     MagmaOneNorm = 171
     MagmaRealOneNorm = 172
     MagmaTwoNorm = 173
@@ -267,20 +267,20 @@ end
     MagmaRealMaxNorm = 178
 end
 
-@cenum magma_dist_t::UInt32 begin
+@cenum magma_dist_t::UInt begin
     MagmaDistUniform = 201
     MagmaDistSymmetric = 202
     MagmaDistNormal = 203
 end
 
-@cenum magma_sym_t::UInt32 begin
+@cenum magma_sym_t::UInt begin
     MagmaHermGeev = 241
     MagmaHermPoev = 242
     MagmaNonsymPosv = 243
     MagmaSymPosv = 244
 end
 
-@cenum magma_pack_t::UInt32 begin
+@cenum magma_pack_t::UInt begin
     MagmaNoPacking = 291
     MagmaPackSubdiag = 292
     MagmaPackSupdiag = 293
@@ -291,7 +291,7 @@ end
     MagmaPackAll = 298
 end
 
-@cenum magma_vec_t::UInt32 begin
+@cenum magma_vec_t::UInt begin
     MagmaNoVec = 301
     MagmaVec = 302
     MagmaIVec = 303
@@ -301,28 +301,28 @@ end
     MagmaBacktransVec = 307
 end
 
-@cenum magma_range_t::UInt32 begin
+@cenum magma_range_t::UInt begin
     MagmaRangeAll = 311
     MagmaRangeV = 312
     MagmaRangeI = 313
 end
 
-@cenum magma_vect_t::UInt32 begin
+@cenum magma_vect_t::UInt begin
     MagmaQ = 322
     MagmaP = 323
 end
 
-@cenum magma_direct_t::UInt32 begin
+@cenum magma_direct_t::UInt begin
     MagmaForward = 391
     MagmaBackward = 392
 end
 
-@cenum magma_mode_t::UInt32 begin
+@cenum magma_mode_t::UInt begin
     MagmaHybrid = 701
     MagmaNative = 702
 end
 
-@cenum magma_storage_t::UInt32 begin
+@cenum magma_storage_t::UInt begin
     Magma_CSR = 611
     Magma_ELLPACKT = 612
     Magma_ELL = 613
@@ -345,7 +345,7 @@ end
     Magma_CSR5 = 632
 end
 
-@cenum magma_solver_type::UInt32 begin
+@cenum magma_solver_type::UInt begin
     Magma_CG = 431
     Magma_CGMERGE = 432
     Magma_GMRES = 433
@@ -406,37 +406,37 @@ end
     Magma_ILUT = 511
 end
 
-@cenum magma_ortho_t::UInt32 begin
+@cenum magma_ortho_t::UInt begin
     Magma_CGSO = 561
     Magma_FUSED_CGSO = 562
     Magma_MGSO = 563
 end
 
-@cenum magma_location_t::UInt32 begin
+@cenum magma_location_t::UInt begin
     Magma_CPU = 571
     Magma_DEV = 572
 end
 
-@cenum magma_symmetry_t::UInt32 begin
+@cenum magma_symmetry_t::UInt begin
     Magma_GENERAL = 581
     Magma_SYMMETRIC = 582
 end
 
-@cenum magma_diagorder_t::UInt32 begin
+@cenum magma_diagorder_t::UInt begin
     Magma_ORDERED = 591
     Magma_DIAGFIRST = 592
     Magma_UNITY = 593
     Magma_VALUE = 594
 end
 
-@cenum magma_precision::UInt32 begin
+@cenum magma_precision::UInt begin
     Magma_DCOMPLEX = 501
     Magma_FCOMPLEX = 502
     Magma_DOUBLE = 503
     Magma_FLOAT = 504
 end
 
-@cenum magma_scale_t::UInt32 begin
+@cenum magma_scale_t::UInt begin
     Magma_NOSCALE = 511
     Magma_UNITROW = 512
     Magma_UNITDIAG = 513
@@ -445,7 +445,7 @@ end
     Magma_UNITDIAGCOL = 516
 end
 
-@cenum magma_operation_t::UInt32 begin
+@cenum magma_operation_t::UInt begin
     Magma_SOLVE = 801
     Magma_SETUPSOLVE = 802
     Magma_APPLYSOLVE = 803
@@ -458,7 +458,7 @@ end
     Magma_SPMV = 810
 end
 
-@cenum magma_refinement_t::UInt32 begin
+@cenum magma_refinement_t::UInt begin
     Magma_PREC_SS = 900
     Magma_PREC_SST = 901
     Magma_PREC_HS = 902
@@ -485,7 +485,7 @@ end
     Magma_PREC_HD = 930
 end
 
-@cenum magma_mp_type_t::UInt32 begin
+@cenum magma_mp_type_t::UInt begin
     Magma_MP_BASE_SS = 950
     Magma_MP_BASE_DD = 951
     Magma_MP_BASE_XHS = 952
