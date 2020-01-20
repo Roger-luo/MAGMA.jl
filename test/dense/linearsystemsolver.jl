@@ -114,7 +114,7 @@ end
             magma_finalize()
             # println("A ≈ Atest: ", A≈Atest)
             # println("ipiv", ipiv ≈ ipivtest)
-            @test_broken B ≈ Btest
+            @test B ≈ Btest
         end
     end
 end

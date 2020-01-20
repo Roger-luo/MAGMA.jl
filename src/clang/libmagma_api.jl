@@ -46,15 +46,15 @@ function magma_get_smlsize_divideconquer()
 end
 
 function magma_malloc(ptr_ptr, bytes)
-    ccall((:magma_malloc, libmagma), magma_int_t, (PtrOrCuPtr{magma_ptr}, Cint), ptr_ptr, bytes)
+    ccall((:magma_malloc, libmagma), magma_int_t, (PtrOrCuPtr{magma_ptr}, Int), ptr_ptr, bytes)
 end
 
 function magma_malloc_cpu(ptr_ptr, bytes)
-    ccall((:magma_malloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cvoid}}, Cint), ptr_ptr, bytes)
+    ccall((:magma_malloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cvoid}}, Int), ptr_ptr, bytes)
 end
 
 function magma_malloc_pinned(ptr_ptr, bytes)
-    ccall((:magma_malloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cvoid}}, Cint), ptr_ptr, bytes)
+    ccall((:magma_malloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cvoid}}, Int), ptr_ptr, bytes)
 end
 
 function magma_free_cpu(ptr)
@@ -62,91 +62,91 @@ function magma_free_cpu(ptr)
 end
 
 function magma_free_internal(ptr, func, file, line)
-    ccall((:magma_free_internal, libmagma), magma_int_t, (magma_ptr, Cstring, Cstring, Cint), ptr, func, file, line)
+    ccall((:magma_free_internal, libmagma), magma_int_t, (magma_ptr, Cstring, Cstring, Int), ptr, func, file, line)
 end
 
 function magma_free_pinned_internal(ptr, func, file, line)
-    ccall((:magma_free_pinned_internal, libmagma), magma_int_t, (PtrOrCuPtr{Cvoid}, Cstring, Cstring, Cint), ptr, func, file, line)
+    ccall((:magma_free_pinned_internal, libmagma), magma_int_t, (PtrOrCuPtr{Cvoid}, Cstring, Cstring, Int), ptr, func, file, line)
 end
 
 function magma_imalloc(ptr_ptr, n)
-    ccall((:magma_imalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaInt_ptr}, Cint), ptr_ptr, n)
+    ccall((:magma_imalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaInt_ptr}, Int), ptr_ptr, n)
 end
 
 function magma_index_malloc(ptr_ptr, n)
-    ccall((:magma_index_malloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaIndex_ptr}, Cint), ptr_ptr, n)
+    ccall((:magma_index_malloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaIndex_ptr}, Int), ptr_ptr, n)
 end
 
 function magma_uindex_malloc(ptr_ptr, n)
-    ccall((:magma_uindex_malloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaUIndex_ptr}, Cint), ptr_ptr, n)
+    ccall((:magma_uindex_malloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaUIndex_ptr}, Int), ptr_ptr, n)
 end
 
 function magma_smalloc(ptr_ptr, n)
-    ccall((:magma_smalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaFloat_ptr}, Cint), ptr_ptr, n)
+    ccall((:magma_smalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaFloat_ptr}, Int), ptr_ptr, n)
 end
 
 function magma_dmalloc(ptr_ptr, n)
-    ccall((:magma_dmalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaDouble_ptr}, Cint), ptr_ptr, n)
+    ccall((:magma_dmalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaDouble_ptr}, Int), ptr_ptr, n)
 end
 
 function magma_cmalloc(ptr_ptr, n)
-    ccall((:magma_cmalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaFloatComplex_ptr}, Cint), ptr_ptr, n)
+    ccall((:magma_cmalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaFloatComplex_ptr}, Int), ptr_ptr, n)
 end
 
 function magma_zmalloc(ptr_ptr, n)
-    ccall((:magma_zmalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaDoubleComplex_ptr}, Cint), ptr_ptr, n)
+    ccall((:magma_zmalloc, libmagma), magma_int_t, (PtrOrCuPtr{magmaDoubleComplex_ptr}, Int), ptr_ptr, n)
 end
 
 function magma_imalloc_cpu(ptr_ptr, n)
-    ccall((:magma_imalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_int_t}}, Cint), ptr_ptr, n)
+    ccall((:magma_imalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_int_t}}, Int), ptr_ptr, n)
 end
 
 function magma_index_malloc_cpu(ptr_ptr, n)
-    ccall((:magma_index_malloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_index_t}}, Cint), ptr_ptr, n)
+    ccall((:magma_index_malloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_index_t}}, Int), ptr_ptr, n)
 end
 
 function magma_uindex_malloc_cpu(ptr_ptr, n)
-    ccall((:magma_uindex_malloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_uindex_t}}, Cint), ptr_ptr, n)
+    ccall((:magma_uindex_malloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_uindex_t}}, Int), ptr_ptr, n)
 end
 
 function magma_smalloc_cpu(ptr_ptr, n)
-    ccall((:magma_smalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cfloat}}, Cint), ptr_ptr, n)
+    ccall((:magma_smalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cfloat}}, Int), ptr_ptr, n)
 end
 
 function magma_dmalloc_cpu(ptr_ptr, n)
-    ccall((:magma_dmalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cdouble}}, Cint), ptr_ptr, n)
+    ccall((:magma_dmalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cdouble}}, Int), ptr_ptr, n)
 end
 
 function magma_cmalloc_cpu(ptr_ptr, n)
-    ccall((:magma_cmalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaFloatComplex}}, Cint), ptr_ptr, n)
+    ccall((:magma_cmalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaFloatComplex}}, Int), ptr_ptr, n)
 end
 
 function magma_zmalloc_cpu(ptr_ptr, n)
-    ccall((:magma_zmalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaDoubleComplex}}, Cint), ptr_ptr, n)
+    ccall((:magma_zmalloc_cpu, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaDoubleComplex}}, Int), ptr_ptr, n)
 end
 
 function magma_imalloc_pinned(ptr_ptr, n)
-    ccall((:magma_imalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_int_t}}, Cint), ptr_ptr, n)
+    ccall((:magma_imalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_int_t}}, Int), ptr_ptr, n)
 end
 
 function magma_index_malloc_pinned(ptr_ptr, n)
-    ccall((:magma_index_malloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_index_t}}, Cint), ptr_ptr, n)
+    ccall((:magma_index_malloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magma_index_t}}, Int), ptr_ptr, n)
 end
 
 function magma_smalloc_pinned(ptr_ptr, n)
-    ccall((:magma_smalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cfloat}}, Cint), ptr_ptr, n)
+    ccall((:magma_smalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cfloat}}, Int), ptr_ptr, n)
 end
 
 function magma_dmalloc_pinned(ptr_ptr, n)
-    ccall((:magma_dmalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cdouble}}, Cint), ptr_ptr, n)
+    ccall((:magma_dmalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{Cdouble}}, Int), ptr_ptr, n)
 end
 
 function magma_cmalloc_pinned(ptr_ptr, n)
-    ccall((:magma_cmalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaFloatComplex}}, Cint), ptr_ptr, n)
+    ccall((:magma_cmalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaFloatComplex}}, Int), ptr_ptr, n)
 end
 
 function magma_zmalloc_pinned(ptr_ptr, n)
-    ccall((:magma_zmalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaDoubleComplex}}, Cint), ptr_ptr, n)
+    ccall((:magma_zmalloc_pinned, libmagma), magma_int_t, (PtrOrCuPtr{PtrOrCuPtr{magmaDoubleComplex}}, Int), ptr_ptr, n)
 end
 
 function magma_is_devptr(ptr)
@@ -174,7 +174,7 @@ function magma_setdevice(dev)
 end
 
 function magma_mem_size()
-    ccall((:magma_mem_size, libmagma), Cint, ())
+    ccall((:magma_mem_size, libmagma), Int, ())
 end
 
 function magma_getdevice_multiprocessor_count()
@@ -182,27 +182,27 @@ function magma_getdevice_multiprocessor_count()
 end
 
 function magma_getdevice_shmem_block()
-    ccall((:magma_getdevice_shmem_block, libmagma), Cint, ())
+    ccall((:magma_getdevice_shmem_block, libmagma), Int, ())
 end
 
 function magma_getdevice_shmem_multiprocessor()
-    ccall((:magma_getdevice_shmem_multiprocessor, libmagma), Cint, ())
+    ccall((:magma_getdevice_shmem_multiprocessor, libmagma), Int, ())
 end
 
 function magma_queue_create_internal(device, queue_ptr, func, file, line)
-    ccall((:magma_queue_create_internal, libmagma), Cvoid, (magma_device_t, PtrOrCuPtr{magma_queue_t}, Cstring, Cstring, Cint), device, queue_ptr, func, file, line)
+    ccall((:magma_queue_create_internal, libmagma), Cvoid, (magma_device_t, PtrOrCuPtr{magma_queue_t}, Cstring, Cstring, Int), device, queue_ptr, func, file, line)
 end
 
 # function magma_queue_create_from_cuda_internal(device, stream, cublas, cusparse, queue_ptr, func, file, line)
-#     ccall((:magma_queue_create_from_cuda_internal, libmagma), Cvoid, (magma_device_t, Cint, cublasHandle_t, Cint, PtrOrCuPtr{magma_queue_t}, Cstring, Cstring, Cint), device, stream, cublas, cusparse, queue_ptr, func, file, line)
+#     ccall((:magma_queue_create_from_cuda_internal, libmagma), Cvoid, (magma_device_t, Int, cublasHandle_t, Int, PtrOrCuPtr{magma_queue_t}, Cstring, Cstring, Int), device, stream, cublas, cusparse, queue_ptr, func, file, line)
 # end
 
 function magma_queue_destroy_internal(queue, func, file, line)
-    ccall((:magma_queue_destroy_internal, libmagma), Cvoid, (magma_queue_t, Cstring, Cstring, Cint), queue, func, file, line)
+    ccall((:magma_queue_destroy_internal, libmagma), Cvoid, (magma_queue_t, Cstring, Cstring, Int), queue, func, file, line)
 end
 
 function magma_queue_sync_internal(queue, func, file, line)
-    ccall((:magma_queue_sync_internal, libmagma), Cvoid, (magma_queue_t, Cstring, Cstring, Cint), queue, func, file, line)
+    ccall((:magma_queue_sync_internal, libmagma), Cvoid, (magma_queue_t, Cstring, Cstring, Int), queue, func, file, line)
 end
 
 function magma_queue_get_device(queue)
@@ -242,7 +242,7 @@ function magma_strerror(error)
 end
 
 function magma_strlcpy()
-    ccall((:magma_strlcpy, libmagma), Cint, ())
+    ccall((:magma_strlcpy, libmagma), Int, ())
 end
 
 function magma_ceildiv(x, y)
@@ -1055,15 +1055,15 @@ function magma_cunmtr_m(ngpu, side, uplo, trans, m, n, A, lda, tau, C, ldc, work
 end
 
 function magma_c_isnan(x)
-    ccall((:magma_c_isnan, libmagma), Cint, (magmaFloatComplex,), x)
+    ccall((:magma_c_isnan, libmagma), Int, (magmaFloatComplex,), x)
 end
 
 function magma_c_isinf(x)
-    ccall((:magma_c_isinf, libmagma), Cint, (magmaFloatComplex,), x)
+    ccall((:magma_c_isinf, libmagma), Int, (magmaFloatComplex,), x)
 end
 
 function magma_c_isnan_inf(x)
-    ccall((:magma_c_isnan_inf, libmagma), Cint, (magmaFloatComplex,), x)
+    ccall((:magma_c_isnan_inf, libmagma), Int, (magmaFloatComplex,), x)
 end
 
 function magma_cmake_lwork(lwork)
@@ -2300,246 +2300,246 @@ end
 
 
 function magma_setvector_internal(n, elemSize, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_setvector_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, elemSize, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_setvector_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, elemSize, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_getvector_internal(n, elemSize, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_getvector_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, elemSize, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_getvector_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, elemSize, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_copyvector_internal(n, elemSize, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_copyvector_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, elemSize, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_copyvector_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, elemSize, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_setvector_async_internal(n, elemSize, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_setvector_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, elemSize, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_setvector_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, elemSize, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_getvector_async_internal(n, elemSize, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_getvector_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, elemSize, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_getvector_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, elemSize, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_copyvector_async_internal(n, elemSize, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_copyvector_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, elemSize, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_copyvector_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, elemSize, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_setmatrix_internal(m, n, elemSize, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_setmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, elemSize, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_setmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, elemSize, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_getmatrix_internal(m, n, elemSize, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_getmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, elemSize, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_getmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, elemSize, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_copymatrix_internal(m, n, elemSize, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_copymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, elemSize, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_copymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, elemSize, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_setmatrix_async_internal(m, n, elemSize, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_setmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, elemSize, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_setmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, elemSize, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_getmatrix_async_internal(m, n, elemSize, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_getmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, elemSize, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_getmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, elemSize, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_copymatrix_async_internal(m, n, elemSize, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_copymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, elemSize, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_copymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, elemSize, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_isetvector_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_isetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_isetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_igetvector_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_igetvector_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_igetvector_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_icopyvector_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_icopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_icopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_isetvector_async_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_isetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_isetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_igetvector_async_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_igetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_igetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_icopyvector_async_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_icopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_icopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_isetmatrix_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_isetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_isetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_igetmatrix_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_igetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_igetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_icopymatrix_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_icopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_icopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_isetmatrix_async_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_isetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_isetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_igetmatrix_async_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_igetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_igetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_icopymatrix_async_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_icopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_icopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_index_setvector_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_index_setvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_index_setvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_index_getvector_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_index_getvector_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_index_getvector_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_index_copyvector_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_index_copyvector_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_index_copyvector_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_index_setvector_async_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_index_setvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_index_setvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_index_getvector_async_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_index_getvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_index_getvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_index_copyvector_async_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_index_copyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_index_copyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_uindex_setvector_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_uindex_setvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_uindex_setvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_uindex_getvector_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_uindex_getvector_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_uindex_getvector_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_uindex_copyvector_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_uindex_copyvector_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_uindex_copyvector_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_uindex_setvector_async_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_uindex_setvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_uindex_setvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_uindex_getvector_async_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_uindex_getvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_uindex_getvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_uindex_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_uindex_copyvector_async_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_uindex_copyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_uindex_copyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaUIndex_const_ptr, magma_int_t, magmaUIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_index_setmatrix_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_index_setmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_index_setmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_index_getmatrix_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_index_getmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_index_getmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_index_copymatrix_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_index_copymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_index_copymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_index_setmatrix_async_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_index_setmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_index_setmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_index_getmatrix_async_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_index_getmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_index_getmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_index_copymatrix_async_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_index_copymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_index_copymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 # Julia wrapper for header: magma_copy_v1.h
 # Automatically generated using Clang.jl
 
 
 function magma_setvector_v1_internal(n, elemSize, hx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_setvector_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Cint), n, elemSize, hx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_setvector_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Int), n, elemSize, hx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_getvector_v1_internal(n, elemSize, dx_src, incx, hy_dst, incy, func, file, line)
-    ccall((:magma_getvector_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, Cstring, Cstring, Cint), n, elemSize, dx_src, incx, hy_dst, incy, func, file, line)
+    ccall((:magma_getvector_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, Cstring, Cstring, Int), n, elemSize, dx_src, incx, hy_dst, incy, func, file, line)
 end
 
 function magma_copyvector_v1_internal(n, elemSize, dx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_copyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Cint), n, elemSize, dx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_copyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Int), n, elemSize, dx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_setmatrix_v1_internal(m, n, elemSize, hA_src, lda, dB_dst, lddb, func, file, line)
-    ccall((:magma_setmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, elemSize, hA_src, lda, dB_dst, lddb, func, file, line)
+    ccall((:magma_setmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Int), m, n, elemSize, hA_src, lda, dB_dst, lddb, func, file, line)
 end
 
 function magma_getmatrix_v1_internal(m, n, elemSize, dA_src, ldda, hB_dst, ldb, func, file, line)
-    ccall((:magma_getmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, Cstring, Cstring, Cint), m, n, elemSize, dA_src, ldda, hB_dst, ldb, func, file, line)
+    ccall((:magma_getmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, PtrOrCuPtr{Cvoid}, magma_int_t, Cstring, Cstring, Int), m, n, elemSize, dA_src, ldda, hB_dst, ldb, func, file, line)
 end
 
 function magma_copymatrix_v1_internal(m, n, elemSize, dA_src, ldda, dB_dst, lddb, func, file, line)
-    ccall((:magma_copymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, elemSize, dA_src, ldda, dB_dst, lddb, func, file, line)
+    ccall((:magma_copymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magma_int_t, magma_const_ptr, magma_int_t, magma_ptr, magma_int_t, Cstring, Cstring, Int), m, n, elemSize, dA_src, ldda, dB_dst, lddb, func, file, line)
 end
 
 function magma_isetvector_v1_internal(n, hx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_isetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_isetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_igetvector_v1_internal(n, dx_src, incx, hy_dst, incy, func, file, line)
-    ccall((:magma_igetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, func, file, line)
+    ccall((:magma_igetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, func, file, line)
 end
 
 function magma_icopyvector_v1_internal(n, dx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_icopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_icopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_isetmatrix_v1_internal(m, n, hA_src, lda, dB_dst, lddb, func, file, line)
-    ccall((:magma_isetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
+    ccall((:magma_isetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
 end
 
 function magma_igetmatrix_v1_internal(m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
-    ccall((:magma_igetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
+    ccall((:magma_igetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, PtrOrCuPtr{magma_int_t}, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
 end
 
 function magma_icopymatrix_v1_internal(m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
-    ccall((:magma_icopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
+    ccall((:magma_icopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaInt_const_ptr, magma_int_t, magmaInt_ptr, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
 end
 
 function magma_index_setvector_v1_internal(n, hx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_index_setvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_index_setvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_index_getvector_v1_internal(n, dx_src, incx, hy_dst, incy, func, file, line)
-    ccall((:magma_index_getvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, func, file, line)
+    ccall((:magma_index_getvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, func, file, line)
 end
 
 function magma_index_copyvector_v1_internal(n, dx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_index_copyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_index_copyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_index_setmatrix_v1_internal(m, n, hA_src, lda, dB_dst, lddb, func, file, line)
-    ccall((:magma_index_setmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
+    ccall((:magma_index_setmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
 end
 
 function magma_index_getmatrix_v1_internal(m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
-    ccall((:magma_index_getmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
+    ccall((:magma_index_getmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, PtrOrCuPtr{magma_index_t}, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
 end
 
 function magma_index_copymatrix_v1_internal(m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
-    ccall((:magma_index_copymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
+    ccall((:magma_index_copymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaIndex_const_ptr, magma_int_t, magmaIndex_ptr, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
 end
 # Julia wrapper for header: magma_cvbatched.h
 # Automatically generated using Clang.jl
@@ -3505,15 +3505,15 @@ function magma_dormtr_m(ngpu, side, uplo, trans, m, n, A, lda, tau, C, ldc, work
 end
 
 function magma_d_isnan(x)
-    ccall((:magma_d_isnan, libmagma), Cint, (Cdouble,), x)
+    ccall((:magma_d_isnan, libmagma), Int, (Cdouble,), x)
 end
 
 function magma_d_isinf(x)
-    ccall((:magma_d_isinf, libmagma), Cint, (Cdouble,), x)
+    ccall((:magma_d_isinf, libmagma), Int, (Cdouble,), x)
 end
 
 function magma_d_isnan_inf(x)
-    ccall((:magma_d_isnan_inf, libmagma), Cint, (Cdouble,), x)
+    ccall((:magma_d_isnan_inf, libmagma), Int, (Cdouble,), x)
 end
 
 function magma_dmake_lwork(lwork)
@@ -5772,15 +5772,15 @@ function magma_sormtr_m(ngpu, side, uplo, trans, m, n, A, lda, tau, C, ldc, work
 end
 
 function magma_s_isnan(x)
-    ccall((:magma_s_isnan, libmagma), Cint, (Cfloat,), x)
+    ccall((:magma_s_isnan, libmagma), Int, (Cfloat,), x)
 end
 
 function magma_s_isinf(x)
-    ccall((:magma_s_isinf, libmagma), Cint, (Cfloat,), x)
+    ccall((:magma_s_isinf, libmagma), Int, (Cfloat,), x)
 end
 
 function magma_s_isnan_inf(x)
-    ccall((:magma_s_isnan_inf, libmagma), Cint, (Cfloat,), x)
+    ccall((:magma_s_isnan_inf, libmagma), Int, (Cfloat,), x)
 end
 
 function magma_smake_lwork(lwork)
@@ -7121,7 +7121,7 @@ end
 
 
 function magma_queue_get_cuda_stream()
-    ccall((:magma_queue_get_cuda_stream, libmagma), Cint, ())
+    ccall((:magma_queue_get_cuda_stream, libmagma), Int, ())
 end
 
 # function magma_queue_get_cublas_handle(queue)
@@ -7129,7 +7129,7 @@ end
 # end
 
 function magma_queue_get_cusparse_handle()
-    ccall((:magma_queue_get_cusparse_handle, libmagma), Cint, ())
+    ccall((:magma_queue_get_cusparse_handle, libmagma), Int, ())
 end
 
 function magma_cabs(x)
@@ -7201,7 +7201,7 @@ function magma_storev_const(lapack_char)
 end
 
 function lapack_const_str(magma_const)
-    ccall((:lapack_const_str, libmagma), Cstring, (Cint,), magma_const)
+    ccall((:lapack_const_str, libmagma), Cstring, (Int,), magma_const)
 end
 
 function lapack_bool_const(magma_const)
@@ -7265,7 +7265,7 @@ function lapack_storev_const(magma_const)
 end
 
 function lapacke_const(magma_const)
-    ccall((:lapacke_const, libmagma), UInt8, (Cint,), magma_const)
+    ccall((:lapacke_const, libmagma), UInt8, (Int,), magma_const)
 end
 
 function lapacke_bool_const(magma_const)
@@ -8202,15 +8202,15 @@ function magma_zunmtr_m(ngpu, side, uplo, trans, m, n, A, lda, tau, C, ldc, work
 end
 
 function magma_z_isnan(x)
-    ccall((:magma_z_isnan, libmagma), Cint, (magmaDoubleComplex,), x)
+    ccall((:magma_z_isnan, libmagma), Int, (magmaDoubleComplex,), x)
 end
 
 function magma_z_isinf(x)
-    ccall((:magma_z_isinf, libmagma), Cint, (magmaDoubleComplex,), x)
+    ccall((:magma_z_isinf, libmagma), Int, (magmaDoubleComplex,), x)
 end
 
 function magma_z_isnan_inf(x)
-    ccall((:magma_z_isnan_inf, libmagma), Cint, (magmaDoubleComplex,), x)
+    ccall((:magma_z_isnan_inf, libmagma), Int, (magmaDoubleComplex,), x)
 end
 
 function magma_zmake_lwork(lwork)
@@ -9989,51 +9989,51 @@ function magmablas_ctrsm_work(side, uplo, transA, diag, m, n, alpha, dA, ldda, d
 end
 
 function magma_csetvector_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_csetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_csetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_cgetvector_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_cgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_cgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_ccopyvector_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_ccopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_ccopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_csetvector_async_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_csetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_csetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_cgetvector_async_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_cgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_cgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_ccopyvector_async_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_ccopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_ccopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_csetmatrix_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_csetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_csetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_cgetmatrix_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_cgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_cgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_ccopymatrix_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_ccopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_ccopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_csetmatrix_async_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_csetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_csetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_cgetmatrix_async_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_cgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_cgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_ccopymatrix_async_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_ccopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_ccopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_icamax(n, dx, incx, queue)
@@ -10464,27 +10464,27 @@ function magmablas_ctrsm_work_v1(side, uplo, transA, diag, m, n, alpha, dA, ldda
 end
 
 function magma_csetvector_v1_internal(n, hx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_csetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_csetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_cgetvector_v1_internal(n, dx_src, incx, hy_dst, incy, func, file, line)
-    ccall((:magma_cgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, func, file, line)
+    ccall((:magma_cgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, func, file, line)
 end
 
 function magma_ccopyvector_v1_internal(n, dx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_ccopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_ccopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_csetmatrix_v1_internal(m, n, hA_src, lda, dB_dst, lddb, func, file, line)
-    ccall((:magma_csetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
+    ccall((:magma_csetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
 end
 
 function magma_cgetmatrix_v1_internal(m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
-    ccall((:magma_cgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
+    ccall((:magma_cgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaFloatComplex}, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
 end
 
 function magma_ccopymatrix_v1_internal(m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
-    ccall((:magma_ccopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
+    ccall((:magma_ccopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloatComplex_const_ptr, magma_int_t, magmaFloatComplex_ptr, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
 end
 
 function magma_icamax_v1(n, dx, incx)
@@ -10906,51 +10906,51 @@ function magmablas_dtrsm_work(side, uplo, transA, diag, m, n, alpha, dA, ldda, d
 end
 
 function magma_dsetvector_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_dsetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_dsetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_dgetvector_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_dgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_dgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_dcopyvector_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_dcopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_dcopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_dsetvector_async_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_dsetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_dsetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_dgetvector_async_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_dgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_dgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_dcopyvector_async_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_dcopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_dcopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_dsetmatrix_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_dsetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_dsetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_dgetmatrix_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_dgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_dgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_dcopymatrix_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_dcopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_dcopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_dsetmatrix_async_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_dsetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_dsetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_dgetmatrix_async_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_dgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_dgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_dcopymatrix_async_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_dcopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_dcopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_idamax(n, dx, incx, queue)
@@ -11321,27 +11321,27 @@ function magmablas_dtrsm_work_v1(side, uplo, transA, diag, m, n, alpha, dA, ldda
 end
 
 function magma_dsetvector_v1_internal(n, hx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_dsetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_dsetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_dgetvector_v1_internal(n, dx_src, incx, hy_dst, incy, func, file, line)
-    ccall((:magma_dgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, func, file, line)
+    ccall((:magma_dgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, func, file, line)
 end
 
 function magma_dcopyvector_v1_internal(n, dx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_dcopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_dcopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_dsetmatrix_v1_internal(m, n, hA_src, lda, dB_dst, lddb, func, file, line)
-    ccall((:magma_dsetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
+    ccall((:magma_dsetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
 end
 
 function magma_dgetmatrix_v1_internal(m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
-    ccall((:magma_dgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
+    ccall((:magma_dgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, PtrOrCuPtr{Cdouble}, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
 end
 
 function magma_dcopymatrix_v1_internal(m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
-    ccall((:magma_dcopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
+    ccall((:magma_dcopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDouble_const_ptr, magma_int_t, magmaDouble_ptr, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
 end
 
 function magma_idamax_v1(n, dx, incx)
@@ -11803,51 +11803,51 @@ function magmablas_strsm_work(side, uplo, transA, diag, m, n, alpha, dA, ldda, d
 end
 
 function magma_ssetvector_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_ssetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_ssetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_sgetvector_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_sgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_sgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_scopyvector_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_scopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_scopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_ssetvector_async_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_ssetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_ssetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_sgetvector_async_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_sgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_sgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_scopyvector_async_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_scopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_scopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_ssetmatrix_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_ssetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_ssetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_sgetmatrix_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_sgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_sgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_scopymatrix_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_scopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_scopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_ssetmatrix_async_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_ssetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_ssetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_sgetmatrix_async_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_sgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_sgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_scopymatrix_async_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_scopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_scopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_isamax(n, dx, incx, queue)
@@ -12218,27 +12218,27 @@ function magmablas_strsm_work_v1(side, uplo, transA, diag, m, n, alpha, dA, ldda
 end
 
 function magma_ssetvector_v1_internal(n, hx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_ssetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_ssetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_sgetvector_v1_internal(n, dx_src, incx, hy_dst, incy, func, file, line)
-    ccall((:magma_sgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, func, file, line)
+    ccall((:magma_sgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, func, file, line)
 end
 
 function magma_scopyvector_v1_internal(n, dx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_scopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_scopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_ssetmatrix_v1_internal(m, n, hA_src, lda, dB_dst, lddb, func, file, line)
-    ccall((:magma_ssetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
+    ccall((:magma_ssetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
 end
 
 function magma_sgetmatrix_v1_internal(m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
-    ccall((:magma_sgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
+    ccall((:magma_sgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, PtrOrCuPtr{Cfloat}, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
 end
 
 function magma_scopymatrix_v1_internal(m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
-    ccall((:magma_scopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
+    ccall((:magma_scopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaFloat_const_ptr, magma_int_t, magmaFloat_ptr, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
 end
 
 function magma_isamax_v1(n, dx, incx)
@@ -12348,7 +12348,7 @@ end
 
 
 function magma_queue_create_v1_internal(queue_ptr, func, file, line)
-    ccall((:magma_queue_create_v1_internal, libmagma), Cvoid, (PtrOrCuPtr{magma_queue_t}, Cstring, Cstring, Cint), queue_ptr, func, file, line)
+    ccall((:magma_queue_create_v1_internal, libmagma), Cvoid, (PtrOrCuPtr{magma_queue_t}, Cstring, Cstring, Int), queue_ptr, func, file, line)
 end
 
 function magma_device_sync()
@@ -12682,51 +12682,51 @@ function magmablas_ztrsm_work(side, uplo, transA, diag, m, n, alpha, dA, ldda, d
 end
 
 function magma_zsetvector_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_zsetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_zsetvector_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_zgetvector_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_zgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_zgetvector_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_zcopyvector_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_zcopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_zcopyvector_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_zsetvector_async_internal(n, hx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_zsetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_zsetvector_async_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_zgetvector_async_internal(n, dx_src, incx, hy_dst, incy, queue, func, file, line)
-    ccall((:magma_zgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
+    ccall((:magma_zgetvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, queue, func, file, line)
 end
 
 function magma_zcopyvector_async_internal(n, dx_src, incx, dy_dst, incy, queue, func, file, line)
-    ccall((:magma_zcopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
+    ccall((:magma_zcopyvector_async_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, queue, func, file, line)
 end
 
 function magma_zsetmatrix_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_zsetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_zsetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_zgetmatrix_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_zgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_zgetmatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_zcopymatrix_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_zcopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_zcopymatrix_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_zsetmatrix_async_internal(m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_zsetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_zsetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_zgetmatrix_async_internal(m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
-    ccall((:magma_zgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
+    ccall((:magma_zgetmatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, queue, func, file, line)
 end
 
 function magma_zcopymatrix_async_internal(m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
-    ccall((:magma_zcopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
+    ccall((:magma_zcopymatrix_async_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, magma_queue_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, queue, func, file, line)
 end
 
 function magma_izamax(n, dx, incx, queue)
@@ -13157,27 +13157,27 @@ function magmablas_ztrsm_work_v1(side, uplo, transA, diag, m, n, alpha, dA, ldda
 end
 
 function magma_zsetvector_v1_internal(n, hx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_zsetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Cint), n, hx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_zsetvector_v1_internal, libmagma), Cvoid, (magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Int), n, hx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_zgetvector_v1_internal(n, dx_src, incx, hy_dst, incy, func, file, line)
-    ccall((:magma_zgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, hy_dst, incy, func, file, line)
+    ccall((:magma_zgetvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, hy_dst, incy, func, file, line)
 end
 
 function magma_zcopyvector_v1_internal(n, dx_src, incx, dy_dst, incy, func, file, line)
-    ccall((:magma_zcopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Cint), n, dx_src, incx, dy_dst, incy, func, file, line)
+    ccall((:magma_zcopyvector_v1_internal, libmagma), Cvoid, (magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Int), n, dx_src, incx, dy_dst, incy, func, file, line)
 end
 
 function magma_zsetmatrix_v1_internal(m, n, hA_src, lda, dB_dst, lddb, func, file, line)
-    ccall((:magma_zsetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
+    ccall((:magma_zsetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Int), m, n, hA_src, lda, dB_dst, lddb, func, file, line)
 end
 
 function magma_zgetmatrix_v1_internal(m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
-    ccall((:magma_zgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
+    ccall((:magma_zgetmatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, PtrOrCuPtr{magmaDoubleComplex}, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, hB_dst, ldb, func, file, line)
 end
 
 function magma_zcopymatrix_v1_internal(m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
-    ccall((:magma_zcopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Cint), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
+    ccall((:magma_zcopymatrix_v1_internal, libmagma), Cvoid, (magma_int_t, magma_int_t, magmaDoubleComplex_const_ptr, magma_int_t, magmaDoubleComplex_ptr, magma_int_t, Cstring, Cstring, Int), m, n, dA_src, ldda, dB_dst, lddb, func, file, line)
 end
 
 function magma_izamax_v1(n, dx, incx)
