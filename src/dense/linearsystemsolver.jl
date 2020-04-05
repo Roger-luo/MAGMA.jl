@@ -121,7 +121,7 @@ for type in magmaTypeList
             # end
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
-            ipiv = similar(Matrix(A), Int, n)
+            ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Int}()
 
             func = eval(@magmafunc_gpu($gesv))
@@ -138,6 +138,7 @@ for type in magmaTypeList
             #        A, lda, ipiv,
             #        B, ldb, info)
             # chkmagmaerror(info[])
+
             B, A, ipiv
         end
     
@@ -151,7 +152,7 @@ for type in magmaTypeList
             # end
             lda  = max(1,stride(A,2))
             ldb  = max(1,stride(B,2))
-            ipiv = similar(Matrix(A), Int, n)
+            ipiv = similar(Matrix(A), Int32, n)
             info = Ref{Int}()
 
             func = eval(@magmafunc($gesv))
@@ -252,7 +253,7 @@ for type in magmaTypeList
             chkstride1(A)
             m, n = size(A)
             lda = max(1, stride(A, 2))
-            ipiv = similar(A, Int, min(m, n))
+            ipiv = similar(A, Int32, min(m, n))
             info = Ref{Int}()
             func = eval(@magmafunc($getrf))
             func(m, n, A, lda, ipiv, info)

@@ -26,7 +26,7 @@ import LinearAlgebra.LAPACK: gebrd!
     result = magma_gesvd!(jobu,jobvt,matrixToTest)
 
     # in the result, the wanted answer lies in the second position
-    s = result[2]
+    s = Array(result[2])
 
     # finalize the MAGMA lib, serving as a necessary part after working
     magma_finalize()
@@ -62,7 +62,7 @@ end
     result = magma_gesdd!(job_magma,matrixToTest)
 
     # in the result, the wanted answer lies in the second position
-    s = result[2]
+    s = Array(result[2])
 
     # finalize the MAGMA lib, serving as a necessary part after working
     magma_finalize()
