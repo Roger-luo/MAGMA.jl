@@ -24,7 +24,7 @@ import LinearAlgebra.LAPACK: gels!, gesv!, getrs!, getri!
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
-        @test result[i] ≈ right_answer[i]
+        @test Array(result[i]) ≈ Array(right_answer[i])
     end
 
 end
@@ -52,7 +52,7 @@ end
 
     # if S is approximately equal to s, we defined then it's alright
     for i in 1:length(result)
-        @test result[i] ≈ right_answer[i]
+        @test Array(result[i]) ≈ Array(right_answer[i])
     end
 
 end
@@ -81,7 +81,7 @@ end
             B = magma_getri!(B, ipivB)
             magma_finalize()
             
-            @test A ≈ B
+            @test Array(A) ≈ Array(B)
         end
     end
 end
@@ -114,7 +114,7 @@ end
             magma_finalize()
             # println("A ≈ Atest: ", A≈Atest)
             # println("ipiv", ipiv ≈ ipivtest)
-            @test B ≈ Btest
+            @test Array(B) ≈ Array(Btest)
         end
     end
 end
@@ -131,7 +131,7 @@ end
             magma_finalize()
             B, ipivB,infoB= LAPACK.getrf!(B)
 
-            @test A ≈ B
+            @test Array(A) ≈ Array(B)
             @test ipiv ≈ ipivB
         end
     end
